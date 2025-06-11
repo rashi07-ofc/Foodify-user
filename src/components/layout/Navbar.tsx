@@ -1,12 +1,22 @@
 import React from "react";
-import { Menu } from "lucide-react";
+import { Menu, User, ShoppingCart } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../redux/store"; // adjust this path to your store
 
 const Navbar: React.FC = () => {
+  const navigate = useNavigate();
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+  const cartItemCount = useSelector((state: RootState) => state.cart.items.length);
+
   return (
     <header className="w-full bg-white shadow-md fixed top-0 left-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-4 flex items-center justify-between">
         {/* Logo / Brand */}
-        <div className="text-2xl font-bold text-orange-500 tracking-tight cursor-pointer">
+        <div
+          className="text-2xl font-bold text-orange-500 tracking-tight cursor-pointer"
+          onClick={() => navigate("/")}
+        >
           Foodify
         </div>
 
@@ -26,13 +36,35 @@ const Navbar: React.FC = () => {
           </a>
         </nav>
 
-        {/* Right-side Login Button */}
+        {/* Right-side Buttons */}
         <div className="flex items-center gap-4">
-          <button className="text-red-500 border border-red-500 px-5 py-2 rounded-full font-medium hover:bg-red-50 transition">
-            Login
-          </button>
+          {!isLoggedIn ? (
+            <button
+              onClick={() => navigate("/login")}
+              className="text-red-500 border border-red-500 px-5 py-2 rounded-full font-medium hover:bg-red-50 transition"
+            >
+              Login
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={() => navigate("/cart")}
+                className="text-orange-500 border border-orange-500 px-4 py-2 rounded-full hover:bg-orange-50 transition flex items-center gap-2"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                Cart
+              </button>
+              <button
+                onClick={() => navigate("/profile")}
+                className="text-white bg-orange-500 px-4 py-2 rounded-full hover:bg-orange-600 transition flex items-center gap-2"
+              >
+                <User className="w-5 h-5" />
+                Profile
+              </button>
+            </>
+          )}
 
-          {/* Mobile Menu Icon (optional, kept for responsiveness) */}
+          {/* Mobile Menu Icon */}
           <button className="md:hidden text-gray-700">
             <Menu className="w-6 h-6" />
           </button>

@@ -47,6 +47,10 @@ import OrderHistoryPage from "../features/customer/orderHistory/OrderHistoryPage
 import MainPage from "../features/restaurants/RestaurantLandingPage/MainPage";
 import CartPage from "../features/cart/CartPage";
 import LandingPage from "../pages/HomePage/LandingPage";
+import Login from "../features/auth/Login";
+import Register from "../features/auth/Register";
+import ZomatoCollections from "../features/restaurants/RestaurantLIst/ZomatoCollections";
+import OTP from "../features/auth/OTP";
 
 const router = createBrowserRouter([
   {
@@ -76,7 +80,27 @@ const router = createBrowserRouter([
   {
     path:'/',
     element:<LandingPage/>
+  },
+  {
+    path:'/login',
+    element:<Login/>
+  },
+  {
+    path:'/signup',
+    element:<Register/>
+  },
+
+  {
+    path:'/list',
+    element:<ZomatoCollections/>
+  },
+
+  {
+    path:'/otp',
+    element:<OTP/>
   }
+
+
 
 ]);
 
