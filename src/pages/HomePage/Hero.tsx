@@ -2,11 +2,17 @@ import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import foodImg from "../../assets/thali.jpg";
+import { useNavigate } from "react-router-dom";
 
 export default function Hero() {
   useEffect(() => {
     AOS.init({ duration: 1000, once: true });
   }, []);
+
+  const navigate = useNavigate();
+  const handleOrder = () => {
+    navigate('/landing')
+  }
 
   return (
     <section className="bg-gray-50 px-6 py-24 md:py-32 md:px-20 lg:px-32 xl:px-40 grid grid-cols-1 md:grid-cols-2 items-center gap-16 min-h-[80vh]" id="home">
@@ -20,12 +26,12 @@ export default function Hero() {
           delivered hot and fresh in no time. Fast, reliable, and tasty.
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
-          <button className="bg-red-500 text-white font-semibold px-6 py-3 rounded-full hover:bg-red-600 transition">
+          <button onClick={handleOrder} className="bg-red-500 text-white font-semibold px-6 py-3 rounded-full hover:bg-red-600 transition">
             Order Now
           </button>
-          <button className="border border-red-500 text-red-500 font-semibold px-6 py-3 rounded-full hover:bg-red-50 transition">
+          {/* <button className="border border-red-500 text-red-500 font-semibold px-6 py-3 rounded-full hover:bg-red-50 transition">
             Browse Menu
-          </button>
+          </button> */}
         </div>
       </div>
 

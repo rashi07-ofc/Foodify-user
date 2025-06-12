@@ -51,6 +51,7 @@ import Login from "../features/auth/Login";
 import Register from "../features/auth/Register";
 import ZomatoCollections from "../features/restaurants/RestaurantLIst/ZomatoCollections";
 import OTP from "../features/auth/OTP";
+import UserProfilePage from "../features/userProfile/UserProfile";
 
 const router = createBrowserRouter([
   {
@@ -98,6 +99,10 @@ const router = createBrowserRouter([
   {
     path:'/otp',
     element:<OTP/>
+  },
+  {
+    path: '/profile',
+    element: <UserProfilePage />
   }
 
 
