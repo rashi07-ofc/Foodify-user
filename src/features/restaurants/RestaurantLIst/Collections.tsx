@@ -30,7 +30,7 @@ const collections: CollectionItem[] = [
   {
     title: "Secret Speakeasy Bars",
     image:
-      "https://images.unsplash.com/photo-1532634896-26909d0d4b42?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=800&q=84",
     places: "11 Places",
   },
 ];

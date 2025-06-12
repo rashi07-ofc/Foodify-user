@@ -13,9 +13,4 @@ export interface FoodType {
     img: string;
     rating: number;
     time: string;
-<<<<<<< HEAD
-}
-=======
   }
-  
->>>>>>> 7e9233f1adc97c9212b8f3431ab18f7c96719b31
