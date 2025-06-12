@@ -2,12 +2,14 @@ import React from "react";
 import { Menu, User, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import type { RootState } from "../../redux/store"; // adjust this path to your store
+import type { RootState } from "../../redux/store";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
-  const cartItemCount = useSelector((state: RootState) => state.cart.items.length);
+const cartItemCount = useSelector((state: RootState) =>
+  state.cart.items.reduce((total, item) => total + item.quantity, 0)
+);
 
   return (
     <header className="w-full bg-white shadow-md fixed top-0 left-0 z-50">
@@ -47,13 +49,19 @@ const Navbar: React.FC = () => {
             </button>
           ) : (
             <>
-              <button
-                onClick={() => navigate("/cart")}
-                className="text-orange-500 border border-orange-500 px-4 py-2 rounded-full hover:bg-orange-50 transition flex items-center gap-2"
-              >
-                <ShoppingCart className="w-5 h-5" />
-                Cart
-              </button>
+             <button
+  onClick={() => navigate("/cart")}
+  className="relative text-orange-500 border border-orange-500 px-4 py-2 rounded-full hover:bg-orange-50 transition flex items-center gap-2"
+>
+  <ShoppingCart className="w-5 h-5" />
+  Cart
+  {cartItemCount > 0 && (
+    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+      {cartItemCount}
+    </span>
+  )}
+</button>
+
               <button
                 onClick={() => navigate("/profile")}
                 className="text-white bg-orange-500 px-4 py-2 rounded-full hover:bg-orange-600 transition flex items-center gap-2"

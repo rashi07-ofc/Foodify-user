@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
 import { type RootState } from '../../redux/store';
 import { updateQuantity, removeFromCart } from '../../redux/slice/cartSlice';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -11,20 +12,42 @@ import {
   FiMinus
 } from 'react-icons/fi';
 
+
+
 const CartPage: React.FC = () => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const totalPrice = cartItems.reduce(
+  const [couponCode, setCouponCode] = useState('');
+  const [discount, setDiscount] = useState(0);
+
+  const subtotal = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
 
-  const navigate = useNavigate();
+  // Static fees (can be dynamic or fetched from backend)
+  const platformFee = 10; // Flat platform fee
+  const deliveryCharges = subtotal > 300 ? 0 : 40; // Free above ₹300
+  const taxRate = 0.05; // 5% GST
+  const tax = subtotal * taxRate;
 
-const handleCheckout = () => {
-  navigate('/cart/checkout');
-};
+  const applyCoupon = () => {
+    if (couponCode.trim().toLowerCase() === 'SAVE20') {
+      setDiscount(subtotal * 0.2); // 20% off
+    } else {
+      setDiscount(0);
+      alert('Invalid or Expired Coupon');
+    }
+  };
+
+  const totalPrice = subtotal + tax + platformFee + deliveryCharges - discount;
+
+  const handleCheckout = () => {
+    navigate('/cart/checkout');
+  };
+
 
 
   return (
@@ -131,10 +154,49 @@ const handleCheckout = () => {
             transition={{ delay: 0.2 }}
             className="text-right mt-12 border-t pt-6"
           >
-            <p className="text-2xl font-semibold text-gray-800 mb-4">
-              Total:{' '}
-              <span className="text-red-600">₹{totalPrice.toFixed(2)}</span>
+                      {/* Coupon Section */}
+          <div className="mt-10 bg-white p-5 rounded-xl shadow-md space-y-4">
+            <h3 className="text-lg font-semibold text-gray-700">Have a Coupon?</h3>
+            <div className="flex items-center gap-4">
+              <input
+                type="text"
+                placeholder="Enter coupon code"
+                className="border rounded-md px-4 py-2 flex-1"
+                value={couponCode}
+                onChange={(e) => setCouponCode(e.target.value)}
+              />
+              <button
+                onClick={applyCoupon}
+                className="bg-red-500 text-white px-5 py-2 rounded-md hover:bg-red-600"
+              >
+                Apply
+              </button>
+            </div>
+            {discount > 0 && (
+              <p className="text-green-600 font-medium">Coupon applied! You saved ₹{discount.toFixed(2)}</p>
+            )}
+          </div>
+
+          {/* Cost Summary */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mt-10 bg-white p-6 rounded-xl shadow-lg space-y-2 text-right text-gray-800"
+          >
+            <p>Subtotal: ₹{subtotal.toFixed(2)}</p>
+            <p>Tax (5% GST): ₹{tax.toFixed(2)}</p>
+            <p>Platform Fee: ₹{platformFee.toFixed(2)}</p>
+            <p>Delivery Charges: ₹{deliveryCharges.toFixed(2)}</p>
+            {discount > 0 && (
+              <p className="text-green-600">Discount: -₹{discount.toFixed(2)}</p>
+            )}
+            <hr className="my-2" />
+            <p className="text-2xl font-bold">
+              Total: <span className="text-red-600">₹{totalPrice.toFixed(2)}</span>
             </p>
+          </motion.div>
+
             <motion.button
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.95 }}

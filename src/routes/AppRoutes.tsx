@@ -66,10 +66,6 @@ const router = createBrowserRouter([
     element: <OrderHistoryPage />
   },
   {
-    path: 'place-order',
-    element: <PlaceOrderPage />
-  },
-  {
     path: 'landing',
     element: <MainPage />
   },
