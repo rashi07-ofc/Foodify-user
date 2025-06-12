@@ -31,31 +31,14 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
 
       // Step 2: Confirm the Order
 
-      console.log("modeOfPayment value is:", modeOfPayment);
-
       if (modeOfPayment === "online") {
-        // const stripeResponse = await axios.post<{ url: string }>(
-        //   "http://localhost:3007/payment/checkout",
-        //   { orderId }
-        // );
-        // console.log(stripeResponse, "Hii", orderId);
-        // // Redirect to Stripe payment URL
-        // window.location.href = stripeResponse.data.url;
-        try {
-          const res = await axios.post(
-            "http://localhost:3007/payment/checkout",
-            {
-              orderId, // replace with actual order ID
-            }
-          );
-
-          // ✅ This is the correct usage:
-          // Stripe Checkout gives you a redirect URL (like https://checkout.stripe.com/pay/...)
-          // You redirect the browser to it:
-          window.location.href = res.data.url;
-        } catch (error) {
-          console.error("Checkout error:", error);
-        }
+        const stripeResponse = await axios.post<{ url: string }>(
+          "http://localhost:3007/payment/checkout",
+          { orderId }
+        );
+        console.log(stripeResponse, "Hii", orderId);
+        // Redirect to Stripe payment URL
+        window.location.href = stripeResponse.data.url;
       }
       const effectivePayment = modeOfPayment || "cashOnDelivery";
       const res = await axios.post("http://localhost:3006/order/placeOrder", {
@@ -108,7 +91,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         <div>
           <h3 className="font-medium text-gray-700 mb-2">Payment Method</h3>
           <p className="text-sm text-gray-600">
-            {modeOfPayment === "online" ? "Online Payment" : "Cash on Delivery"}
+            {modeOfPayment === "online" ? "Mock Payment" : "Cash on Delivery"}
           </p>
         </div>
       </div>
