@@ -1,6 +1,3 @@
-
-
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,10 +20,12 @@ import CardOne from "./CardOne";
 import RestaurantCard from "../../../components/RestaurantCard.tsx";
 
 import { restaurantsData } from "../../../data/restaurants.ts";
-import useGeolocation from "../../../hooks/useGeolocation.tsx";
+import useGeolocation from "../../../hooks/useGeolocation.ts";
 import { getNearbyRestaurants } from "../../../api/restaurantFetchApi.ts";
 import HomeBannerImage from "../../../assets/home-banner-image.jpeg";
 import c5 from "../../../assets/c5.png";
+import Navbar from "../../../components/layout/Navbar";
+import Footer from "../../../components/layout/Footer.tsx";
 
 // Define the Restaurant interface to match the API response
 interface Restaurant {
@@ -118,6 +117,7 @@ const ZomatoCollections: React.FC = () => {
 
   return (
     <>
+      <Navbar />
       {/* Hero Section */}
       <div className="relative w-full min-h-[60vh] sm:min-h-[70vh] lg:min-h-[80vh] bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 overflow-hidden">
         {/* Background Pattern */}
@@ -435,6 +435,8 @@ const ZomatoCollections: React.FC = () => {
           <Delivery />
         )}
       </div>
+
+      <Footer />
     </>
   );
 };
