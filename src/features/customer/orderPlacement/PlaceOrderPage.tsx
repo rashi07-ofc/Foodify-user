@@ -172,7 +172,7 @@ const PlaceOrderPage: React.FC = () => {
       zipCode: "",
       label: "",
     });
-    setPaymentMethod("mock");
+    setPaymentMethod("cashOnDelivery");
   };
 
   if (orderPlaced && orderData && orderData.paymentMethod === "cod") {

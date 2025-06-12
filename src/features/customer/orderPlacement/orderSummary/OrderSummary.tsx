@@ -1,31 +1,63 @@
 // OrderSummary.tsx
 import axios from "axios";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import type { DeliveryAddress, PaymentMethod } from "../../../../types";
 
 interface OrderSummaryProps {
   deliveryAddress: DeliveryAddress;
-  paymentMethod: PaymentMethod;
+  modeOfPayment: PaymentMethod; // e.g., "cashOnDelivery" | "online"
   onPlaceOrder: () => void;
 }
 
-const handleOrder = async () => {
-  try {
-    const res = await axios.post("http://localhost:3007/payment/checkout", {
-      orderId: "12345", // your actual order ID
-    });
-
-    // ✅ this is the correct line
-    window.location.href = res.data.url;
-  } catch (err) {
-    console.error("Error redirecting to Stripe:", err);
-  }
-};
-
 const OrderSummary: React.FC<OrderSummaryProps> = ({
   deliveryAddress,
-  paymentMethod,
-  onPlaceOrder,
+  modeOfPayment,
 }) => {
+  const navigate = useNavigate();
+
+  const handleOrder = async () => {
+    try {
+      // alert('order placed')
+      // Step 1: Create/Get Order ID
+      const orderIdResponse = await axios.post<{ id: string }>(
+        "http://localhost:3006/order/prePlaceOrder",
+        {
+          cartId: "683ed952a3747162a58220c1",
+        }
+      );
+      const orderId = orderIdResponse.data;
+      console.log(orderId);
+
+      // Step 2: Confirm the Order
+
+      if (modeOfPayment === "online") {
+        const stripeResponse = await axios.post<{ url: string }>(
+          "http://localhost:3007/payment/checkout",
+          { orderId }
+        );
+        console.log(stripeResponse, "Hii", orderId);
+        // Redirect to Stripe payment URL
+        window.location.href = stripeResponse.data.url;
+      }
+      const effectivePayment = modeOfPayment || "cashOnDelivery";
+      const res = await axios.post("http://localhost:3006/order/placeOrder", {
+        orderId,
+        modeOfPayment: effectivePayment,
+      });
+      console.log(res);
+
+      // Step 3: Handle Payment or Redirect
+      if (modeOfPayment === "cashOnDelivery") navigate("/order-success");
+
+      // Optional callback after placing order
+      // onPlaceOrder();
+    } catch (error) {
+      console.error("Order processing failed:", error);
+      alert("Something went wrong while placing the order.");
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 sticky top-8">
       <h2 className="text-xl font-semibold text-gray-900 mb-6">
@@ -59,7 +91,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         <div>
           <h3 className="font-medium text-gray-700 mb-2">Payment Method</h3>
           <p className="text-sm text-gray-600">
-            {paymentMethod === "mock" ? "Mock Payment" : "Cash on Delivery"}
+            {modeOfPayment === "online" ? "Mock Payment" : "Cash on Delivery"}
           </p>
         </div>
       </div>
