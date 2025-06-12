@@ -212,7 +212,7 @@ const PlaceOrderPage: React.FC = () => {
           <div className="lg:col-span-1">
             <OrderSummary 
               deliveryAddress={deliveryAddress}
-              paymentMethod={paymentMethod}
+              modeOfPayment={paymentMethod}
               onPlaceOrder={handlePlaceOrder}
             />
           </div>
