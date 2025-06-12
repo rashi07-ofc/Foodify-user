@@ -1,3 +1,6 @@
+
+
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -48,7 +51,6 @@ const ZomatoCollections: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState<boolean>(false);
-
   const dispatch = useDispatch();
   const { filteredRestaurants, filters } = useSelector(
     (state: RootState) => state.filter
@@ -64,7 +66,6 @@ const ZomatoCollections: React.FC = () => {
     const fetchRestaurants = async () => {
       setLoading(true);
       setError(null);
-
       try {
         const demoLocation = {
           latitude: location?.latitude || 12.97,
@@ -107,7 +108,6 @@ const ZomatoCollections: React.FC = () => {
   const handleClearFilters = () => {
     dispatch(clearFilters());
   };
-
   const navigate = useNavigate();
 
   const ratingButtons = [
@@ -137,7 +137,6 @@ const ZomatoCollections: React.FC = () => {
                     <IoLocationOutline className="w-4 h-4" />
                     <span>Delivering to your location</span>
                   </div>
-
                   <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight">
                     Your Favourite Food
                     <span className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500">
@@ -168,7 +167,6 @@ const ZomatoCollections: React.FC = () => {
                         <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       )}
                     </button>
-
                     <button
                       className={`group relative overflow-hidden px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 ${
                         activePage === 1

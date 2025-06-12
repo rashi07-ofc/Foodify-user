@@ -1,6 +1,6 @@
-import React from "react";
-import { MapPin, Phone, Star, Clock } from "lucide-react";
-import image from "../assets/thali.jpg";
+import React from 'react';
+import { MapPin, Phone, Star, Clock } from 'lucide-react';
+import image from '../assets/restaurant.avif'
 interface Restaurant {
   _id: string;
   name: string;
@@ -22,7 +22,7 @@ interface RestaurantCardProps {
   imageUrl?: string;
 }
 
-const RestaurantCard: React.FC<RestaurantCardProps> = ({
+const RestaurantCard: React.FC<RestaurantCardProps> = ({ 
   restaurant = {
     _id: "68400c12d4739babc990d3aa",
     name: "Spice Hub",
@@ -32,29 +32,27 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({
     isActive: true,
     tags: ["indian", "spicy", "vegetarian"],
     rating: 4.0,
-    openingTime: "10:00 AM",
+    openingTime: "10:00 AM"
   },
-  imageUrl = "https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?q=80&w=1189&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  imageUrl = "https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?q=80&w=1189&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 }) => {
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 max-w-sm mx-auto">
       {/* Restaurant Image */}
       <div className="relative">
-        <img
-          src={image}
+        <img 
+          src={image} 
           alt={restaurant.name}
           className="w-full h-48 object-cover"
         />
         {/* Status Badge */}
         <div className="absolute top-3 right-3">
-          <span
-            className={`px-3 py-1 rounded-full text-sm font-semibold ${
-              restaurant.isActive
-                ? "bg-green-100 text-green-800 border border-green-200"
-                : "bg-red-100 text-red-800 border border-red-200"
-            }`}
-          >
-            {restaurant.isActive ? "Open" : "Closed"}
+          <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+            restaurant.isActive 
+              ? 'bg-green-100 text-green-800 border border-green-200' 
+              : 'bg-red-100 text-red-800 border border-red-200'
+          }`}>
+            {restaurant.isActive ? 'Open' : 'Closed'}
           </span>
         </div>
       </div>
@@ -66,7 +64,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({
           <h2 className="text-xl font-bold text-gray-900 leading-tight">
             {restaurant.name}
           </h2>
-
+          
           {/* Rating */}
           <div className="flex items-center bg-green-50 px-2 py-1 rounded-md">
             <Star className="w-4 h-4 text-yellow-500 fill-current mr-1" />
@@ -84,13 +82,15 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({
         {/* Address */}
         <div className="flex items-start mb-3">
           <MapPin className="w-4 h-4 text-gray-400 mt-0.5 mr-2 flex-shrink-0" />
-          <p className="text-gray-700 text-sm">{restaurant.address}</p>
+          <p className="text-gray-700 text-sm">
+            {restaurant.address}
+          </p>
         </div>
 
         {/* Phone Number */}
         <div className="flex items-center mb-3">
           <Phone className="w-4 h-4 text-gray-400 mr-2" />
-          <a
+          <a 
             // href={tel:${restaurant.phone}}
             className="text-blue-600 text-sm hover:text-blue-800 transition-colors"
           >
