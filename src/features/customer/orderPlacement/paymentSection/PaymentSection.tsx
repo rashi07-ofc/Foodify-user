@@ -19,49 +19,49 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({
       </div>
 
       <div className="space-y-4">
-        {/* Online Payment Option */}
         <div
           className={`border rounded-lg p-4 cursor-pointer transition-colors ${
-            paymentMethod === "online"
+            paymentMethod === "mock"
               ? "border-orange-500 bg-orange-50"
               : "border-gray-300 hover:border-gray-400"
           }`}
-          onClick={() => onPaymentMethodChange("online")}
+          onClick={() => onPaymentMethodChange("mock")}
         >
           <label className="flex items-center cursor-pointer">
             <input
               type="radio"
               name="paymentMethod"
-              value="online"
-              checked={paymentMethod === "online"}
+              value="mock"
+              checked={paymentMethod === "mock"}
               onChange={() => {}}
               className="text-orange-600 focus:ring-orange-500"
             />
             <CreditCard className="w-5 h-5 ml-3 mr-2 text-gray-600" />
             <div>
-              <div className="font-medium text-gray-900">Online Payment</div>
+              <div className="font-medium text-gray-900">Mock Payment</div>
               <div className="text-sm text-gray-600">
-                Pay securely using our online payment gateway
+                Pay online using mock payment gateway
               </div>
             </div>
           </label>
         </div>
 
-        {/* Cash on Delivery Option */}
+        {/* Cash on Delivery option... */}
+
         <div
           className={`border rounded-lg p-4 cursor-pointer transition-colors ${
-            paymentMethod === "cashOnDelivery"
+            paymentMethod === "cod"
               ? "border-orange-500 bg-orange-50"
               : "border-gray-300 hover:border-gray-400"
           }`}
-          onClick={() => onPaymentMethodChange("cashOnDelivery")}
+          onClick={() => onPaymentMethodChange("cod")}
         >
           <label className="flex items-center cursor-pointer">
             <input
               type="radio"
               name="paymentMethod"
-              value="cashOnDelivery"
-              checked={paymentMethod === "cashOnDelivery"}
+              value="cod"
+              checked={paymentMethod === "cod"}
               onChange={() => {}}
               className="text-orange-600 focus:ring-orange-500"
             />
@@ -69,7 +69,7 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({
             <div>
               <div className="font-medium text-gray-900">Cash on Delivery</div>
               <div className="text-sm text-gray-600">
-                Pay with cash when your order is delivered
+                Pay online using mock payment gateway
               </div>
             </div>
           </label>
