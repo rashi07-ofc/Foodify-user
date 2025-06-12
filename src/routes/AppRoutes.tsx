@@ -46,7 +46,7 @@ import OrderStatusPage from "../features/customer/orderStatus/OrderStatusPage";
 import OrderHistoryPage from "../features/customer/orderHistory/OrderHistoryPage";
 import MainPage from "../features/restaurants/RestaurantLandingPage/MainPage";
 import CartPage from "../features/cart/CartPage";
-import LandingPage from "../pages/HomePage/LandingPage";
+//import LandingPage from "../pages/HomePage/LandingPage";
 
 const router = createBrowserRouter([
   {
@@ -73,10 +73,10 @@ const router = createBrowserRouter([
     path:'/cart',
     element: <CartPage />
   },
-  {
-    path:'/',
-    element:<LandingPage/>
-  }
+  // {
+  //   path:'/',
+  //   element:<LandingPage/>
+  // }
 
 ]);
 

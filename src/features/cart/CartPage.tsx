@@ -2,6 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { type RootState } from '../../redux/store';
+
+
 import { updateQuantity, removeFromCart } from '../../redux/slice/cartSlice';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -90,7 +92,7 @@ const handleCheckout = () => {
 
                   <div className="mt-4 flex items-center gap-3">
                     <div className="flex items-center border rounded-md shadow-sm">
-                      <button
+                      {/* <button
                         onClick={() =>
                           dispatch(updateQuantity({ id: item.id, delta: -1 }))
                         }
@@ -110,7 +112,29 @@ const handleCheckout = () => {
                         title="Increase quantity"
                       >
                         <FiPlus />
+                      </button> */}
+                      <button
+                        onClick={() =>
+                          dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }))
+                        }
+                        className="px-3 py-1 text-red-600 hover:text-red-800"
+                        title="Decrease quantity"
+                      >
+                        <FiMinus />
                       </button>
+                      <span className="px-4 font-medium text-gray-700">
+                        {item.quantity}
+                      </span>
+                      <button
+                        onClick={() =>
+                          dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }))
+                        }
+                        className="px-3 py-1 text-green-600 hover:text-green-800"
+                        title="Increase quantity"
+                      >
+                        <FiPlus />
+                      </button>
+
                     </div>
                     <button
                       onClick={() => dispatch(removeFromCart(item.id))}
