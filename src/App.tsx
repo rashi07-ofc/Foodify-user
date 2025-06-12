@@ -1,8 +1,10 @@
+import AppRoutes from './routes/AppRoutes'
 // import { useState } from 'react'
 // import reactLogo from './assets/react.svg'
 // import viteLogo from '/vite.svg'
 // import './App.css'
 
+const App = () => {
 // function App() {
 //   const [count, setCount] = useState(0)
 
@@ -37,6 +39,9 @@ import AppRoutes from './routes/AppRoutes'
 
 const App = () => {
   return (
+    <div>
+      <AppRoutes />
+    </div>
     <div>
       <AppRoutes />
     </div>
