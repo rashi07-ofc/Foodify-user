@@ -66,6 +66,11 @@ const Register: React.FC = () => {
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
+    // if (!formData.otp.trim()) {
+    //     newErrors.otp = "OTP is required";
+    //   } else if (!/^\d{4,6}$/.test(formData.otp)) {
+    //     newErrors.otp = "OTP must be 4 to 6 digits";
+    //   }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -110,13 +115,32 @@ const Register: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // 👇 PLACEHOLDER: Replace this with your OTP verification API
-      // await axios.post("https://your-api.com/auth/verify-otp", { email: formData.email, otp });
+      // Correct API call with actual form data
+      const res = await axios.post(
+        "http://localhost:9000/auth/signup",
+        {
+          // name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+          role: formData.role,
+          otp: formData.otp
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            // Add ngrok bypass header if needed
+            "ngrok-skip-browser-warning": "69420",
+          },
+          // withCredentials: true
+        }
+      );
 
       console.log("✅ OTP verified successfully");
 
-      navigate("/login", {
-        state: { message: "Registration successful! Please login." },
+      // Redirect to login
+      navigate("/list", {
+        state: { message: "Registration successful!" },
       });
     } catch (error: any) {
       setErrors({

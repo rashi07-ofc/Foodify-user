@@ -40,8 +40,8 @@ export default function Features() {
 
   return (
     <section className="px-4 py-20 bg-white text-center" id="features">
-      <h3 className="text-red-500 font-semibold tracking-wider mb-2">FEATURES</h3>
-      <h2 className="text-3xl md:text-4xl font-bold mb-12 leading-snug">
+      <h3 className="text-orange-500 font-semibold tracking-wider mb-2">FEATURES</h3>
+      <h2 className="text-3xl md:text-4xl font-bold mb-12 leading-snug text-gray-900">
         Why Choose Our Food Delivery Service?
       </h2>
 
@@ -66,7 +66,7 @@ export default function Features() {
             <p className="text-gray-600 mb-4">{feature.desc}</p>
             <a
               href="#"
-              className="text-red-500 font-medium inline-flex items-center hover:underline"
+              className="text-orange-500 font-medium inline-flex items-center hover:underline hover:text-orange-600"
             >
               Learn More <ArrowRight className="ml-1 w-4 h-4" />
             </a>

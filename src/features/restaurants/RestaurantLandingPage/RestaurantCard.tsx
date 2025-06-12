@@ -1,8 +1,6 @@
-import React from "react";
-import { MdPhone } from "react-icons/md";
+import React, { useEffect, useState } from "react";
+import { MdPhone, MdDirections, MdRateReview } from "react-icons/md";
 import { motion } from "framer-motion";
-import { MdDirections, MdRateReview } from "react-icons/md";
-import { restaurant } from "./restaurantData";
 
 const buttonVariants = {
   hover: { scale: 1.05, boxShadow: "0 4px 8px rgba(0,0,0,0.15)" },
@@ -20,7 +18,32 @@ const cardVariants = {
 };
 
 const RestaurantCard: React.FC = () => {
-  const { name, address, timing, phone, rating, images } = restaurant;
+  const [restaurant, setRestaurant] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("http://localhost:3005/restaurant/68400c12d4739babc990d3aa")
+      .then((res) => res.json())
+      .then((data) => {
+        setRestaurant(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch restaurant:", error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <div className="text-center mt-10">Loading...</div>;
+  if (!restaurant) return <div className="text-center mt-10">No data found</div>;
+
+  // Sample images for static content (until API provides them)
+  const images = [
+    "https://plus.unsplash.com/premium_photo-1661953124283-76d0a8436b87?q=80&w=2088&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?q=80&w=1189&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  ];
 
   return (
     <motion.div
@@ -31,16 +54,16 @@ const RestaurantCard: React.FC = () => {
     >
       {/* Rating Badge */}
       <div className="absolute top-4 right-4 bg-green-600 text-white px-3 py-1 rounded-md text-sm font-semibold shadow">
-        {rating} ★
+        4.5 ★ {/* Static rating; update if API provides */}
       </div>
 
       {/* Info */}
       <div className="mb-4">
-        <h2 className="text-2xl font-semibold text-gray-800">{name}</h2>
-        <p className="text-gray-600 mt-1">{address}</p>
-        <p className="text-gray-500 text-sm mt-1">Open: {timing}</p>
+        <h2 className="text-2xl font-semibold text-gray-800">{restaurant.name}</h2>
+        <p className="text-gray-600 mt-1">{restaurant.address}</p>
+        <p className="text-gray-500 text-sm mt-1">Open: 9:00 AM - 11:00 PM</p> {/* Static timing */}
         <p className="text-gray-500 text-sm mt-1 flex items-center gap-1">
-          <MdPhone className="text-gray-600" /> {phone}
+          <MdPhone className="text-gray-600" /> {restaurant.phone}
         </p>
       </div>
 

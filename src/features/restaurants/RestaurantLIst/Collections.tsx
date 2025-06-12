@@ -1,6 +1,12 @@
 import React, { useRef } from "react";
+import c1 from "../../../assets/c1.jpeg";
+import c2 from "../../../assets/c2.jpeg";
+import c3 from "../../../assets/c3.jpeg";
+import c4 from "../../../assets/c4.jpeg";
 
-// You no longer need local image imports
+// Add this to your global CSS for hiding scrollbars
+// .no-scrollbar::-webkit-scrollbar { display: none; }
+// .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
 interface CollectionItem {
   title: string;
@@ -11,26 +17,22 @@ interface CollectionItem {
 const collections: CollectionItem[] = [
   {
     title: "Insta-worthy Spots",
-    image:
-      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80",
+    image: c1,
     places: "31 Places",
   },
   {
     title: "Top Trending Spots",
-    image:
-      "https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&fit=crop&w=800&q=80",
+    image: c2,
     places: "30 Places",
   },
   {
     title: "Newly Opened Places",
-    image:
-      "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=800&q=80",
+    image: c3,
     places: "42 Places",
   },
   {
     title: "Secret Speakeasy Bars",
-    image:
-      "https://images.unsplash.com/photo-1532634896-26909d0d4b42?auto=format&fit=crop&w=800&q=80",
+    image: c4,
     places: "11 Places",
   },
 ];
@@ -40,13 +42,19 @@ const Collections: React.FC = () => {
 
   const scrollLeft = () => {
     if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: -320, behavior: "smooth" });
+      scrollRef.current.scrollBy({
+        left: -320,
+        behavior: "smooth",
+      });
     }
   };
 
   const scrollRight = () => {
     if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: 320, behavior: "smooth" });
+      scrollRef.current.scrollBy({
+        left: 320,
+        behavior: "smooth",
+      });
     }
   };
 

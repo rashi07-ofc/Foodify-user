@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   applyFilters,
@@ -7,15 +6,23 @@ import {
   setNameFilter,
   setCityFilter,
   setMinRatingFilter,
-} from "../../../redux/slice/Filters";
-import type { RootState } from "../../../redux/store";
+} from "../../../redux/slice/Filters"; // adjust path as per your structure
+import type { RootState } from "../../../redux/store"; // adjust path too
+import BannerBackground from "../../../assets/home-banner-background.png";
+import BannerImage from "../../../assets/home-banner-image.jpeg";
 import { CiFilter } from "react-icons/ci";
 import Delivery from "./Delivery";
+
 import Collections from "./Collections";
 import FAQSection from "./FAQSection";
 import CardOne from "./CardOne";
 
+import c5 from "../../../assets/c5.png";
+
 import { restaurantsData } from "../../../data/restaurants.ts";
+import GoogleMapComponent from  "./GoogleMapComponent.tsx";
+import { fetchNearbyRestaurants } from "../../../api/restaurantAPI.ts";
+import axios from "axios";
 
 const ZomatoCollections: React.FC = () => {
   const [activePage, setActivePage] = useState<number>(0);
@@ -24,10 +31,12 @@ const ZomatoCollections: React.FC = () => {
     (state: RootState) => state.filter
   );
 
+  // On first render or filters update → apply filters to data
   useEffect(() => {
     dispatch(applyFilters(restaurantsData));
   }, [dispatch, filters]);
 
+  // Example Filter input handlers (you can wire these to inputs later)
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setNameFilter(e.target.value));
   };
@@ -43,16 +52,85 @@ const ZomatoCollections: React.FC = () => {
   const handleClearFilters = () => {
     dispatch(clearFilters());
   };
-  const navigate = useNavigate();
 
+  const [restaurants, setRestaurants] = useState([]);
+  console.log("restaurants", restaurants);
+  
+  const testFetch = async () => {
+    console.log("🧪 Testing fetchNearbyRestaurants...");
+
+    const testLocation: Location = {
+      latitude: 12.9761,
+      longitude: 77.5998,
+      offset: 1,
+      limit: 10,
+    };
+
+    try {
+      const result = await fetchNearbyRestaurants(testLocation);
+      console.log("✅ Test successful! Data:", result);
+    } catch (error) {
+      console.error("❌ Test failed:", error);
+    }
+  };
+
+  // const getNearbyRestaurants = async () => {
+  //   const location = {
+  //     latitude: 12.9761,
+  //     longitude: 77.5998,
+  //     limit: 1,
+  //     offset: 10,
+  //   };
+  //   const restaurants = await fetchNearbyRestaurants(location);
+  //   console.log(restaurants);
+  //   setRestaurants(restaurants);
+  //   // try {
+  //   //   const res = await axios.get("http://localhost:3005/restaurant/nearby", {
+  //   //     params: {
+  //   //       latitude: 12.9761,
+  //   //       longitude: 77.5998,
+  //   //       limit: 1,
+  //   //       offset: 10,
+  //   //     },
+  //   //   });
+  //   //   console.log(res.data);
+  //   //   setRestaurants(res.data); // set directly
+  //   // } catch (err) {
+  //   //   console.error(err);
+  //   // }
+  // };
+
+  useEffect(() => {
+    // getNearbyRestaurants();
+    testFetch()
+  }, []);
+
+  // const getNearbyRestaurants = async () => {
+  //   try {
+  //     const res = await axios.get("http://localhost:3005/restaurant/nearby", {
+  //       params: {
+  //         latitude: 12.9761,
+  //         longitude: 77.5998,
+  //         limit: 1,
+  //         offset: 10,
+  //       },
+  //     });
+  //     console.log(res.data);
+  //     // Now you could set this data into a state too
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   getNearbyRestaurants();
+  // }, []);
 
   return (
     <>
       <div
         className="home-container w-full h-[75vh] bg-cover bg-center flex items-center justify-center font-poppins"
-        style={{
-          backgroundImage: `url("https://images.unsplash.com/photo-1555992336-03a23cbe4c92?auto=format&fit=crop&w=1950&q=80")`,
-        }}
+        style={{ backgroundImage: `url(${BannerBackground})` }}
       >
         <div
           className="home-banner-container flex flex-col md:flex-row items-center justify-between max-w-5xl w-full mx-4 p-8 rounded-3xl shadow-2xl"
@@ -61,6 +139,7 @@ const ZomatoCollections: React.FC = () => {
             boxShadow: "0 10px 32px 0 rgba(0,0,0,0.10)",
           }}
         >
+          {/* Left: Text Section */}
           <div className="home-text-section flex flex-col items-start justify-center w-full max-w-md">
             <h1
               className="primary-heading text-left font-extrabold italic text-4xl md:text-5xl text-white drop-shadow-lg mb-4"
@@ -78,8 +157,12 @@ const ZomatoCollections: React.FC = () => {
             <div className="flex gap-4 mb-8">
               <button
                 className={`bg-white font-bold italic px-8 py-3 rounded-full shadow-lg transition duration-200 text-lg flex items-center
-                  ${activePage === 0 ? "text-orange-600 ring-2 ring-orange-400" : "text-orange-500"}
-                `}
+      ${
+        activePage === 0
+          ? "text-orange-600 ring-2 ring-orange-400"
+          : "text-orange-500"
+      }
+    `}
                 onClick={() => setActivePage(0)}
               >
                 <span className="mr-2">🍴</span>
@@ -87,8 +170,12 @@ const ZomatoCollections: React.FC = () => {
               </button>
               <button
                 className={`bg-white font-bold italic px-8 py-3 rounded-full shadow-lg transition duration-200 text-lg flex items-center
-                  ${activePage === 1 ? "text-orange-600 ring-2 ring-orange-400" : "text-orange-500"}
-                `}
+      ${
+        activePage === 1
+          ? "text-orange-600 ring-2 ring-orange-400"
+          : "text-orange-500"
+      }
+    `}
                 onClick={() => setActivePage(1)}
               >
                 <span className="mr-2">🛵</span>
@@ -96,10 +183,10 @@ const ZomatoCollections: React.FC = () => {
               </button>
             </div>
           </div>
-
+          {/* Right: Image Section */}
           <div className="home-image-section flex justify-end w-full max-w-lg ml-0 md:ml-8 mt-8 md:mt-0">
             <img
-              src="https://images.unsplash.com/photo-1606755962773-3b5fd97c8574?auto=format&fit=crop&w=800&q=80"
+              src={BannerImage}
               alt="Delicious hot meal"
               className="w-80 h-80 md:w-[26rem] md:h-[26rem] object-cover rounded-2xl shadow-xl"
               style={{
@@ -112,23 +199,47 @@ const ZomatoCollections: React.FC = () => {
         </div>
       </div>
 
+      {/* <div className="App">
+        <ZomatoCollectionsNavbar
+          activePage={activePage}
+          setActivePage={setActivePage}
+        />
+      </div> */}
+
       <div>
         {activePage === 0 ? (
           <>
             <Collections />
 
-            <div className="flex flex-col items-center px-[10vw] py-[100px] w-[100vw] box-border">
-              <img
-                src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1250&q=80"
-                alt="Food Collection"
-                className="w-[1250px] h-auto"
-              />
+            {/* New Map Section */}
+            <div className="flex flex-col items-center w-screen py-5 px-0 md:px-[10vw] bg-white">
+              <section className="flex flex-col items-start px-5 md:px-[10vw] w-full max-w-[80vw] box-border py-10 bg-white">
+                <h2
+                  className="text-[32px] font-semibold mb-2 text-[#FF9D59] italic drop-shadow-lg"
+                  style={{ fontFamily: '"Dancing Script", cursive' }}
+                >
+                  Find Us Near You
+                </h2>
+                <div className="border-2 border-[#FF9D59] rounded-lg overflow-hidden w-full mt-4">
+                  <GoogleMapComponent />
+                </div>
+              </section>
             </div>
 
-            {/* Filters */}
+            {/* API MAP KEY */}
+            <div className="flex flex-col items-center w-screen py-[100px] px-0 md:px-[10vw] box-border bg-white">
+              <div className="flex flex-col items-center px-5 md:px-[10vw] w-full max-w-[80vw] box-border">
+                <img src={c5} alt="image" className="w-full h-auto" />
+              </div>
+            </div>
+
+            {/* Filters UI */}
             <div className="flex flex-wrap gap-4 justify-center items-center my-6">
               <button className="border-2 border-[#FF9D59] text-[#FF9D59] hover:bg-[#FF9D59] hover:text-white font-semibold px-5 py-2 rounded-full transition duration-200 flex items-center gap-2">
-                Filters <CiFilter />
+                Filters
+                <span>
+                  <CiFilter />
+                </span>
               </button>
               <input
                 type="text"
@@ -190,34 +301,30 @@ const ZomatoCollections: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full px-5 md:px-[10vw]">
-  {filteredRestaurants.length > 0 ? (
-    filteredRestaurants.map((data) => (
-      <div
-        key={data.id}
-        onClick={() => navigate("/landing")}
-        className="cursor-pointer"
-      >
-        <CardOne
-          name={data.name}
-          city={data.city}
-          price_per_dish={data.price_per_dish}
-          timings={data.timings}
-          rating={data.rating}
-          distance={data.distance}
-          coupon_percent={data.coupon_percent}
-        />
-      </div>
-    ))
-  ) : (
-    <p>No restaurants match your filters.</p>
-  )}
-</div>
-
+              {filteredRestaurants.length > 0 ? (
+                restaurants.map((data) => (
+                  <CardOne
+                    key={data.id}
+                    name={data.name}
+                    city={data.city}
+                    price_per_dish={data.price_per_dish}
+                    timings={data.timings}
+                    rating={data.rating}
+                    distance={data.distance}
+                    coupon_percent={data.coupon_percent}
+                  />
+                ))
+              ) : (
+                <p>No restaurants match your filters.</p>
+              )}
+            </div>
 
             <FAQSection />
           </>
         ) : (
-          <Delivery />
+          <h1>
+            <Delivery />
+          </h1>
         )}
       </div>
     </>
