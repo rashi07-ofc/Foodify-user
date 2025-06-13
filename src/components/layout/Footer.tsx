@@ -29,15 +29,15 @@ const Footer: React.FC = () => {
           <h3 className="text-lg font-semibold text-gray-800 mb-3">Contact Us</h3>
           <ul className="space-y-3 text-sm text-gray-600">
             <li className="flex items-center gap-2">
-              <Mail className="w-4 h-4 text-red-500" />
+              <Mail className="w-4 h-4 text-orange-500" />
               <span>support@foodify.com</span>
             </li>
             <li className="flex items-center gap-2">
-              <Phone className="w-4 h-4 text-red-500" />
+              <Phone className="w-4 h-4 text-orange-500" />
               <span>+91 98765 43210</span>
             </li>
             <li className="flex items-start gap-2">
-              <MapPin className="w-4 h-4 text-red-500 mt-1" />
+              <MapPin className="w-4 h-4 text-orange-500 mt-1" />
               <span>123 Street Name, City, India</span>
             </li>
           </ul>

@@ -5,9 +5,8 @@ import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../../redux/store"; // Corrected import
 import { logout } from "../../redux/slice/authSlice"; // Corrected import
 
-
 const Navbar: React.FC = () => {
-  const isAuthenticated = !!localStorage.getItem('accessToken');
+  const isAuthenticated = !!localStorage.getItem("accessToken");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -15,7 +14,9 @@ const Navbar: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
-  const cartItemCount = useSelector((state: RootState) => state.cart.items.length);
+  const cartItemCount = useSelector(
+    (state: RootState) => state.cart.items.length
+  );
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen((prev) => !prev);
@@ -33,10 +34,18 @@ const Navbar: React.FC = () => {
     }
   };
 
+  const handleHome = () => {
+    handleNavClick("#home");
+    navigate("/home");
+  };
+
   // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setShowDropdown(false);
       }
     };
@@ -47,26 +56,37 @@ const Navbar: React.FC = () => {
   return (
     <header className="w-full bg-white shadow-md fixed top-0 left-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-4 flex items-center justify-between">
-        {/* Logo */}
         <div
           className="text-2xl font-bold text-orange-500 tracking-tight cursor-pointer"
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/home")}
         >
           Foodify
         </div>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-8 text-gray-700 font-medium">
-          <button onClick={() => handleNavClick("#home")} className="hover:text-orange-500 transition">
+          <button
+            onClick={handleHome}
+            className="hover:text-orange-500 transition"
+          >
             Home
           </button>
-          <button onClick={() => handleNavClick("#features")} className="hover:text-orange-500 transition">
+          <button
+            onClick={() => handleNavClick("#features")}
+            className="hover:text-orange-500 transition"
+          >
             Features
           </button>
-          <button onClick={() => handleNavClick("#services")} className="hover:text-orange-500 transition">
+          <button
+            onClick={() => handleNavClick("#services")}
+            className="hover:text-orange-500 transition"
+          >
             Services
           </button>
-          <button onClick={() => handleNavClick("#footer")} className="hover:text-orange-500 transition">
+          <button
+            onClick={() => handleNavClick("#footer")}
+            className="hover:text-orange-500 transition"
+          >
             Contact Us
           </button>
         </nav>
@@ -97,7 +117,7 @@ const Navbar: React.FC = () => {
                 <ShoppingCart className="w-5 h-5" />
                 <span className="hidden sm:inline">Cart</span>
                 {cartItemCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                     {cartItemCount}
                   </span>
                 )}
@@ -136,7 +156,7 @@ const Navbar: React.FC = () => {
                         setShowDropdown(false);
                         navigate("/");
                       }}
-                      className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                      className="block w-full text-left px-4 py-2 text-sm text-orange-600 hover:bg-gray-100"
                     >
                       Logout
                     </button>
@@ -153,13 +173,20 @@ const Navbar: React.FC = () => {
           onClick={toggleMobileMenu}
           aria-label="Toggle menu"
         >
-          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {isMobileMenuOpen ? (
+            <X className="w-6 h-6" />
+          ) : (
+            <Menu className="w-6 h-6" />
+          )}
         </button>
       </div>
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40" onClick={closeMobileMenu} />
+        <div
+          className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          onClick={closeMobileMenu}
+        />
       )}
 
       {/* Mobile Menu */}
@@ -230,7 +257,7 @@ const Navbar: React.FC = () => {
                   <ShoppingCart className="w-5 h-5" />
                   <span className="hidden sm:inline">Cart</span>
                   {cartItemCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                       {cartItemCount}
                     </span>
                   )}

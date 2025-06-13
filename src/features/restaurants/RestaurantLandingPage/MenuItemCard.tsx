@@ -32,7 +32,9 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
 
   const handleAdd = () => {
     // Pass restaurantId to addToCart action
-    dispatch(addToCart({ id, name, price, image: imageUrl, quantity: 1, restaurantId }));
+    dispatch(
+      addToCart({ id, name, price, image: imageUrl, quantity: 1, restaurantId })
+    );
   };
 
   const increaseQty = () => {
@@ -47,7 +49,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
     }
   };
 
-  console.log(imageUrl)
+  console.log(imageUrl);
 
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
@@ -68,12 +70,13 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
 
         <div className="flex justify-between items-center">
           {/* Price text color changed to orange-600 */}
-          <span className="text-lg text-orange-600 font-bold">₹{price.toFixed(2)}</span>
+          <span className="text-lg text-orange-600 font-bold">
+            ₹{price.toFixed(2)}
+          </span>
 
           {!cartItem ? (
             <button
               onClick={handleAdd}
-              // --- Orange theme for Add to Cart button ---
               className="bg-orange-500 text-white text-sm px-4 py-2 rounded hover:bg-orange-600 transition-colors"
             >
               Add to Cart
@@ -82,7 +85,6 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
             <div className="flex items-center border rounded-md overflow-hidden">
               <button
                 onClick={decreaseQty}
-                // --- Orange theme for decrease button ---
                 className="px-3 py-1 text-orange-600 hover:text-orange-800"
               >
                 −
@@ -92,7 +94,6 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
               </span>
               <button
                 onClick={increaseQty}
-                // --- Orange theme for increase button (adjusted for harmony) ---
                 className="px-3 py-1 text-green-600 hover:text-green-800" // Kept green for "add" as it signifies positive action, but you can change to orange if preferred.
               >
                 +

@@ -12,7 +12,6 @@ import type { RootState } from "../../../redux/store";
 import { CiFilter } from "react-icons/ci";
 import { IoSearchOutline, IoLocationOutline } from "react-icons/io5";
 import { MdClear, MdStar } from "react-icons/md";
-import { BiTime } from "react-icons/bi";
 import Delivery from "./Delivery";
 import Collections from "./Collections";
 import FAQSection from "./FAQSection";
@@ -25,7 +24,6 @@ import { getNearbyRestaurants } from "../../../api/restaurantFetchApi.ts";
 import HomeBannerImage from "../../../assets/home-banner-image.jpeg";
 import c5 from "../../../assets/c5.png";
 import Navbar from "../../../components/layout/Navbar";
-import Footer from "../../../components/layout/Footer.tsx";
 
 // Define the Restaurant interface to match the API response
 interface Restaurant {
@@ -546,7 +544,7 @@ const ZomatoCollections: React.FC = () => {
         )}
       </div>
 
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };
