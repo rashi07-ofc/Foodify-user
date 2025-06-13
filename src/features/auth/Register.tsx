@@ -17,7 +17,7 @@ const Register: React.FC = () => {
   const [otp, setOtp] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
-  const [showOtp, setShowOtp] = useState(false);
+  // Removed showOtp state, as it's no longer needed for conditional rendering
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -66,86 +66,88 @@ const Register: React.FC = () => {
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
-    // if (!formData.otp.trim()) {
-    //     newErrors.otp = "OTP is required";
-    //   } else if (!/^\d{4,6}$/.test(formData.otp)) {
-    //     newErrors.otp = "OTP must be 4 to 6 digits";
-    //   }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleRegister = async (e: React.FormEvent) => {
+  // This function might still be useful if you first want to send OTP
+  // before allowing the full registration, but it won't trigger the OTP
+  // input visibility anymore. You might rename it or remove it if you
+  // directly handle signup on the single form submission.
+  const handleInitiateSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    if (!validateForm()) return; // Still validate main form fields
 
     setIsLoading(true);
     try {
-      // 👇 PLACEHOLDER: Replace this with your registration API
-      // await axios.post("https://your-api.com/auth/signup", formData);
-
-      console.log("✅ User registration API success");
-
-      setShowOtp(true); // show OTP input
+      // You might still want to call this if OTP sending is a separate step
+      await axios.post("http://localhost:9000/auth/signup-initiate", formData);
+      console.log("✅ OTP initiation successful");
+      // The `setShowOtp(true)` line was here, now removed.
     } catch (error: any) {
+      console.error(error);
       setErrors({
         form:
           error.response?.data?.message ||
-          "Something went wrong while registering",
+          "Something went wrong while initiating signup",
       });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleOtpSubmit = async (e: React.FormEvent) => {
+
+  // This will now be the main form submission handler
+  const handleRegisterAndOtpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!otp.trim()) {
-      setErrors({ otp: "OTP is required" });
-      return;
-    }
+    // Validate the main form fields
+    if (!validateForm()) return;
 
-    if (!/^\d{4,6}$/.test(otp)) {
-      setErrors({ otp: "OTP must be 4 to 6 digits" });
+    // Validate OTP field - only checks if it's empty
+    if (!otp.trim()) {
+      setErrors((prev) => ({ ...prev, otp: "OTP is required" }));
       return;
     }
+    // Removed the validation for OTP length and format (e.g., 4 to 6 digits)
+    // if (!/^\d{4,6}$/.test(otp)) {
+    //   setErrors((prev) => ({ ...prev, otp: "OTP must be 4 to 6 digits" }));
+    //   return;
+    // }
 
     setIsLoading(true);
 
     try {
-      // Correct API call with actual form data
       const res = await axios.post(
         "http://localhost:9000/auth/signup",
         {
-          // name: formData.name,
+          name: formData.name, // Include name here if your final signup endpoint needs it
           email: formData.email,
           phone: formData.phone,
           password: formData.password,
           role: formData.role,
-          otp: formData.otp
+          otp, // ✅ use OTP from state
         },
         {
           headers: {
             "Content-Type": "application/json",
-            // Add ngrok bypass header if needed
             "ngrok-skip-browser-warning": "69420",
           },
-          // withCredentials: true
         }
       );
 
-      console.log("✅ OTP verified successfully");
+      console.log("✅ Registration successful!");
 
-      // Redirect to login
       navigate("/list", {
         state: { message: "Registration successful!" },
       });
     } catch (error: any) {
+      console.error(error);
       setErrors({
-        otp:
-          error.response?.data?.message || "Invalid OTP. Please try again.",
+        form:
+          error.response?.data?.message ||
+          "Registration failed. Please check your details and OTP.",
       });
     } finally {
       setIsLoading(false);
@@ -156,93 +158,79 @@ const Register: React.FC = () => {
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="text-center text-3xl font-extrabold text-gray-900">
-          {showOtp ? "Verify OTP" : "Create your account"}
+          Create your account
         </h2>
-        {!showOtp && (
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Already registered?{" "}
-            <Link
-              to="/login"
-              className="font-medium text-orange-600 hover:text-orange-500"
-            >
-              Login
-            </Link>
-          </p>
-        )}
+        <p className="mt-2 text-center text-sm text-gray-600">
+          Already registered?{" "}
+          <Link
+            to="/login"
+            className="font-medium text-orange-600 hover:text-orange-500"
+          >
+            Login
+          </Link>
+        </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          {!showOtp ? (
-            <form className="space-y-6" onSubmit={handleRegister}>
-              {errors.form && (
-                <div className="rounded-md bg-red-50 p-4 text-red-700">
-                  {errors.form}
-                </div>
-              )}
-
-              {[
-                { label: "Full Name", id: "name", type: "text" },
-                { label: "Email", id: "email", type: "email" },
-                { label: "Phone", id: "phone", type: "tel", placeholder: "+91 9876543210" },
-                { label: "Password", id: "password", type: "password" },
-                { label: "Confirm Password", id: "confirmPassword", type: "password" },
-              ].map(({ label, id, type, ...rest }) => (
-                <div key={id}>
-                  <label htmlFor={id} className="block text-sm font-medium text-gray-700">
-                    {label}
-                  </label>
-                  <input
-                    id={id}
-                    name={id}
-                    type={type}
-                    value={formData[id as keyof typeof formData] as string}
-                    onChange={handleChange}
-                    {...rest}
-                    className={`mt-1 block w-full px-3 py-2 border ${
-                      errors[id] ? "border-red-400" : "border-gray-300"
-                    } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm`}
-                  />
-                  {errors[id] && (
-                    <p className="mt-1 text-sm text-red-600">{errors[id]}</p>
-                  )}
-                </div>
-              ))}
-
-              <div>
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 ${
-                    isLoading ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                >
-                  {isLoading ? "Submitting..." : "Register"}
-                </button>
+          {/* Main form now combines all fields and handles full registration */}
+          <form className="space-y-6" onSubmit={handleRegisterAndOtpSubmit}>
+            {errors.form && (
+              <div className="rounded-md bg-red-50 p-4 text-red-700">
+                {errors.form}
               </div>
-            </form>
-          ) : (
-            <form className="space-y-6" onSubmit={handleOtpSubmit}>
-              <div>
-                <label htmlFor="otp" className="block text-sm font-medium text-gray-700">
-                  Enter OTP sent to your phone/email
+            )}
+
+            {[
+              { label: "Full Name", id: "name", type: "text" },
+              { label: "Email", id: "email", type: "email" },
+              { label: "Phone", id: "phone", type: "tel", placeholder: "+91 9876543210" },
+              { label: "Password", id: "password", type: "password" },
+              { label: "Confirm Password", id: "confirmPassword", type: "password" },
+            ].map(({ label, id, type, ...rest }) => (
+              <div key={id}>
+                <label htmlFor={id} className="block text-sm font-medium text-gray-700">
+                  {label}
                 </label>
                 <input
-                  id="otp"
-                  name="otp"
-                  type="text"
-                  maxLength={6}
-                  value={otp}
+                  id={id}
+                  name={id}
+                  type={type}
+                  value={formData[id as keyof typeof formData] as string}
                   onChange={handleChange}
+                  {...rest}
                   className={`mt-1 block w-full px-3 py-2 border ${
-                    errors.otp ? "border-red-400" : "border-gray-300"
+                    errors[id] ? "border-red-400" : "border-gray-300"
                   } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm`}
                 />
-                {errors.otp && (
-                  <p className="mt-1 text-sm text-red-600">{errors.otp}</p>
+                {errors[id] && (
+                  <p className="mt-1 text-sm text-red-600">{errors[id]}</p>
                 )}
               </div>
+            ))}
 
+            {/* OTP input field - always visible */}
+            <div>
+              <label htmlFor="otp" className="block text-sm font-medium text-gray-700">
+                Enter OTP sent to your phone/email
+              </label>
+              <input
+                id="otp"
+                name="otp"
+                type="text"
+                maxLength={6}
+                value={otp}
+                onChange={handleChange}
+                className={`mt-1 block w-full px-3 py-2 border ${
+                  errors.otp ? "border-red-400" : "border-gray-300"
+                } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm`}
+              />
+              {errors.otp && (
+                <p className="mt-1 text-sm text-red-600">{errors.otp}</p>
+              )}
+            </div>
+
+            <div>
               <button
                 type="submit"
                 disabled={isLoading}
@@ -250,10 +238,10 @@ const Register: React.FC = () => {
                   isLoading ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
-                {isLoading ? "Verifying..." : "Verify OTP"}
+                {isLoading ? "Registering..." : "Register"}
               </button>
-            </form>
-          )}
+            </div>
+          </form>
         </div>
       </div>
     </div>
