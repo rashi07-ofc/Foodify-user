@@ -54,8 +54,8 @@ const RestaurantTabs: React.FC = () => {
                 onClick={() => setSelectedCategory(null)}
                 className={`px-4 py-1 rounded-full text-sm border transition ${
                   selectedCategory === null
-                    ? "bg-red-500 text-white border-red-500"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-red-100"
+                    ? "bg-orange-500 text-white border-orange-500"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-orange-100"
                 }`}
               >
                 All
@@ -66,8 +66,8 @@ const RestaurantTabs: React.FC = () => {
                   onClick={() => setSelectedCategory(category)}
                   className={`px-4 py-1 rounded-full text-sm border transition ${
                     selectedCategory === category
-                      ? "bg-red-500 text-white border-red-500"
-                      : "bg-white text-gray-700 border-gray-300 hover:bg-red-100"
+                      ? "bg-orange-500 text-white border-orange-500"
+                      : "bg-white text-gray-700 border-gray-300 hover:bg-orange-100"
                   }`}
                 >
                   {category}
@@ -83,7 +83,7 @@ const RestaurantTabs: React.FC = () => {
 
                 return (
                   <div key={category} className="mb-8">
-                    <h3 className="text-2xl font-bold text-red-600 border-b-2 border-red-300 pb-2 mb-4">
+                    <h3 className="text-2xl font-bold text-orange-600 border-b-2 border-orange-300 pb-2 mb-4">
                       {category}
                     </h3>
 
@@ -97,7 +97,7 @@ const RestaurantTabs: React.FC = () => {
                       <div className="mt-3">
                         <button
                           onClick={() => toggleCategory(category)}
-                          className="text-sm text-red-500 hover:underline"
+                          className="text-sm text-orange-500 hover:underline"
                         >
                           {isExpanded ? "Show Less" : "Show More"}
                         </button>
@@ -133,8 +133,8 @@ const RestaurantTabs: React.FC = () => {
             onClick={() => setActiveTab(tab)}
             className={`text-sm md:text-base px-4 py-2 rounded-t-md transition-all duration-200 ${
               activeTab === tab
-                ? "bg-red-500 text-white shadow font-medium"
-                : "text-gray-600 hover:text-red-500"
+                ? "bg-orange-500 text-white shadow font-medium"
+                : "text-gray-600 hover:text-orange-500"
             }`}
           >
             {tab}

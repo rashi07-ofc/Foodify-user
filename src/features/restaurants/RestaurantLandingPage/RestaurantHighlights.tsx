@@ -54,7 +54,7 @@ interface Highlight {
 const ALL_HIGHLIGHTS: Highlight[] = [
   { key: 'veg', icon: <FaLeaf className="text-green-600" />, label: 'Pure Veg' },
   { key: 'open', icon: <FaClock className="text-yellow-500" />, label: 'Open Now' },
-  { key: 'indoor', icon: <FaUtensils className="text-red-500" />, label: 'Indoor Seating' },
+  { key: 'indoor', icon: <FaUtensils className="text-orange-500" />, label: 'Indoor Seating' },
   { key: 'wifi', icon: <FaWifi className="text-blue-500" />, label: 'Free Wi-Fi' },
   { key: 'cards', icon: <FaCreditCard className="text-purple-500" />, label: 'Accepts Cards' },
   { key: 'parking', icon: <FaParking className="text-gray-700" />, label: 'Parking Available' },

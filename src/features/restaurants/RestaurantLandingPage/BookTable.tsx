@@ -50,7 +50,7 @@ const BookTable: React.FC = () => {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <h2 className="text-3xl font-bold text-red-600">Reserve Your Table</h2>
+        <h2 className="text-3xl font-bold text-orange-600">Reserve Your Table</h2>
 
         {/* Date Picker */}
         <div>
@@ -62,7 +62,7 @@ const BookTable: React.FC = () => {
             min={today}
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-red-500"
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-orange-500"
           />
         </div>
 
@@ -79,7 +79,7 @@ const BookTable: React.FC = () => {
             onChange={(e) =>
               setMembers(Math.max(1, Math.min(20, Number(e.target.value))))
             }
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-red-500"
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-orange-500"
           />
         </div>
 
@@ -99,7 +99,7 @@ const BookTable: React.FC = () => {
                   whileTap={{ scale: 0.95 }}
                   className={`px-4 py-2 rounded-md text-sm border transition-all duration-300 ${
                     selectedSlot === slot
-                      ? "bg-red-600 text-white"
+                      ? "bg-orange-600 text-white"
                       : isUnavailable
                       ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                       : "bg-gray-100 hover:bg-gray-200 text-gray-800"
@@ -121,7 +121,7 @@ const BookTable: React.FC = () => {
           className={`w-full py-2 rounded text-white font-medium transition ${
             loading
               ? "bg-gray-400 cursor-not-allowed"
-              : "bg-red-600 hover:bg-red-700"
+              : "bg-orange-600 hover:bg-orange-700"
           }`}
         >
           {loading ? "Booking..." : "Book Now"}

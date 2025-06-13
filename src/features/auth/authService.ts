@@ -6,7 +6,7 @@ export const login = async (email: string, password: string) => {
   const response = await axios.post("/auth/login", {
     email,
     password,
-    device_id: getDeviceId(), // You can replace this with a dynamic value if needed
+    device_id: getDeviceId(),
     role: 1,
   });
 
