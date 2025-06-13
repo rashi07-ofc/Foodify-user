@@ -42,7 +42,7 @@ const PlaceOrderPage: React.FC = () => {
     zipCode: "",
     label: "",
   });
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("mock");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("online");
   const [orderPlaced, setOrderPlaced] = useState<boolean>(false);
   const [orderData, setOrderData] = useState<OrderData | null>(null);
 
@@ -175,7 +175,7 @@ const PlaceOrderPage: React.FC = () => {
     setPaymentMethod("cashOnDelivery");
   };
 
-  if (orderPlaced && orderData && orderData.paymentMethod === "cod") {
+  if (orderPlaced && orderData && orderData.paymentMethod === "cashOnDelivery") {
     return <OrderConfirmation orderData={orderData} onReset={resetOrder} />;
   }
 
@@ -212,7 +212,7 @@ const PlaceOrderPage: React.FC = () => {
           <div className="lg:col-span-1">
             <OrderSummary 
               deliveryAddress={deliveryAddress}
-              paymentMethod={paymentMethod}
+              modeOfPayment={paymentMethod}
               onPlaceOrder={handlePlaceOrder}
             />
           </div>

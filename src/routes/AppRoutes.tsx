@@ -87,14 +87,14 @@ const router = createBrowserRouter([
   },
 
   {
-    path:'/list',
+    path:'/home',
     element:<ZomatoCollections/>
   },
 
   {
     path:'/otp',
     element:<OTP/>
-  }
+  },
 
 
 
