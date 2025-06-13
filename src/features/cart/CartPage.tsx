@@ -45,7 +45,7 @@ const CartPage: React.FC = () => {
   const totalPrice = subtotal + tax + platformFee + deliveryCharges - discount;
 
   const handleCheckout = () => {
-    navigate('/cart/checkout');
+    navigate('/place-order');
   };
 
 

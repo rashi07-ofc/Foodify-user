@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import FAQSection from "./FAQSection";
-import { getRestaurantsByTags } from "../../../api/restaurantFetchApi";
+import { getRestaurantsByTags } from "../../../api/restaurentFetchAPI";
 import { IoLocationOutline, IoCallOutline } from "react-icons/io5";
-import { MdRestaurant } from "react-icons/md";
-import { BiCheckCircle } from "react-icons/bi";
+import { MdRestaurant, MdAccessTime } from "react-icons/md";
+import { BiCheckCircle, BiXCircle } from "react-icons/bi";
 import vegmeal from "../../../assets/vegmeal.jpeg";
 import thali from "../../../assets/thali.jpg";
-import pizza from "../../../assets/pizzahut.jpeg";
+import pizza from "../../../assets/pizza.jpeg";
 import cake from "../../../assets/cake.jpeg";
 import biryani from "../../../assets/biryani.jpeg";
 import paneer from "../../../assets/paneer.jpg";
@@ -191,7 +191,11 @@ const Delivery: React.FC = () => {
                   className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl border border-gray-100 hover:border-orange-200 transition-all duration-300 transform hover:scale-105 overflow-hidden"
                 >
                   {/* Restaurant Image */}
+<<<<<<< HEAD
                   <div className="relative h-48 bg-gradient-to-br from-orange-400 to-red-500 overflow-hidden">
+=======
+                  <div className="relative h-48 bg-gradient-to-br from-orange-400 to-orange-500 overflow-hidden">
+>>>>>>> 699912cb9a39dae40a3b5b6e1a6594a8aa30df3f
                     <img
                       src={getPlaceholderImage(
                         restaurant.name,
@@ -206,7 +210,11 @@ const Delivery: React.FC = () => {
                     />
 
                     {/* Fallback background with icon */}
+<<<<<<< HEAD
                     <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center">
+=======
+                    <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center">
+>>>>>>> 699912cb9a39dae40a3b5b6e1a6594a8aa30df3f
                       <MdRestaurant className="w-16 h-16 text-white opacity-80" />
                     </div>
 
@@ -258,7 +266,11 @@ const Delivery: React.FC = () => {
                     </div>
 
                     {/* Action Button */}
+<<<<<<< HEAD
                     <button className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold py-3 px-4 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-200 shadow-lg hover:shadow-xl">
+=======
+                    <button className="w-full bg-gradient-to-r from-orange-500 to-orange-500 text-white font-semibold py-3 px-4 rounded-xl hover:from-orange-600 hover:to-orange-600 transition-all duration-200 shadow-lg hover:shadow-xl">
+>>>>>>> 699912cb9a39dae40a3b5b6e1a6594a8aa30df3f
                       View Menu
                     </button>
                   </div>
