@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -12,12 +12,12 @@ import type { RootState } from "../../../redux/store";
 import { CiFilter } from "react-icons/ci";
 import { IoSearchOutline, IoLocationOutline } from "react-icons/io5";
 import { MdClear, MdStar } from "react-icons/md";
-import { BiTime } from "react-icons/bi";
+// import { BiTime } from "react-icons/bi"; // Not used, can be removed
 import Delivery from "./Delivery";
 import Collections from "./Collections";
 import FAQSection from "./FAQSection";
 import CardOne from "./CardOne";
-import RestaurantCard from "./RestaurantCard.tsx";
+import RestaurantCard from "../../../components/RestaurantCard.tsx";
 
 import { restaurantsData } from "../../../data/restaurants.ts";
 import useGeolocation from "../../../hooks/useGeolocation.ts";
@@ -47,50 +47,96 @@ interface Restaurant {
 const ZomatoCollections: React.FC = () => {
   const [activePage, setActivePage] = useState<number>(0);
   const [apiRestaurants, setApiRestaurants] = useState<Restaurant[]>([]);
+  const [filteredApiRestaurants, setFilteredApiRestaurants] = useState<
+    Restaurant[]
+  >([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState<boolean>(false);
+
   const dispatch = useDispatch();
   const { filteredRestaurants, filters } = useSelector(
     (state: RootState) => state.filter
   );
+
   const { location, error: locationError, getLocation } = useGeolocation();
 
+  // Flag to track if the API has been called
+  const hasFetchedRestaurants = useRef(false);
+
+  // 1. Call getLocation once on mount
   useEffect(() => {
     getLocation();
-  }, []);
+  }, []); // Empty dependency array: runs only once
 
-  // Fetch restaurants from API
+  // 2. Fetch restaurants ONLY when location is available OR geolocation fails
   useEffect(() => {
-    const fetchRestaurants = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const demoLocation = {
-          latitude: location?.latitude || 12.97,
-          longitude: location?.longitude || 77.59,
-          offset: 1,
-          limit: 10,
-        };
+    // Only proceed if location or locationError has a value AND we haven't fetched yet
+    // This ensures the API call happens exactly once after location is determined (or failed).
+    if (!hasFetchedRestaurants.current && (location?.lat || locationError)) {
+      const fetchRestaurants = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+          const latitude = location?.lat || 12.97; // Use actual location or static fallback
+          const longitude = location?.lon || 77.59; // Use actual location or static fallback
 
-        const restaurants = await getNearbyRestaurants(demoLocation);
-        console.log("Nearby Restaurants:", restaurants);
-        setApiRestaurants(restaurants || []);
-      } catch (err) {
-        console.error("Error fetching nearby restaurants:", err);
-        setError("Failed to fetch restaurants from API");
-        setApiRestaurants([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+          const demoLocation = {
+            latitude,
+            longitude,
+            offset: 1,
+            limit: 10,
+          };
 
-    fetchRestaurants();
-  }, [location]);
+          console.log("Calling API with location:", demoLocation);
+          const restaurants = await getNearbyRestaurants(demoLocation);
+          console.log("Nearby Restaurants fetched:", restaurants);
+          setApiRestaurants(restaurants || []);
 
+          // Set the ref to true after a successful or attempted fetch
+          hasFetchedRestaurants.current = true;
+        } catch (err) {
+          console.error("Error fetching nearby restaurants:", err);
+          setError("Failed to fetch restaurants from API");
+          setApiRestaurants([]);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchRestaurants();
+    }
+  }, [location, locationError]); // Depend on location and locationError
+
+  // This useEffect applies filters to static data, not directly related to the API call count
   useEffect(() => {
     dispatch(applyFilters(restaurantsData));
   }, [dispatch, filters]);
+
+  useEffect(() => {
+    if (apiRestaurants.length > 0) {
+      const filtered = apiRestaurants.filter((restaurant) => {
+        const nameMatch =
+          !filters.name ||
+          restaurant.name.toLowerCase().includes(filters.name.toLowerCase());
+
+        const cityMatch =
+          !filters.city ||
+          restaurant.address.toLowerCase().includes(filters.city.toLowerCase());
+
+        const ratingMatch =
+          !filters.minRating ||
+          (restaurant.rating &&
+            restaurant.rating >= parseFloat(filters.minRating));
+
+        return nameMatch && cityMatch && ratingMatch;
+      });
+
+      setFilteredApiRestaurants(filtered);
+    } else {
+      setFilteredApiRestaurants([]);
+    }
+  }, [apiRestaurants, filters]);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setNameFilter(e.target.value));
@@ -107,6 +153,7 @@ const ZomatoCollections: React.FC = () => {
   const handleClearFilters = () => {
     dispatch(clearFilters());
   };
+
   const navigate = useNavigate();
 
   const ratingButtons = [
@@ -207,7 +254,6 @@ const ZomatoCollections: React.FC = () => {
         {activePage === 0 ? (
           <>
             <Collections />
-
             {/* Feature Image Section */}
             <div className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
               <div className="max-w-7xl mx-auto">
@@ -221,7 +267,7 @@ const ZomatoCollections: React.FC = () => {
               </div>
             </div>
 
-            {/* Enhanced Filters Section */}
+            {/* Enhanced Filters Section (moved inside the render function) */}
             <div className="py-8 px-4 sm:px-6 lg:px-8 bg-white border-b border-gray-200">
               <div className="max-w-7xl mx-auto">
                 <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
@@ -305,7 +351,6 @@ const ZomatoCollections: React.FC = () => {
                 </div>
               </div>
             </div>
-
             {/* API Restaurants Section */}
             <div className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
               <div className="max-w-7xl mx-auto">
@@ -352,7 +397,7 @@ const ZomatoCollections: React.FC = () => {
                       apiRestaurants.map((restaurant) => (
                         <div
                           key={restaurant._id}
-                          onClick={() => navigate("/landing")}
+                          onClick={() => navigate(`/landing/${restaurant._id}`)}
                           className="group cursor-pointer transform hover:scale-105 transition-all duration-300 hover:shadow-2xl"
                         >
                           <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 group-hover:border-orange-200">
@@ -380,7 +425,6 @@ const ZomatoCollections: React.FC = () => {
                 )}
               </div>
             </div>
-
             {/* Static Restaurants Section */}
             <div className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-white">
               <div className="max-w-7xl mx-auto">
@@ -428,7 +472,6 @@ const ZomatoCollections: React.FC = () => {
                 </div>
               </div>
             </div>
-
             <FAQSection />
           </>
         ) : (
