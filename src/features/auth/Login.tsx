@@ -191,7 +191,7 @@ const Login: React.FC = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-400"
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
             />
           </div>
 
@@ -203,7 +203,7 @@ const Login: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-400"
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
             />
           </div>
 
@@ -212,7 +212,10 @@ const Login: React.FC = () => {
           )}
 
           <div className="flex justify-end text-sm">
-            <Link to="/forgot-password" className="text-red-500 hover:underline">
+            <Link
+              to="/forgot-password"
+              className="text-orange-500 hover:underline"
+            >
               Forgot Password?
             </Link>
           </div>
@@ -242,7 +245,7 @@ const Login: React.FC = () => {
 
         <p className="text-center text-sm text-gray-600">
           Don't have an account?{" "}
-          <Link to="/otp" className="text-red-500 hover:underline">
+          <Link to="/otp" className="text-orange-500 hover:underline">
             Sign up
           </Link>
         </p>
