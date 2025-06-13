@@ -441,4 +441,6 @@ const ZomatoCollections: React.FC = () => {
   );
 };
 
-export default ZomatoCollections;
+export default ZomatoCollections;export default ZomatoCollections;
+
+
