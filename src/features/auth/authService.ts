@@ -1,7 +1,23 @@
+// authService.ts
 import axios from "../../api/axios";
 import { getDeviceId } from "../../utils/deviceId";
 
-// Login function
+// Add these helper functions
+export const getAuthToken = () => {
+  return localStorage.getItem("accessToken");
+};
+
+export const setAuthHeaders = (token: string) => {
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+};
+
+export const clearAuthTokens = () => {
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+  delete axios.defaults.headers.common["Authorization"];
+};
+
+// Updated login function
 export const login = async (email: string, password: string) => {
   const response = await axios.post("/auth/login", {
     email,
@@ -11,29 +27,23 @@ export const login = async (email: string, password: string) => {
   });
 
   const { accessToken, refreshToken } = response.data;
-
+  
   localStorage.setItem("accessToken", accessToken);
   localStorage.setItem("refreshToken", refreshToken);
-
-  axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+  setAuthHeaders(accessToken); // Set axios default headers
 };
 
-// Logout function (unchanged)
+// Updated logout function
 export const logout = async () => {
-  const accessToken = localStorage.getItem("accessToken");
+  const accessToken = getAuthToken();
 
-  await axios.post(
-    "/auth/logout",
-    {},
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
-
-  localStorage.removeItem("accessToken");
-  localStorage.removeItem("refreshToken");
-
-  delete axios.defaults.headers.common["Authorization"];
+  try {
+    await axios.post(
+      "/auth/logout",
+      {},
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
+  } finally {
+    clearAuthTokens(); // Always clear tokens
+  }
 };
