@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 
-// You no longer need local image imports
 
 interface CollectionItem {
   title: string;
