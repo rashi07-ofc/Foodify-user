@@ -48,8 +48,8 @@ const RestaurantTabs: React.FC = () => {
             onClick={() => setActiveTab(tab)}
             className={`text-sm md:text-base px-4 py-2 rounded-t-md transition-all duration-200 ${
               activeTab === tab
-                ? "bg-red-500 text-white shadow font-medium"
-                : "text-gray-600 hover:text-red-500"
+                ? "bg-orange-500 text-white shadow font-medium"
+                : "text-gray-600 hover:text-orange-500"
             }`}
           >
             {tab}
@@ -58,7 +58,9 @@ const RestaurantTabs: React.FC = () => {
       </div>
 
       {/* Tab Content */}
-      <div className="mt-6 text-gray-700 text-sm md:text-base">{renderContent()}</div>
+      <div className="mt-6 text-gray-700 text-sm md:text-base">
+        {renderContent()}
+      </div>
     </div>
   );
 };

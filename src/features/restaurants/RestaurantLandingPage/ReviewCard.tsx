@@ -27,7 +27,7 @@ const ReviewCard: React.FC<ReviewProps> = ({ name, rating, comment, date }) => {
     >
       <div className="flex justify-between items-center mb-1">
         <h4 className="font-semibold text-gray-800">{name}</h4>
-        <span className="bg-green-600 text-white text-xs px-2 py-1 rounded">
+        <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded">
           {rating} ★
         </span>
       </div>
