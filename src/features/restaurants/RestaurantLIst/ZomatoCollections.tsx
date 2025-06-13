@@ -47,6 +47,9 @@ interface Restaurant {
 const ZomatoCollections: React.FC = () => {
   const [activePage, setActivePage] = useState<number>(0);
   const [apiRestaurants, setApiRestaurants] = useState<Restaurant[]>([]);
+  const [filteredApiRestaurants, setFilteredApiRestaurants] = useState<
+    Restaurant[]
+  >([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState<boolean>(false);
@@ -67,8 +70,8 @@ const ZomatoCollections: React.FC = () => {
       setError(null);
       try {
         const demoLocation = {
-          latitude: location?.latitude || 12.97,
-          longitude: location?.longitude || 77.59,
+          latitude: location?.lat || 12.97,
+          longitude: location?.lon || 77.59,
           offset: 1,
           limit: 10,
         };
@@ -92,6 +95,31 @@ const ZomatoCollections: React.FC = () => {
     dispatch(applyFilters(restaurantsData));
   }, [dispatch, filters]);
 
+  useEffect(() => {
+    if (apiRestaurants.length > 0) {
+      const filtered = apiRestaurants.filter((restaurant) => {
+        const nameMatch =
+          !filters.name ||
+          restaurant.name.toLowerCase().includes(filters.name.toLowerCase());
+
+        const cityMatch =
+          !filters.city ||
+          restaurant.address.toLowerCase().includes(filters.city.toLowerCase());
+
+        const ratingMatch =
+          !filters.minRating ||
+          (restaurant.rating &&
+            restaurant.rating >= parseFloat(filters.minRating));
+
+        return nameMatch && cityMatch && ratingMatch;
+      });
+
+      setFilteredApiRestaurants(filtered);
+    } else {
+      setFilteredApiRestaurants([]);
+    }
+  }, [apiRestaurants, filters]);
+
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setNameFilter(e.target.value));
   };
@@ -107,6 +135,7 @@ const ZomatoCollections: React.FC = () => {
   const handleClearFilters = () => {
     dispatch(clearFilters());
   };
+
   const navigate = useNavigate();
 
   const ratingButtons = [
@@ -114,6 +143,90 @@ const ZomatoCollections: React.FC = () => {
     { rating: "4", label: "4+ Star", color: "orange" },
     { rating: "5", label: "5 Star", color: "red" },
   ];
+
+  <div className="py-8 px-4 sm:px-6 lg:px-8 bg-white border-b border-gray-200">
+    <div className="max-w-7xl mx-auto">
+      <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+        {/* Filter Toggle Button (Mobile) */}
+        <button
+          onClick={() => setShowFilters(!showFilters)}
+          className="lg:hidden flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+        >
+          <CiFilter className="w-5 h-5" />
+          Filters
+        </button>
+
+        {/* Desktop Filters */}
+        <div
+          className={`${
+            showFilters ? "block" : "hidden"
+          } lg:block w-full lg:w-auto`}
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+            {/* Search Inputs */}
+            <div className="relative">
+              <IoSearchOutline className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Search restaurants..."
+                value={filters.name}
+                onChange={handleNameChange}
+                className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all duration-200 bg-white shadow-sm"
+              />
+            </div>
+
+            <div className="relative">
+              <IoLocationOutline className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Search by city..."
+                value={filters.city}
+                onChange={handleCityChange}
+                className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all duration-200 bg-white shadow-sm"
+              />
+            </div>
+
+            <div className="relative">
+              <MdStar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="number"
+                placeholder="Min Rating"
+                value={filters.minRating}
+                onChange={handleMinRatingChange}
+                className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all duration-200 bg-white shadow-sm"
+              />
+            </div>
+
+            <button
+              onClick={handleClearFilters}
+              className="flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-3 rounded-xl font-medium transition-all duration-200 border-2 border-gray-200"
+            >
+              <MdClear className="w-5 h-5" />
+              Clear
+            </button>
+          </div>
+
+          {/* Rating Filter Buttons */}
+          <div className="flex flex-wrap gap-3 mt-4">
+            {ratingButtons.map(({ rating, label, color }) => (
+              <button
+                key={rating}
+                onClick={() => dispatch(setMinRatingFilter(rating))}
+                className={`px-4 py-2 rounded-full font-medium transition-all duration-200 flex items-center gap-2 ${
+                  filters.minRating === rating
+                    ? `bg-${color}-500 text-white shadow-lg shadow-${color}-500/25`
+                    : `border-2 border-${color}-300 text-${color}-600 hover:bg-${color}-50`
+                }`}
+              >
+                <MdStar className="w-4 h-4" />
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>;
 
   return (
     <>
@@ -207,7 +320,6 @@ const ZomatoCollections: React.FC = () => {
         {activePage === 0 ? (
           <>
             <Collections />
-
             {/* Feature Image Section */}
             <div className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
               <div className="max-w-7xl mx-auto">
@@ -380,7 +492,6 @@ const ZomatoCollections: React.FC = () => {
                 )}
               </div>
             </div>
-
             {/* Static Restaurants Section */}
             <div className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-white">
               <div className="max-w-7xl mx-auto">
@@ -428,7 +539,6 @@ const ZomatoCollections: React.FC = () => {
                 </div>
               </div>
             </div>
-
             <FAQSection />
           </>
         ) : (
@@ -441,6 +551,4 @@ const ZomatoCollections: React.FC = () => {
   );
 };
 
-export default ZomatoCollections;export default ZomatoCollections;
-
-
+export default ZomatoCollections;

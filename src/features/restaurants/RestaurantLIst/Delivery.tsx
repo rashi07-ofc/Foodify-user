@@ -42,26 +42,32 @@ const categories = [
   {
     name: "Veg Meal",
     img: [vegmeal],
+    apiCode: "vegetarian",
   },
   {
-    name: "pizza",
+    name: "Pizza",
     img: [pizza],
+    apiCode: "pizza",
   },
   {
     name: "Thali",
     img: [thali],
+    apiCode: "thali",
   },
   {
     name: "Cake",
     img: [cake],
+    apiCode: "cake",
   },
   {
     name: "Biryani",
     img: [biryani],
+    apiCode: "biryani",
   },
   {
     name: "Paneer",
     img: [paneer],
+    apiCode: "paneer",
   },
 ];
 
@@ -111,16 +117,13 @@ const Delivery: React.FC = () => {
     return `https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=400&h=400&q=80`;
   };
 
-  
   const formatTags = (tags: string[]) => {
     return tags
       .map((tag) => tag.charAt(0).toUpperCase() + tag.slice(1))
       .join(" • ");
   };
 
-  
   const calculateDistance = (coordinates: [number, number]) => {
-    
     return `${(Math.random() * 5 + 0.5).toFixed(1)} km`;
   };
 
@@ -138,7 +141,7 @@ const Delivery: React.FC = () => {
           <div className="flex flex-wrap justify-center gap-10 mb-12 w-full">
             {categories.map((cat) => (
               <div
-                onClick={() => setTag(cat.name)}
+                onClick={() => setTag(cat.apiCode)}
                 key={cat.name}
                 className="flex flex-col items-center"
               >
@@ -205,12 +208,10 @@ const Delivery: React.FC = () => {
                       }}
                     />
 
-                    
                     <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center">
                       <MdRestaurant className="w-16 h-16 text-white opacity-80" />
                     </div>
 
-                    
                     <div className="absolute top-3 right-3">
                       <div className="flex items-center gap-1 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium">
                         <BiCheckCircle className="w-3 h-3" />
@@ -218,7 +219,6 @@ const Delivery: React.FC = () => {
                       </div>
                     </div>
 
-                   
                     <div className="absolute top-3 left-3">
                       <div className="bg-black/50 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-medium">
                         {calculateDistance(restaurant.location.coordinates)}
@@ -249,7 +249,6 @@ const Delivery: React.FC = () => {
                       </span>
                     </div>
 
-                    
                     <div className="flex items-center gap-2 mb-4">
                       <IoCallOutline className="w-4 h-4 text-gray-400 flex-shrink-0" />
                       <span className="text-gray-600 text-sm">
@@ -257,7 +256,6 @@ const Delivery: React.FC = () => {
                       </span>
                     </div>
 
-                    
                     <button className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold py-3 px-4 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-200 shadow-lg hover:shadow-xl">
                       View Menu
                     </button>
