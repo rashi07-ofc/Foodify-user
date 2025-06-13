@@ -139,7 +139,7 @@ const Register: React.FC = () => {
 
       console.log("✅ Registration successful!");
 
-      navigate("/list", {
+      navigate("/home", {
         state: { message: "Registration successful!" },
       });
     } catch (error: any) {

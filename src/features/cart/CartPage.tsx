@@ -52,7 +52,7 @@ const CartPage: React.FC = () => {
 
   return (
     <div className="max-w-5xl mx-auto mt-12 px-4">
-      <h2 className="text-4xl font-bold text-red-600 mb-10 text-center flex items-center justify-center gap-3">
+      <h2 className="text-4xl font-bold text-orange-600 mb-10 text-center flex items-center justify-center gap-3">
         <FiShoppingCart className="text-4xl" />
         Your Cart
       </h2>
@@ -70,8 +70,8 @@ const CartPage: React.FC = () => {
           />
           <p className="text-xl text-gray-500 mb-4">Oops! Your cart is empty.</p>
           <button
-            className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full font-medium shadow"
-            onClick={() => window.location.href = "/restaurant/landing"}
+            className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full font-medium shadow"
+            onClick={() => window.location.href = "/restaurant/landing"} // Consider using navigate('/kolo') here if /kolo is your new home for Browse
           >
             Browse Menu
           </button>
@@ -91,7 +91,7 @@ const CartPage: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.3 }}
-                className="flex flex-col sm:flex-row items-center gap-4 bg-white/70 backdrop-blur-md shadow-2xl rounded-2xl p-5 border border-red-100 hover:shadow-red-200 transition-all duration-300"
+                className="flex flex-col sm:flex-row items-center gap-4 bg-white/70 backdrop-blur-md shadow-2xl rounded-2xl p-5 border border-orange-100 hover:shadow-orange-200 transition-all duration-300"
                 whileHover={{ scale: 1.02 }}
               >
                 <img
@@ -103,7 +103,7 @@ const CartPage: React.FC = () => {
                 <div className="flex-1 w-full">
                   <div className="flex justify-between items-center">
                     <h4 className="text-xl font-bold text-gray-800">{item.name}</h4>
-                    <p className="text-red-500 font-semibold text-lg">
+                    <p className="text-orange-500 font-semibold text-lg">
                       ₹{(item.price * item.quantity).toFixed(2)}
                     </p>
                   </div>
@@ -117,7 +117,7 @@ const CartPage: React.FC = () => {
                         onClick={() =>
                           dispatch(updateQuantity({ id: item.id, delta: -1 }))
                         }
-                        className="px-3 py-1 text-red-600 hover:text-red-800"
+                        className="px-3 py-1 text-orange-600 hover:text-orange-800"
                         title="Decrease quantity"
                       >
                         <FiMinus />
@@ -137,7 +137,7 @@ const CartPage: React.FC = () => {
                     </div>
                     <button
                       onClick={() => dispatch(removeFromCart(item.id))}
-                      className="text-red-500 hover:text-red-700 text-lg"
+                      className="text-orange-500 hover:text-orange-700 text-lg"
                       title="Remove item"
                     >
                       <FiTrash2 />
@@ -167,7 +167,7 @@ const CartPage: React.FC = () => {
               />
               <button
                 onClick={applyCoupon}
-                className="bg-red-500 text-white px-5 py-2 rounded-md hover:bg-red-600"
+                className="bg-orange-500 text-white px-5 py-2 rounded-md hover:bg-orange-600"
               >
                 Apply
               </button>
@@ -193,7 +193,7 @@ const CartPage: React.FC = () => {
             )}
             <hr className="my-2" />
             <p className="text-2xl font-bold">
-              Total: <span className="text-red-600">₹{totalPrice.toFixed(2)}</span>
+              Total: <span className="text-orange-600">₹{totalPrice.toFixed(2)}</span>
             </p>
           </motion.div>
 
@@ -201,7 +201,7 @@ const CartPage: React.FC = () => {
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleCheckout}
-              className="bg-gradient-to-r from-red-500 to-red-600 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 relative overflow-hidden"
+              className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 relative overflow-hidden"
             >
               <FiShoppingCart className="text-lg" />
               Proceed to Checkout

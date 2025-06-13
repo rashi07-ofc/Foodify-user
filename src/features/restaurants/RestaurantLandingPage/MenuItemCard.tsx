@@ -8,19 +8,21 @@ import {
 import { type RootState } from "../../../redux/store";
 
 interface MenuItemCardProps {
-  id: string;
+  id: string; // This is the menu item ID
   name: string;
   price: number;
   description: string;
-  imageUrl: string;
+  imageUrl: string; // Ensure this matches the prop name passed from MenuList
+  restaurantId: string; // This prop is now passed from MenuList
 }
 
 const MenuItemCard: React.FC<MenuItemCardProps> = ({
-  id,
+  id, // menu item ID
   name,
   price,
   description,
   imageUrl,
+  restaurantId, // Restaurant ID received
 }) => {
   const dispatch = useDispatch();
 
@@ -29,7 +31,8 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   );
 
   const handleAdd = () => {
-    dispatch(addToCart({ id, name, price, image: imageUrl, quantity: 1 }));
+    // Pass restaurantId to addToCart action
+    dispatch(addToCart({ id, name, price, image: imageUrl, quantity: 1, restaurantId }));
   };
 
   const increaseQty = () => {
@@ -43,6 +46,8 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
       dispatch(updateQuantity({ id, delta: -1 }));
     }
   };
+
+  console.log(imageUrl)
 
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
@@ -62,12 +67,14 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
         <p className="text-gray-600 text-sm mb-3">{description}</p>
 
         <div className="flex justify-between items-center">
-          <span className="text-lg text-red-600 font-bold">₹{price.toFixed(2)}</span>
+          {/* Price text color changed to orange-600 */}
+          <span className="text-lg text-orange-600 font-bold">₹{price.toFixed(2)}</span>
 
           {!cartItem ? (
             <button
               onClick={handleAdd}
-              className="bg-red-500 text-white text-sm px-4 py-2 rounded hover:bg-red-600 transition-colors"
+              // --- Orange theme for Add to Cart button ---
+              className="bg-orange-500 text-white text-sm px-4 py-2 rounded hover:bg-orange-600 transition-colors"
             >
               Add to Cart
             </button>
@@ -75,7 +82,8 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
             <div className="flex items-center border rounded-md overflow-hidden">
               <button
                 onClick={decreaseQty}
-                className="px-3 py-1 text-red-600 hover:text-red-800"
+                // --- Orange theme for decrease button ---
+                className="px-3 py-1 text-orange-600 hover:text-orange-800"
               >
                 −
               </button>
@@ -84,7 +92,8 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
               </span>
               <button
                 onClick={increaseQty}
-                className="px-3 py-1 text-green-600 hover:text-green-800"
+                // --- Orange theme for increase button (adjusted for harmony) ---
+                className="px-3 py-1 text-green-600 hover:text-green-800" // Kept green for "add" as it signifies positive action, but you can change to orange if preferred.
               >
                 +
               </button>

@@ -1,7 +1,5 @@
-// authService.ts
 import axios from "../../api/axios";
 import { getDeviceId } from "../../utils/deviceId";
-
 // Add these helper functions
 export const getAuthToken = () => {
   return localStorage.getItem("accessToken");
@@ -27,23 +25,23 @@ export const login = async (email: string, password: string) => {
   });
 
   const { accessToken, refreshToken } = response.data;
-  
+
   localStorage.setItem("accessToken", accessToken);
   localStorage.setItem("refreshToken", refreshToken);
   setAuthHeaders(accessToken); // Set axios default headers
 };
 
 // Updated logout function
-export const logout = async () => {
+export const Logout = async () => {
   const accessToken = getAuthToken();
 
   try {
     await axios.post(
-      "/auth/logout",
+      "http://localhost:3000/auth/logout",
       {},
-      { headers: { Authorization: `Bearer ${accessToken}` } }
+      { headers: { 'Authorization': `Bearer ${accessToken}` } } 
     );
   } finally {
-    clearAuthTokens(); // Always clear tokens
+    clearAuthTokens();
   }
 };

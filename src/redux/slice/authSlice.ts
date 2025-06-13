@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-
+import {Logout} from '../../features/auth/authService';
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
@@ -12,8 +12,12 @@ const authSlice = createSlice({
       state.user = action.payload;
     },
     logout(state) {
-      state.isLoggedIn = false;
-      state.user = null;
+      Logout();
+      // localStorage.removeItem('accessToken');
+      //  localStorage.removeItem('refreshToken');
+
+      state.isLoggedIn=false;
+      state.user=null;
     },
   },
 });
