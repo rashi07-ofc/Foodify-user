@@ -98,7 +98,7 @@ const router = createBrowserRouter([
   {
     path:'/otp',
     element:<OTP/>
-  }
+  },
 
 
 

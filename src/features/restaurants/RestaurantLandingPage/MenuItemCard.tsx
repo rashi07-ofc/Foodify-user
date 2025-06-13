@@ -64,7 +64,7 @@ const MenuItemCard: React.FC<MenuItem> = ({
 
         <div className="flex justify-between items-center">
           {/* Price */}
-          <span className="text-lg text-red-600 font-bold">
+          <span className="text-lg text-orange-600 font-bold">
             ₹{price.toFixed(2)}
           </span>
 
@@ -73,7 +73,7 @@ const MenuItemCard: React.FC<MenuItem> = ({
             // Button to add item if not already in cart
             <button
               onClick={handleAdd}
-              className="bg-red-500 text-white text-sm px-4 py-2 rounded hover:bg-red-600 transition-colors"
+              className="bg-orange-500 text-white text-sm px-4 py-2 rounded hover:bg-orange-600 transition-colors"
             >
               Add to Cart
             </button>
@@ -82,7 +82,7 @@ const MenuItemCard: React.FC<MenuItem> = ({
             <div className="flex items-center border rounded-md overflow-hidden">
               <button
                 onClick={decreaseQty}
-                className="px-3 py-1 text-red-600 hover:text-red-800"
+                className="px-3 py-1 text-orange-600 hover:text-orange-800"
               >
                 −
               </button>

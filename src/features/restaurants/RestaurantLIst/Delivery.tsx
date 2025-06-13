@@ -191,7 +191,7 @@ const Delivery: React.FC = () => {
                   className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl border border-gray-100 hover:border-orange-200 transition-all duration-300 transform hover:scale-105 overflow-hidden"
                 >
                   {/* Restaurant Image */}
-                  <div className="relative h-48 bg-gradient-to-br from-orange-400 to-red-500 overflow-hidden">
+                  <div className="relative h-48 bg-gradient-to-br from-orange-400 to-orange-500 overflow-hidden">
                     <img
                       src={getPlaceholderImage(
                         restaurant.name,
@@ -206,7 +206,7 @@ const Delivery: React.FC = () => {
                     />
 
                     {/* Fallback background with icon */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center">
                       <MdRestaurant className="w-16 h-16 text-white opacity-80" />
                     </div>
 
@@ -258,7 +258,7 @@ const Delivery: React.FC = () => {
                     </div>
 
                     {/* Action Button */}
-                    <button className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold py-3 px-4 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-200 shadow-lg hover:shadow-xl">
+                    <button className="w-full bg-gradient-to-r from-orange-500 to-orange-500 text-white font-semibold py-3 px-4 rounded-xl hover:from-orange-600 hover:to-orange-600 transition-all duration-200 shadow-lg hover:shadow-xl">
                       View Menu
                     </button>
                   </div>
