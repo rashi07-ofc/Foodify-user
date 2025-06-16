@@ -1,46 +1,11 @@
-// import { Routes, Route } from "react-router-dom";
-// // import AdminDashboard from "../features/admin/pages/AdminDashboard";
-// // import ManageManagers from "../features/admin/pages/AdminManagerManager";
-// // import SpecialOrders from "../features/admin/pages/AdminSpecialOrders";
-// // import SpecialOrderDetails from "../features/admin/pages/SpecialOrderDetails";
-// // import NotFound from "../features/admin/pages/NotFound";
-// import MainPage from "../features/restaurants/RestaurantLandingPage/MainPage";
-// import DelieveryLanding from "../features/restaurants/Delivery/DeliveryLanding";
-// import Checkout from "../features/cart/Checkout";
-// import CartPage from "../features/cart/CartPage";
-
-// export default function AppRoutes() {
-//   return (
-//     <Routes>
-//       {/* Admin Routes
-//       <Route path="/admin/dashboard" element={<AdminDashboard />} />
-//       <Route path="/admin/manage-managers" element={<ManageManagers />} />
-//       <Route path="/admin/special-orders" element={<SpecialOrders />} /> */}
-
-//       {/*For view order details:--_*/}
-//       {/* <Route path="/special-orders/:orderId" element={<SpecialOrderDetails />} /> */}
-//       {/* <Route
-//         path="/admin/special-orders/:orderId"
-//         element={<SpecialOrderDetails />}
-//       /> */}
-     
-//       {/* Restaurant Routes */}
-//       <Route path="/restaurant/landing" element={<MainPage />} />
-//       <Route path="/restaurant/delivery" element={<DelieveryLanding />} />
-
-//       {/* Cart Routes */}
-//       <Route path="/cart/checkout" element={<Checkout />} />
-//       <Route path="/cart" element={<CartPage />} />
-
-//       {/* Fallback */}
-//       {/* <Route path="*" element={<NotFound />} /> */}
-//     </Routes>
-//   );
-// }
-
-
+import { useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import AOS from "aos";
+import "aos/dist/aos.css";
+import "react-toastify/dist/ReactToastify.css";
 
+// Page Components
 import PlaceOrderPage from "../features/customer/orderPlacement/PlaceOrderPage";
 import OrderStatusPage from "../features/customer/orderStatus/OrderStatusPage";
 import OrderHistoryPage from "../features/customer/orderHistory/OrderHistoryPage";
@@ -51,55 +16,60 @@ import Login from "../features/auth/Login";
 import Register from "../features/auth/Register";
 import ZomatoCollections from "../features/restaurants/RestaurantLIst/ZomatoCollections";
 import OTP from "../features/auth/OTP";
+import ProfilePage from "../pages/HomePage/ProfilePage";
+// import ForgotPassword from "../pages/forgetPassword/ForgotPassword";
+import VerifyCode from "../pages/forgetPassword/VerifyCode";
+import NewPassword from "../pages/forgetPassword/NewPassword";
+import ResetSuccess from "../pages/forgetPassword/ResetSuccess";
+
+// Context + Layout
+import { ResetFlowProvider } from "../context/ResetFlowContext";
+import AppLayout from "../components/layout/AppLayout";
+import PaymentSuccess from "../features/customer/orderPlacement/paymentSection/PaymentSuccess";
+import PaymentFailure from "../features/customer/orderPlacement/paymentSection/PaymentFailure";
 
 const router = createBrowserRouter([
   {
-    path: 'place-order',
-    element: <PlaceOrderPage />
+    path: "/",
+    element: <AppLayout />,
+    children: [
+      { path: "", element: <LandingPage /> },
+      { path: "login", element: <Login /> },
+      { path: "signup", element: <Register /> },
+      { path: "otp", element: <OTP /> },
+      { path: "verify-code", element: <VerifyCode /> },
+      { path: "new-password", element: <NewPassword /> },
+      { path: "reset-success", element: <ResetSuccess /> },
+      { path: "home", element: <ZomatoCollections /> },
+      { path: "place-order", element: <PlaceOrderPage /> },
+      { path: "place-order/order-status", element: <OrderStatusPage /> },
+      { path: "order-history", element: <OrderHistoryPage /> },
+      { path: "landing/:id", element: <MainPage /> },
+      { path: "cart", element: <CartPage /> },
+      { path: "profile", element: <ProfilePage /> }
+    ]
   },
   {
-    path: 'place-order/order-status',
-    element: <OrderStatusPage />
-  },
+    path: "/order-success",
+    element: <PaymentSuccess />
+  }, 
   {
-    path: 'order-history',
-    element: <OrderHistoryPage />
-  },
-  {
-    path: 'landing',
-    element: <MainPage />
-  },
-  {
-    path:'/cart',
-    element: <CartPage />
-  },
-  {
-    path:'/',
-    element:<LandingPage/>
-  },
-  {
-    path:'/login',
-    element:<Login/>
-  },
-  {
-    path:'/signup',
-    element:<Register/>
-  },
-
-  {
-    path:'/home',
-    element:<ZomatoCollections/>
-  },
-
-  {
-    path:'/otp',
-    element:<OTP/>
-  },
-
-
-
+    path: "/order-failure",
+    element: <PaymentFailure />
+  }
 ]);
 
-const AppRoutes = () => <RouterProvider router={router} />;
+const AppRoutes = () => {
+  useEffect(() => {
+    AOS.init({ duration: 800 });
+  }, []);
+
+  return (
+    <ResetFlowProvider>
+      <ToastContainer position="top-center" autoClose={2000} />
+      <RouterProvider router={router} />
+    </ResetFlowProvider>
+  );
+};
 
 export default AppRoutes;

@@ -5,6 +5,7 @@ import AddressSection from "./addressSection/AddressSection";
 import PaymentSection from "./paymentSection/PaymentSection";
 import OrderSummary from "./orderSummary/OrderSummary";
 import type { DeliveryAddress, OrderData, PaymentMethod } from "../../../types/index";
+import Navbar from "../../../components/layout/Navbar";
 
 const PlaceOrderPage: React.FC = () => {
   // State declarations
@@ -180,6 +181,8 @@ const PlaceOrderPage: React.FC = () => {
   }
 
   return (
+    <>
+    <Navbar/>
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
@@ -219,6 +222,7 @@ const PlaceOrderPage: React.FC = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

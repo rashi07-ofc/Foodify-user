@@ -139,7 +139,7 @@ const Register: React.FC = () => {
 
       console.log("✅ Registration successful!");
 
-      navigate("/list", {
+      navigate("/home", {
         state: { message: "Registration successful!" },
       });
     } catch (error: any) {
@@ -176,7 +176,7 @@ const Register: React.FC = () => {
           {/* Main form now combines all fields and handles full registration */}
           <form className="space-y-6" onSubmit={handleRegisterAndOtpSubmit}>
             {errors.form && (
-              <div className="rounded-md bg-red-50 p-4 text-red-700">
+              <div className="rounded-md bg-orange-50 p-4 text-orange-700">
                 {errors.form}
               </div>
             )}
@@ -200,11 +200,11 @@ const Register: React.FC = () => {
                   onChange={handleChange}
                   {...rest}
                   className={`mt-1 block w-full px-3 py-2 border ${
-                    errors[id] ? "border-red-400" : "border-gray-300"
+                    errors[id] ? "border-orange-400" : "border-gray-300"
                   } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm`}
                 />
                 {errors[id] && (
-                  <p className="mt-1 text-sm text-red-600">{errors[id]}</p>
+                  <p className="mt-1 text-sm text-orange-600">{errors[id]}</p>
                 )}
               </div>
             ))}
@@ -222,11 +222,11 @@ const Register: React.FC = () => {
                 value={otp}
                 onChange={handleChange}
                 className={`mt-1 block w-full px-3 py-2 border ${
-                  errors.otp ? "border-red-400" : "border-gray-300"
+                  errors.otp ? "border-orange-400" : "border-gray-300"
                 } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm`}
               />
               {errors.otp && (
-                <p className="mt-1 text-sm text-red-600">{errors.otp}</p>
+                <p className="mt-1 text-sm text-orange-600">{errors.otp}</p>
               )}
             </div>
 
