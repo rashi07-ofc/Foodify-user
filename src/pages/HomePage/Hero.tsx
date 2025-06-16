@@ -26,7 +26,7 @@ const navigate=useNavigate();
           <button onClick={()=>navigate("./home")} className="bg-orange-500 text-white font-semibold px-6 py-3 rounded-full hover:bg-orange-600 transition">
             Order Now
           </button>
-          <button onClick={()=>navigate("./home")} className="border border-orange-500 text-orange-500 font-semibold px-6 py-3 rounded-full hover:bg-orange-500 hover:text-white transition">
+          {/* <button onClick={()=>navigate("./home")} className="border border-orange-500 text-orange-500 font-semibold px-6 py-3 rounded-full hover:bg-orange-500 hover:text-white transition">
             Browse Menu
           </button> */}
         </div>

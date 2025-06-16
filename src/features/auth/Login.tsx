@@ -5,6 +5,7 @@ import { login } from "../auth/authService";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const navigate = useNavigate();
 
   // --- FIX: Define error and loading states ---
@@ -72,7 +73,7 @@ const Login = () => {
 
           <div className="flex justify-end text-sm">
             <Link
-              to="/forget"
+              to="/forgot"
               className="text-orange-500 hover:underline"
             >
               Forgot Password?

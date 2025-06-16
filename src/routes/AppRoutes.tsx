@@ -11,27 +11,23 @@ import OrderStatusPage from "../features/customer/orderStatus/OrderStatusPage";
 import OrderHistoryPage from "../features/customer/orderHistory/OrderHistoryPage";
 import MainPage from "../features/restaurants/RestaurantLandingPage/MainPage";
 import CartPage from "../features/cart/CartPage";
-import LandingPage from "../pages/HomePage/LandingPage"; // This seems to be your root landing page
+import LandingPage from "../pages/HomePage/LandingPage";
 import Login from "../features/auth/Login";
 import Register from "../features/auth/Register";
-import ZomatoCollections from "../features/restaurants/RestaurantLIst/ZomatoCollections"; // Your restaurant list page
+import ZomatoCollections from "../features/restaurants/RestaurantLIst/ZomatoCollections";
 import OTP from "../features/auth/OTP";
 import ProfilePage from "../pages/HomePage/ProfilePage";
-// import ForgotPassword from "../pages/forgetPassword/ForgotPassword";
-import VerifyCode from "../pages/forgetPassword/VerifyCode";
 import NewPassword from "../pages/forgetPassword/NewPassword";
 import ResetSuccess from "../pages/forgetPassword/ResetSuccess";
 
 // Context + Layout
-// import { ResetFlowProvider } from "../context/ResetFlowContext";
+import { ResetFlowProvider } from "../context/ResetFlowContext";
 import AppLayout from "../components/layout/AppLayout";
 import PaymentSuccess from "../features/customer/orderPlacement/paymentSection/PaymentSuccess";
 import PaymentFailure from "../features/customer/orderPlacement/paymentSection/PaymentFailure";
+import ForgotPassword from "../pages/forgetPassword/ForgetPassword";
+import ResetPasswordPage from "../features/auth/ResetPassword";
 
-// Import the context provider
-import { ResetFlowProvider } from "./../context/ResetFlowContext";
-
-// Define all application routes
 const router = createBrowserRouter([
   {
     path: "/",
@@ -41,7 +37,7 @@ const router = createBrowserRouter([
       { path: "login", element: <Login /> },
       { path: "signup", element: <Register /> },
       { path: "otp", element: <OTP /> },
-      { path: "verify-code", element: <VerifyCode /> },
+      { path: "reset", element: <ResetPasswordPage /> },
       { path: "new-password", element: <NewPassword /> },
       { path: "reset-success", element: <ResetSuccess /> },
       { path: "home", element: <ZomatoCollections /> },
@@ -50,17 +46,19 @@ const router = createBrowserRouter([
       { path: "order-history", element: <OrderHistoryPage /> },
       { path: "landing/:id", element: <MainPage /> },
       { path: "cart", element: <CartPage /> },
-      { path: "profile", element: <ProfilePage /> }
-    ]
+      { path: "profile", element: <ProfilePage /> },
+      {
+        path: "/order-success",
+        element: <PaymentSuccess />,
+      },
+      {
+        path: "/order-failure",
+        element: <PaymentFailure />,
+      },
+      { path: "/forgot", element: <ForgotPassword /> },
+      {path: '/reset-password', element: <ResetPasswordPage />}
+    ],
   },
-  {
-    path: "/order-success",
-    element: <PaymentSuccess />
-  }, 
-  {
-    path: "/order-failure",
-    element: <PaymentFailure />
-  }
 ]);
 
 const AppRoutes = () => {

@@ -5,7 +5,6 @@ import FoodGallery from './FoodGallery';
 import About from './About';
 import Services from './Services';
 import Navbar from '../../components/layout/Navbar';
-// import Footer from '../../components/layout/Footer';
 
 const LandingPage: React.FC = () => {
   return (
@@ -17,7 +16,6 @@ const LandingPage: React.FC = () => {
       <FoodGallery />
       <About />
       <Services />
-      {/* <Footer/> */}
     </>
   );
 };

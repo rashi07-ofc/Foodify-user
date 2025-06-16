@@ -71,10 +71,6 @@ const Register: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // This function might still be useful if you first want to send OTP
-  // before allowing the full registration, but it won't trigger the OTP
-  // input visibility anymore. You might rename it or remove it if you
-  // directly handle signup on the single form submission.
   const handleInitiateSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return; // Still validate main form fields
@@ -82,7 +78,7 @@ const Register: React.FC = () => {
     setIsLoading(true);
     try {
       // You might still want to call this if OTP sending is a separate step
-      await axios.post("http://localhost:9000/auth/signup-initiate", formData);
+      await axios.post("http://localhost:9000/auth/signup", formData);
       console.log("✅ OTP initiation successful");
       // The `setShowOtp(true)` line was here, now removed.
     } catch (error: any) {

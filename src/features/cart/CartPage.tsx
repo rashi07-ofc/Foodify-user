@@ -310,7 +310,7 @@ const CartPage: React.FC = () => {
   const total = itemTotal + tax + platformFee + deliveryCharges - discount;
 
   return (
-    <div className="max-w-5xl mx-auto mt-12 px-4">
+    <div className="max-w-5xl mx-auto mt-32 px-4">
       <h2 className="text-4xl font-bold text-orange-600 mb-10 text-center flex items-center justify-center gap-3">
         <FiShoppingCart className="text-4xl" />
         Your Cart

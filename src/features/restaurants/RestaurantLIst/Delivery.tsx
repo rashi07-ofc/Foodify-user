@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FAQSection from "./FAQSection";
-import { getRestaurantsByTags } from "../../../api/restaurentFetchAPI";
+import { getRestaurantsByTags } from "../../../api/restaurantFetchApi";
 import { IoLocationOutline, IoCallOutline } from "react-icons/io5";
-import { MdRestaurant, MdAccessTime } from "react-icons/md";
-import { BiCheckCircle, BiXCircle } from "react-icons/bi";
+import { MdRestaurant } from "react-icons/md";
+import { BiCheckCircle } from "react-icons/bi";
 import vegmeal from "../../../assets/vegmeal.jpeg";
 import thali from "../../../assets/thali.jpg";
 import pizza from "../../../assets/pizza.jpeg";

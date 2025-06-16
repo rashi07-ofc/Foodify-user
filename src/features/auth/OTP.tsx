@@ -7,7 +7,7 @@ const OTP: React.FC = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleSendOtp = async () => {
     const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -20,8 +20,7 @@ const navigate = useNavigate();
     setSuccess("");
     setLoading(true);
 
-
-     try {
+    try {
       const response = await axios.post(
         "http://localhost:9000/auth/send-otp",
         { email },
@@ -31,10 +30,10 @@ const navigate = useNavigate();
       );
 
       setSuccess(response.data.message || "OTP sent successfully!");
-        // Navigate to /signup after a short delay (optional)
-  setTimeout(() => {
-    navigate("/signup");
-  }, 1000);
+      // Navigate to /signup after a short delay (optional)
+      setTimeout(() => {
+        navigate("/signup");
+      }, 1000);
     } catch (err: any) {
       const message =
         err.response?.data?.message || "Failed to send OTP. Try again.";
@@ -42,20 +41,20 @@ const navigate = useNavigate();
     } finally {
       setLoading(false);
     }
-  //   try {
-  //     const response = await axios.post("http://localhost:9000/auth/send-otp", {
-  //       { email },
-  // { headers: { "Content-Type": "application/json" } 
-  //     });
+    //   try {
+    //     const response = await axios.post("http://localhost:9000/auth/send-otp", {
+    //       { email },
+    // { headers: { "Content-Type": "application/json" }
+    //     });
 
-  //     setSuccess(response.data.message || "OTP sent successfully!");
-  //   } catch (err: any) {
-  //     const message =
-  //       err.response?.data?.message || "Failed to send OTP. Try again.";
-  //     setError(message);
-  //   } finally {
-  //     setLoading(false);
-  //   }
+    //     setSuccess(response.data.message || "OTP sent successfully!");
+    //   } catch (err: any) {
+    //     const message =
+    //       err.response?.data?.message || "Failed to send OTP. Try again.";
+    //     setError(message);
+    //   } finally {
+    //     setLoading(false);
+    //   }
   };
 
   return (
@@ -64,7 +63,10 @@ const navigate = useNavigate();
         <h2 className="mb-6 text-2xl font-semibold text-gray-800">Send OTP</h2>
 
         <div className="mb-4">
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700"
+          >
             Email Address
           </label>
           <input
@@ -82,12 +84,11 @@ const navigate = useNavigate();
         <button
           onClick={handleSendOtp}
           disabled={loading}
-         className={`mt-4 w-full rounded-xl px-4 py-2 text-white transition ${
-  loading
-    ? "bg-orange-300 cursor-not-allowed"
-    : "bg-orange-600 hover:bg-orange-700"
-}`}
-
+          className={`mt-4 w-full rounded-xl px-4 py-2 text-white transition ${
+            loading
+              ? "bg-orange-300 cursor-not-allowed"
+              : "bg-orange-600 hover:bg-orange-700"
+          }`}
         >
           {loading ? "Sending..." : "Send OTP"}
         </button>
