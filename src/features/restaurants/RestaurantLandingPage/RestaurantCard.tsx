@@ -20,11 +20,12 @@ const cardVariants = {
 
 const RestaurantCard: React.FC = () => {
   const { id } = useParams();
+   const restaurantId = id ;
   const [restaurant, setRestaurant] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-
+ console.log(restaurantId)
   useEffect(() => {
-    fetch(`http://localhost:3005/restaurant/${id}`)
+    fetch(`http://localhost:3005/restaurant/${restaurantId}`)
       .then((res) => res.json())
       .then((data) => {
         setRestaurant(data);

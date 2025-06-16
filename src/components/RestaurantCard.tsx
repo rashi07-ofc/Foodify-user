@@ -50,7 +50,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({
           <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
             restaurant.isActive 
               ? 'bg-green-100 text-green-800 border border-green-200' 
-              : 'bg-red-100 text-red-800 border border-red-200'
+              : 'bg-orange-100 text-orange-800 border border-orange-200'
           }`}>
             {restaurant.isActive ? 'Open' : 'Closed'}
           </span>

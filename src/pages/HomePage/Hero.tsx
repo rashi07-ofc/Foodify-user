@@ -28,7 +28,7 @@ const navigate=useNavigate();
           </button>
           <button onClick={()=>navigate("./home")} className="border border-orange-500 text-orange-500 font-semibold px-6 py-3 rounded-full hover:bg-orange-500 hover:text-white transition">
             Browse Menu
-          </button>
+          </button> */}
         </div>
       </div>
 

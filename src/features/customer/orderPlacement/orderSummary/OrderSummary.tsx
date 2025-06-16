@@ -25,32 +25,42 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         navigate("/login");
         return;
       }
-
+      console.log(token);
       // Create order with auth
       const orderIdResponse = await axios.post<{ id: string }>(
-        "/order/prePlaceOrder",
-        { cartId: "684ab6b26425809b827d5d66" },
+        "http://localhost:3006/order/prePlaceOrder",
+        { cartId: "684ac6aca64c3abb72c33ab2" },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       const orderId = orderIdResponse.data.orderId;
 
       if (modeOfPayment === "online") {
+        console.log("Hii");
+        // console.log(orderId);
         const stripeResponse = await axios.post<{ url: string }>(
-          "/payment/checkout",
+          "http://localhost:3007/payment/checkout",
           { orderId },
           { headers: { Authorization: `Bearer ${token}` } }
         );
         window.location.href = stripeResponse.data.url;
-        return;
       }
 
       // Cash on delivery
+      console.log("Placing order with:", {
+        orderId,
+        modeOfPayment,
+      });
+
+      console.log(modeOfPayment);
+      console.log(orderId);
+
       await axios.post(
-        "/order/placeOrder",
+        "http://localhost:3006/order/placeOrder",
         { orderId, modeOfPayment },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      // console.log("Hii hihi");
 
       navigate("/order-success");
     } catch (error) {
