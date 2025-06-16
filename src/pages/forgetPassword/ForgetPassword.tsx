@@ -1,42 +1,61 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { useResetFlow } from "./../../context/ResetFlowContext";
+// import { useResetFlow } from "./../../context/ResetFlowContext";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
-  
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { setUserEmail, setOtp } = useResetFlow();
+  // const { setUserEmail, setOtp } = useResetFlow();
 
   useEffect(() => {
     AOS.init({ duration: 800 });
   }, []);
 
-  const generateOtp = () => {
-    return Math.floor(100000 + Math.random() * 900000).toString();
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) {
-      toast.error("Please enter your email address.");
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError("Please enter a valid email address.");
       return;
     }
+    setError("");
 
-    const generatedOTP = generateOtp();
-    setUserEmail(email);
-    setOtp(generatedOTP);
+    try {
+      const response = await fetch("http://localhost:9008/auth/forgot-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
 
-    console.log("Generated OTP:", generatedOTP); // For development only
-    toast.success("OTP sent to your email");
-    navigate("/verify-code");
+      if (!response.ok) {
+        throw new Error("Failed to send reset link.");
+      }
+
+      const data = await response.json();
+
+      if (data.token) {
+        localStorage.setItem("forgotPasswordToken", data.token);
+      }
+
+      setSubmitted(true);
+      navigate('/reset')
+    } catch (err) {
+      setError("Something went wrong. Please try again later.");
+      console.error(err);
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white px-4" data-aos="fade-up">
+    <div
+      className="min-h-screen flex items-center justify-center bg-white px-4"
+      data-aos="fade-up"
+    >
       <div className="w-full max-w-sm p-6 rounded-xl shadow-md border border-gray-100 bg-white">
         {/* Icon */}
         <div className="flex justify-center mb-6">

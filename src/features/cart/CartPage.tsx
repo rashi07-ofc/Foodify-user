@@ -51,7 +51,7 @@ const CartPage: React.FC = () => {
 
 
   return (
-    <div className="max-w-5xl mx-auto mt-12 px-4">
+    <div className="max-w-5xl mx-auto mt-32 px-4">
       <h2 className="text-4xl font-bold text-orange-600 mb-10 text-center flex items-center justify-center gap-3">
         <FiShoppingCart className="text-4xl" />
         Your Cart
@@ -70,8 +70,8 @@ const CartPage: React.FC = () => {
           />
           <p className="text-xl text-gray-500 mb-4">Oops! Your cart is empty.</p>
           <button
+            onClick={() => window.location.href = "/home"} // Consider using navigate('/kolo') here if /kolo is your new home for Browse
             className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full font-medium shadow"
-            onClick={() => window.location.href = "/restaurant/landing"} // Consider using navigate('/kolo') here if /kolo is your new home for Browse
           >
             Browse Menu
           </button>
