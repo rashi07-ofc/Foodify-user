@@ -27,25 +27,25 @@ export const clearAuthTokens = () => {
 };
 
 export const login = async (email: string, password: string) => {
-  const response = await axios.post("/auth/login", {
+  const response = await axios.post("auth/login", {
     email,
     password,
     device_id: getDeviceId(),
     role: 1,
   });
 
-  const { accessToken, refreshToken, data } = response.data;
-
+  const { accessToken, refreshToken } = response.data;
+ 
   localStorage.setItem("accessToken", accessToken);
   localStorage.setItem("refreshToken", refreshToken);
   
-  if (data && data._id) {
-    localStorage.setItem("userId", data._id); 
-  }
+  // if (data && data._id) {
+  //   localStorage.setItem("userId", data._id); 
+  // }
   
   setAuthHeaders(accessToken);
   
-  return { accessToken, refreshToken, user: { _id: data._id, email: data.email, role: data.role } }; 
+  return { accessToken, refreshToken }; 
 };
 
 export const Logout = async () => {
@@ -53,8 +53,9 @@ export const Logout = async () => {
 
   try {
     if (accessToken) { 
+      console.log("loggin out")
       await axios.post(
-        "http://localhost:3000/auth/logout", 
+        "/auth/logout", 
         {},
         { headers: { 'Authorization': `Bearer ${accessToken}` } } 
       );
@@ -82,7 +83,7 @@ export const refreshAuthToken = async () => { // <--- NEW FUNCTION
 
   try {
     const response = await axios.post(
-      "http://localhost:3000/auth/refresh",
+      "http://localhost:3001/auth/refresh",
       { refreshToken: currentRefreshToken }
     );
 
