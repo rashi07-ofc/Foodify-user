@@ -146,7 +146,9 @@ const Delivery: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
               {restaurants?.map((restaurant) => {
                 // Determine the ID to use for the key and potentially other elements within the card
-                const currentRestaurantId = restaurant._id ?? '6767';
+                console.log(restaurant._id);
+                const currentRestaurantId = restaurant._id ?? '684ab140d5e1127595270ec4';
+                
 
                 return (
                   <div
@@ -213,8 +215,8 @@ const Delivery: React.FC = () => {
                           // For navigation, maintain the specific logic:
                           // if restaurant._id is defined, go to /landing/:id
                           // otherwise, go to /ulul
-                          if (restaurant._id) {
-                            navigate(`/landing/${restaurant._id}`);
+                          if (currentRestaurantId) {
+                            navigate(`/landing/${currentRestaurantId}`);
                           } else {
                             console.warn("Restaurant ID is undefined, navigating to /ulul");
                             navigate("/landing/684ab140d5e1127595270ec4");
