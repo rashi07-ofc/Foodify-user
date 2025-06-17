@@ -28,6 +28,7 @@ export const clearAuthTokens = () => {
 
 export const login = async (email: string, password: string) => {
   const response = await axios.post("auth/login", {
+    username: name,
     email,
     password,
     device_id: getDeviceId(),

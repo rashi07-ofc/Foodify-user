@@ -27,6 +27,7 @@ import PaymentSuccess from "../features/customer/orderPlacement/paymentSection/P
 import PaymentFailure from "../features/customer/orderPlacement/paymentSection/PaymentFailure";
 import ForgotPassword from "../pages/forgetPassword/ForgetPassword";
 import ResetPasswordPage from "../features/auth/ResetPassword";
+import { CartProvider } from "../context/CartContext";
 
 const router = createBrowserRouter([
   {
@@ -68,8 +69,11 @@ const AppRoutes = () => {
 
   return (
     <ResetFlowProvider>
-      <ToastContainer position="top-center" autoClose={2000} />
+      <CartProvider>
+  <ToastContainer position="top-center" autoClose={2000} />
       <RouterProvider router={router} />
+      </CartProvider>
+    
     </ResetFlowProvider>
   );
 };
