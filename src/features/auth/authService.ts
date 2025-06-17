@@ -27,22 +27,22 @@ export const clearAuthTokens = () => {
 };
 
 export const login = async (email: string, password: string) => {
-  const response = await axios.post("/auth/login", {
+  const response = await axios.post("auth/login", {
     email,
     password,
     device_id: getDeviceId(),
     role: 1,
   });
 
-  const { accessToken, refreshToken, data } = response.data;
-
+  const { accessToken, refreshToken } = response.data;
+ 
   localStorage.setItem("accessToken", accessToken);
   localStorage.setItem("refreshToken", refreshToken);
-
-  if (data && data._id) {
-    localStorage.setItem("userId", data._id);
-  }
-
+  
+  // if (data && data._id) {
+  //   localStorage.setItem("userId", data._id); 
+  // }
+  
   setAuthHeaders(accessToken);
   
   return { accessToken, refreshToken }; 
@@ -53,6 +53,7 @@ export const Logout = async () => {
 
   try {
     if (accessToken) { 
+      console.log("loggin out")
       await axios.post(
         "/auth/logout", 
         {},
@@ -82,7 +83,11 @@ export const refreshAuthToken = async () => { // <--- NEW FUNCTION
 
   try {
     const response = await axios.post(
+<<<<<<< HEAD
       "/auth/refresh",
+=======
+      "http://localhost:3001/auth/refresh",
+>>>>>>> 5347c53c09e059b08fb60ec033735b768fcd1c09
       { refreshToken: currentRefreshToken }
     );
 

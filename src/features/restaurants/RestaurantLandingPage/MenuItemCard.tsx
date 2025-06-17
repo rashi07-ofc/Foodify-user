@@ -158,6 +158,7 @@
 
 // export default MenuItemCard;
 import React, { useEffect, useState } from "react";
+import { getAuthToken } from "../../auth/authService";
 
 interface MenuItemCardProps {
   id: string; // This is the menu item ID
@@ -181,7 +182,6 @@ interface MenuItemCardProps {
 //   console.log("useris", userId);
 //   console.log("restarujd", restaurantId);
 //     console.log("item id",id );
-
 
 //   const handleAdd = () => {
 //     const url = `http://localhost:3002/cart/add/${userId}/${restaurantId}/${id}`;
@@ -220,93 +220,89 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   price,
   description,
   imageUrl,
-  restaurantId, // Restaurant ID received
+  restaurantId
 }) => {
   // It's better to fetch userId from context or global state if available,
   // hardcoding it here is not ideal for a real application.
-  const userId = "684fac7d6f272b68f7f68792";
+  // const userId = "684fac7d6f272b68f7f68792";
   const [quantity, setQuantity] = useState<number>(0);
-    const [resId, setResId] = useState<number>(0);
+    const accessToken = getAuthToken(); // or use getAuthToken()
 
+  // const [resId, setResId] = useState<number>(0);
 
   // Effect to fetch initial quantity from the cart on component mount
   // You'll need an API to get the current cart state for the user
-  useEffect(() => {
-    const fetchCartItemQuantity = async () => {
-      try {
-        // This is a hypothetical endpoint. You need an API like:
-        // GET /cart/:userId/item/:itemId
-        // or a general GET /cart/:userId that returns all cart items
-        const response = await fetch(`http://localhost:3002/cart/`);
-        if (response.ok) {
-          const data = await response.json();
-          // Assuming your API returns the quantity for this specific item,
-          // or you iterate through a full cart response.
-          setQuantity(data.quantity || 0); 
-          setResId(data.restaurantId)// Adjust based on actual API response
-        }
-      } catch (error) {
-        console.error("Failed to fetch initial cart quantity:", error);
+  // useEffect(() => {
+  //   const fetchCartItemQuantity = async () => {
+  //     try {
+  //       // This is a hypothetical endpoint. You need an API like:
+  //       // GET /cart/:userId/item/:itemId
+  //       // or a general GET /cart/:userId that returns all cart items
+  //       const response = await fetch(`http://localhost:3002/cart/`);
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         // Assuming your API returns the quantity for this specific item,
+  //         // or you iterate through a full cart response.
+  //         setQuantity(data.quantity || 0);
+  //         // setResId(data.restaurantId)
+  //         // setResId(data.restaurantId); // Adjust based on actual API response
+  //       }
+  //     } catch (error) {
+  //       console.error("Failed to fetch initial cart quantity:", error);
+  //     }
+  //   };
+  //   fetchCartItemQuantity();
+  // }, [id]); // Re-fetch if userId or itemId changes
+
+const handleAdd = () => {
+
+  const url = `http://localhost:3002/cart/add/${restaurantId}/${id}`;
+  console.log(accessToken)
+  fetch(url, {
+    method: "POST",
+     headers: { 'Authorization': `Bearer ${accessToken}` }     
+  })
+    .then((res) => {
+      if (res.ok) {
+        setQuantity((prev) => prev + 1);
+      } else {
+        console.error("Failed to add to cart");
       }
-    };
-    fetchCartItemQuantity();
-  }, [userId, id]); // Re-fetch if userId or itemId changes
-
-  const handleAdd = () => {
-const url = `http://localhost:3002/cart/add/${userId}/${restaurantId}/${id}`;    fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userId,
-        resId, // Include restaurantId if needed for adding
-        itemId: id,
-        // You might want to send name, price, image as well if the backend
-        // needs to store item details with the cart item.
-      }),
     })
-      .then((res) => {
-        if (res.ok) {
-          setQuantity((prev) => prev + 1); // Optimistically update UI
-        } else {
-          console.error("Failed to add to cart");
-        }
-      })
-      .catch((err) => console.error("Add to cart API error:", err));
-  };
+    .catch((err) => console.error("Add to cart API error:", err));
+};
 
-  const increaseQty = () => {
-const url = `http://localhost:3002/cart/add/${userId}/${restaurantId}/${id}`;    fetch(url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userId,
-        itemId: id,
-        delta: 1, // Indicate an increment
-      }),
+const increaseQty = () => {
+  const url = `http://localhost:3002/cart/add/${restaurantId}/${id}`;
+  fetch(url, {
+    method: "POST",
+     headers: {
+      "Authorization": `Bearer ${accessToken}`,
+      "Content-Type": "application/json"
+    }
+  })
+    .then((res) => {
+      if (res.ok) {
+        setQuantity((prev) => prev + 1);
+      } else {
+        console.error("Failed to increase quantity");
+      }
     })
-      .then((res) => {
-        if (res.ok) {
-          setQuantity((prev) => prev + 1);
-        } else {
-          console.error("Failed to increase quantity");
-        }
-      })
-      .catch((err) => console.error("Increase quantity API error:", err));
-  };
+    .catch((err) => console.error("Increase quantity API error:", err));
+};
+
 
   const decreaseQty = () => {
     if (quantity === 1) {
-      const url = `http://localhost:3002/cart/remove/${userId}/${id}`; // DELETE for removing the item entirely
+      const url = `http://localhost:3002/cart/remove/${id}`; // DELETE for removing the item entirely
       fetch(url, {
         method: "DELETE",
         headers: {
+                "Authorization": `Bearer ${accessToken}`,
+
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userId, itemId: id }), // Send userId and itemId
+        body: JSON.stringify({itemId: id }), // Send userId and itemId
       })
         .then((res) => {
           if (res.ok) {
@@ -317,14 +313,13 @@ const url = `http://localhost:3002/cart/add/${userId}/${restaurantId}/${id}`;   
         })
         .catch((err) => console.error("Remove from cart API error:", err));
     } else {
-      const url = `http://localhost:3002/cart/remove/${userId}/${id}`; // DELETE for removing the item entirely
+      const url = `http://localhost:3002/cart/remove/${id}`; // DELETE for removing the item entirely
       fetch(url, {
-        method: "PUT",
+        method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId,
           itemId: id,
           delta: -1, // Indicate a decrement
         }),
@@ -340,7 +335,6 @@ const url = `http://localhost:3002/cart/add/${userId}/${restaurantId}/${id}`;   
     }
   };
 
-  // ... rest of your component
 
   const globalImages = [
     "https://cdn.pixabay.com/photo/2020/05/17/04/22/pizza-5179939_960_720.jpg",
@@ -390,9 +384,7 @@ const url = `http://localhost:3002/cart/add/${userId}/${restaurantId}/${id}`;   
               >
                 −
               </button>
-              <span className="px-4 font-medium text-gray-700">
-                {quantity}
-              </span>
+              <span className="px-4 font-medium text-gray-700">{quantity}</span>
               <button
                 onClick={increaseQty}
                 // --- Orange theme for increase button (adjusted for harmony) ---

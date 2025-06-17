@@ -13,6 +13,10 @@ type CustomInternalAxiosRequestConfig = InternalAxiosRequestConfig & {
 
 const api = axios.create({
   baseURL: "http://localhost:3001",
+<<<<<<< HEAD
+=======
+  timeout: 15000,
+>>>>>>> 5347c53c09e059b08fb60ec033735b768fcd1c09
 });
 
 api.interceptors.request.use(

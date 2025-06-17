@@ -16,6 +16,9 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   modeOfPayment,
 }) => {
   const navigate = useNavigate();
+  const cId = localStorage.getItem("cart_id")
+  console.log(cId);
+  
 
   const handleOrder = async () => {
     try {
