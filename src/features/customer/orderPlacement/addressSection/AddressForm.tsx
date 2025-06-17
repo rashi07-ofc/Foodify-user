@@ -1,14 +1,14 @@
-// AddressForm.tsx
 import React, { useState } from "react";
-import axios from "../../../../api/axios"; // Your configured axios instance
-import { getAuthToken } from "../../../auth/authService"; // Your auth token helper
-import type { DeliveryAddress } from "../../../../types"; // Ensure this type is accurate for your API
+import axiosInstance from "../../../../api/axios";
+import axiosLib from "axios";
+import { getAuthToken } from "../../../auth/authService";
+import type { DeliveryAddress } from "../../../../types";
 
 interface AddressFormProps {
-  address: DeliveryAddress; // The address object being edited/added
+  address: DeliveryAddress;
   isEditing: boolean;
-  onInputChange: (field: keyof DeliveryAddress, value: string | number) => void; // Value can be string or number (for postal_code)
-  onSaveSuccess: () => void; // Callback to parent on successful save
+  onInputChange: (field: keyof DeliveryAddress, value: string | number) => void;
+  onSaveSuccess: () => void;
   onCancel: () => void;
 }
 
@@ -22,16 +22,13 @@ const AddressForm: React.FC<AddressFormProps> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Helper function for client-side validation
   const validateForm = () => {
     if (!address.label) return "Please select an address label.";
     if (!address.address_location_1 || address.address_location_1.trim() === "") return "Street Address Line 1 is required.";
     if (!address.city || address.city.trim() === "") return "City is required.";
     if (!address.postal_code || isNaN(Number(address.postal_code))) return "Zip Code (Postal Code) is required and must be a number.";
     if (!address.country || address.country.trim() === "") return "Country is required.";
-
-    // No need to validate latitude/longitude from form inputs, as they come from localStorage
-    return null; // No errors
+    return null;
   };
 
   const handleSave = async () => {
@@ -52,14 +49,12 @@ const AddressForm: React.FC<AddressFormProps> = ({
         return;
       }
 
-      // Retrieve latitude and longitude from localStorage
-      const storedLatitude = localStorage.getItem('userLat');
-      const storedLongitude = localStorage.getItem('userLon');
+      const storedLatitude = localStorage.getItem("userLat");
+      const storedLongitude = localStorage.getItem("userLon");
 
       const latitude = storedLatitude ? parseFloat(storedLatitude) : 0;
       const longitude = storedLongitude ? parseFloat(storedLongitude) : 0;
 
-      // Construct the payload directly from the provided request body structure
       const payload: Omit<DeliveryAddress, '_id' | 'createdAt' | 'updatedAt' | '__v' | 'user_id'> = {
         label: address.label || "Other",
         house_no: address.house_no || "",
@@ -68,36 +63,32 @@ const AddressForm: React.FC<AddressFormProps> = ({
         postal_code: Number(address.postal_code),
         city: address.city,
         country: address.country,
-        latitude: latitude, // Get from localStorage
-        longitude: longitude, // Get from localStorage
+        latitude,
+        longitude,
       };
-      
-      if (isEditing) {        
-        // Update existing address (PUT request)
+
+      if (isEditing) {
         if (!address._id) {
           throw new Error("Cannot update address: Missing address ID.");
         }
-        await axios.put(
-          `http://localhost:9000/address`,
-          payload,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        await axiosInstance.put("http://localhost:9000/address", payload, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         alert("Address updated successfully!");
       } else {
-        // Add new address (POST request)
-        await axios.post(
-          "http://localhost:9000/address",
-          payload,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        await axiosInstance.post("http://localhost:9000/address", payload, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         alert("Address added successfully!");
       }
-      onSaveSuccess(); // Notify parent that save was successful
-    } catch (err) {
+
+      onSaveSuccess();
+    } catch (err: unknown) {
       console.error("Error saving address:", err);
-      const errorMessage = axios.isAxiosError(err) && err.response?.data?.message
-                           ? err.response.data.message
-                           : "Failed to save address. Please try again.";
+      const errorMessage =
+        axiosLib.isAxiosError(err) && err.response?.data?.message
+          ? err.response.data.message
+          : "Failed to save address. Please try again.";
       setError(errorMessage);
       alert(errorMessage);
     } finally {
@@ -127,7 +118,6 @@ const AddressForm: React.FC<AddressFormProps> = ({
         </div>
       )}
 
-      {/* Address Label Field */}
       <div className="mb-4">
         <label htmlFor="address-label" className="block text-sm font-medium text-gray-700 mb-2">
           Address Label *
@@ -147,7 +137,6 @@ const AddressForm: React.FC<AddressFormProps> = ({
         </select>
       </div>
 
-      {/* House No Field */}
       <div className="mb-4">
         <label htmlFor="house-no" className="block text-sm font-medium text-gray-700 mb-2">
           House No. / Flat No.
@@ -163,7 +152,6 @@ const AddressForm: React.FC<AddressFormProps> = ({
         />
       </div>
 
-      {/* Street Address Line 1 (address_location_1) */}
       <div className="mb-4">
         <label htmlFor="address-location-1" className="block text-sm font-medium text-gray-700 mb-2">
           Street Address Line 1 *
@@ -180,7 +168,6 @@ const AddressForm: React.FC<AddressFormProps> = ({
         />
       </div>
 
-      {/* Street Address Line 2 (address_location_2) */}
       <div className="mb-4">
         <label htmlFor="address-location-2" className="block text-sm font-medium text-gray-700 mb-2">
           Street Address Line 2 (Optional)
@@ -196,7 +183,6 @@ const AddressForm: React.FC<AddressFormProps> = ({
         />
       </div>
 
-      {/* City and Zip Code Fields */}
       <div className="grid md:grid-cols-2 gap-4 mb-4">
         <div>
           <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-2">
@@ -231,7 +217,6 @@ const AddressForm: React.FC<AddressFormProps> = ({
         </div>
       </div>
 
-      {/* Country Field */}
       <div className="mb-4">
         <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-2">
           Country *
@@ -248,15 +233,12 @@ const AddressForm: React.FC<AddressFormProps> = ({
         />
       </div>
 
-      {/* Latitude and Longitude Fields REMOVED - now from localStorage */}
-      {/* You might consider adding a small text indicating that location is based on current device location */}
-      {!isEditing && ( // Only show this message when adding a new address
+      {!isEditing && (
         <p className="text-sm text-gray-500 mb-4">
           Your location (latitude and longitude) will be automatically saved based on your current device location.
         </p>
       )}
 
-      {/* Save/Update Button */}
       <button
         onClick={handleSave}
         className="bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition-colors font-medium flex items-center justify-center"

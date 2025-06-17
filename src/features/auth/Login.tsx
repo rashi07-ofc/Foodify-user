@@ -1,42 +1,39 @@
-  import React, { useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../auth/authService";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  // --- FIX: Define error and loading states ---
-  const [error, setError] = useState<string | null>(null); // State for error messages
-  const [loading, setLoading] = useState(false); // State for loading indicator
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null); // Clear any previous errors
-    setLoading(true); // Set loading to true
+    setError(null);
+    setLoading(true);
 
     try {
       await login(email, password);
       navigate("/home");
-    } catch (err: any) { // Use 'any' or a more specific error type if available
+    } catch (err: any) {
       console.error("Login failed:", err);
-      // More robust error handling: check if it's an Axios error for specific messages
       if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message); // Use message from API if available
+        setError(err.response.data.message);
       } else if (err.message) {
-        setError("Login failed: " + err.message); // Use generic error message
+        setError("Login failed: " + err.message);
       } else {
         setError("Login failed. Please check your email and password.");
       }
     } finally {
-      setLoading(false); // Set loading to false regardless of success or failure
+      setLoading(false);
     }
   };
 
   return (
-     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6 space-y-6">
         <h2 className="text-2xl font-bold text-gray-800 text-center">
           Login to your account
@@ -67,22 +64,19 @@ const Login = () => {
             />
           </div>
 
-          {error && ( // Now 'error' is defined
+          {error && (
             <p className="text-sm text-red-500 text-center mt-2">{error}</p>
           )}
 
           <div className="flex justify-end text-sm">
-            <Link
-              to="/forgot"
-              className="text-orange-500 hover:underline"
-            >
+            <Link to="/forgot" className="text-orange-500 hover:underline">
               Forgot Password?
             </Link>
           </div>
 
           <button
             type="submit"
-            disabled={loading} // Now 'loading' is defined
+            disabled={loading}
             className={`w-full bg-orange-500 text-white py-2 rounded-md font-semibold transition ${
               loading ? "opacity-50 cursor-not-allowed" : "hover:bg-orange-600"
             }`}

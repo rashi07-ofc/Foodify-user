@@ -16,54 +16,52 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   modeOfPayment,
 }) => {
   const navigate = useNavigate();
-  const cId = localStorage.getItem("cart_id")
+  const cId = localStorage.getItem("cart_id");
   console.log(cId);
-  
 
   const handleOrder = async () => {
-  try {
-    const token = getAuthToken();
-    if (!token) {
-      navigate("/login");
-      return;
-    }
+    try {
+      const token = getAuthToken();
+      if (!token) {
+        navigate("/login");
+        return;
+      }
 
-    // Step 1: Create order draft
-    const orderIdResponse = await axios.post<{ orderId: string }>(
-      "http://localhost:3006/order/prePlaceOrder",
-      { cartId: "684ac6aca64c3abb72c33ab2" },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
-    const orderId = orderIdResponse.data.orderId;
-
-    // Step 2: Online Payment Flow
-    if (modeOfPayment === "online") {
-      const stripeResponse = await axios.post<{ data: { url: string } }>(
-        "http://localhost:3007/payment/checkout",
-        { orderId },
+      const orderIdResponse = await axios.post<{ orderId: string }>(
+        "http://localhost:3006/order/prePlaceOrder",
+        { cartId: "684ac6aca64c3abb72c33ab2" },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      // Step 3: Redirect to Stripe with returnUrl including orderId
-      window.location.href = stripeResponse.data.data.url;
-      return; // ⛔ prevent rest of function
+      const orderId = orderIdResponse.data.orderId;
+      localStorage.setItem("orderId", orderId);
+      if (modeOfPayment === "online") {
+        const stripeResponse = await axios.post<{ data: { url: string } }>(
+          "http://localhost:3007/payment/checkout",
+          {
+            orderId,
+            successUrl: "http://localhost:5173/order-success",
+            cancelUrl: "http://localhost:5173/order-failure",
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        window.location.href = stripeResponse.data.data.url;
+        return;
+      }
+
+      await axios.post(
+        "http://localhost:3006/order/placeOrder",
+        { orderId, modeOfPayment },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      navigate("/order-success");
+    } catch (error) {
+      console.error("Order processing failed:", error);
+      alert("Something went wrong while placing the order.");
     }
-
-    // Step 4: Cash on Delivery (only for COD)
-    await axios.post(
-      "http://localhost:3006/order/placeOrder",
-      { orderId, modeOfPayment },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
-    navigate("/order-success");
-  } catch (error) {
-    console.error("Order processing failed:", error);
-    alert("Something went wrong while placing the order.");
-  }
-};
-
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 sticky top-8">
@@ -81,12 +79,15 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
                   {deliveryAddress.label}
                 </span>
               )}
-              <p>{deliveryAddress.fullName}</p>
-              <p>{deliveryAddress.phoneNumber}</p>
-              <p>{deliveryAddress.streetAddress}</p>
+              <p>{deliveryAddress.house_no}</p>
+              <p>{deliveryAddress.address_location_1}</p>
+              {deliveryAddress.address_location_2 && (
+                <p>{deliveryAddress.address_location_2}</p>
+              )}
               <p>
-                {deliveryAddress.city} - {deliveryAddress.zipCode}
+                {deliveryAddress.city} - {deliveryAddress.postal_code}
               </p>
+              <p>{deliveryAddress.country}</p>
             </div>
           ) : (
             <p className="text-sm text-gray-400">

@@ -30,7 +30,6 @@ const OTP: React.FC = () => {
       );
 
       setSuccess(response.data.message || "OTP sent successfully!");
-      // Navigate to /signup after a short delay (optional)
       setTimeout(() => {
         navigate("/signup");
       }, 1000);
