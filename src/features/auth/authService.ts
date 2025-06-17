@@ -1,6 +1,6 @@
 // authService.ts
 
-import axios from "../../api/axios"; 
+import axios from "../../api/axios";
 import { getDeviceId } from "../../utils/deviceId";
 
 //access token ke liye
@@ -28,6 +28,7 @@ export const clearAuthTokens = () => {
 
 export const login = async (email: string, password: string) => {
   const response = await axios.post("auth/login", {
+    username: name,
     email,
     password,
     device_id: getDeviceId(),
@@ -63,7 +64,7 @@ export const Logout = async () => {
   } catch (error) {
     console.error("Logout API call failed:", error);
   } finally {
-    clearAuthTokens(); 
+    clearAuthTokens();
   }
 };
 
@@ -83,7 +84,7 @@ export const refreshAuthToken = async () => { // <--- NEW FUNCTION
 
   try {
     const response = await axios.post(
-      "auth/refresh",
+      "/auth/refresh",
       { refreshToken: currentRefreshToken }
     );
 

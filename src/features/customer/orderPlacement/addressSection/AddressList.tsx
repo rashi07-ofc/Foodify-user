@@ -1,21 +1,7 @@
 // AddressList.tsx
 import React, { useState, useEffect } from "react";
 import { Edit2, Plus } from "lucide-react";
-// Make sure your DeliveryAddress type aligns with the API response
-// For example:
-/*
-export interface DeliveryAddress {
-  _id: string; // Use _id as the unique identifier
-  label?: string;
-  fullName: string; // Assuming you'll add this to your backend response or derive it
-  phoneNumber: string; // Assuming you'll add this
-  address_location_1: string; // Maps to streetAddress
-  city: string;
-  postal_code: number; // Maps to zipCode
-  country: string;
-  // ... other fields from your API response like house_no, latitude, longitude, etc.
-}
-*/
+
 import type { DeliveryAddress } from "../../../../types"; 
 import axios from "../../../../api/axios"; 
 import { getAuthToken } from "../../../auth/authService"; 

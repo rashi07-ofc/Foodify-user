@@ -13,7 +13,10 @@ type CustomInternalAxiosRequestConfig = InternalAxiosRequestConfig & {
 
 const api = axios.create({
   baseURL: "http://localhost:3001",
+<<<<<<< HEAD
+=======
   timeout: 15000,
+>>>>>>> 5347c53c09e059b08fb60ec033735b768fcd1c09
 });
 
 api.interceptors.request.use(
@@ -43,8 +46,16 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const { accessToken: newAccessToken } = await refreshAuthToken();
+        const refreshToken = localStorage.getItem("refreshToken");
+        const { data } = await axios.post("auth/refresh", {
+          refreshToken,
+        });
 
+        const newAccessToken = data.accessToken;
+        localStorage.setItem("accessToken", newAccessToken);
+
+        // Update headers
+        api.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
         if (originalRequest.headers) {
           originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
         }

@@ -35,9 +35,9 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         { cartId: "684ac6aca64c3abb72c33ab2" },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
-      const orderId = orderIdResponse.data.orderId;
-
+      // console.log(orderIdResponse);
+      const orderId = orderIdResponse.data.data.orderId;
+       console.log(orderId);
       if (modeOfPayment === "online") {
         console.log("Hii");
         // console.log(orderId);
