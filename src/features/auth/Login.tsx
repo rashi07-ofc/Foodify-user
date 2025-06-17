@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../auth/authService";
+import { login as loginRedux } from "../../redux/slice/authSlice";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -9,6 +11,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,7 +19,8 @@ const Login = () => {
     setLoading(true);
 
     try {
-      await login(email, password);
+      const user = await login(email, password); // assuming this returns user data
+      dispatch(loginRedux(user)); // sets isLoggedIn = true
       navigate("/home");
     } catch (err: any) {
       console.error("Login failed:", err);

@@ -16,7 +16,7 @@ import Login from "../features/auth/Login";
 import Register from "../features/auth/Register";
 import ZomatoCollections from "../features/restaurants/RestaurantLIst/ZomatoCollections";
 import OTP from "../features/auth/OTP";
-import ProfilePage from "../pages/HomePage/ProfilePage";
+import ProfilePage from "../pages/ProfilePage"
 import NewPassword from "../pages/forgetPassword/NewPassword";
 import ResetSuccess from "../pages/forgetPassword/ResetSuccess";
 
