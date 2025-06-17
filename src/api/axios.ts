@@ -7,7 +7,7 @@ type CustomInternalAxiosRequestConfig = InternalAxiosRequestConfig & {
 };
 
 const api = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: "http://localhost:3001",
 });
 
 // Request interceptor with correct typing
@@ -35,10 +35,10 @@ api.interceptors.response.use(
 
       try {
         const refreshToken = localStorage.getItem("refreshToken");
-        const { data } = await axios.post("https://your.api.url/auth/refresh", {
+        const { data } = await axios.post("auth/refresh", {
           refreshToken,
         });
-
+ 
         const newAccessToken = data.accessToken;
         localStorage.setItem("accessToken", newAccessToken);
 
