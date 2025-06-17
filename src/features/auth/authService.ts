@@ -44,19 +44,23 @@ export const login = async (email: string, password: string) => {
   }
 
   setAuthHeaders(accessToken);
-
-  return { accessToken, refreshToken, user: { _id: data._id, email: data.email, role: data.role } };
+  
+  return { accessToken, refreshToken }; 
 };
 
 export const Logout = async () => {
   const accessToken = getAuthToken();
 
   try {
-    await axios.post(
-      "auth/logout",
-      {},
-      { headers: { 'Authorization': `Bearer ${accessToken}` } }
-    );
+    if (accessToken) { 
+      await axios.post(
+        "/auth/logout", 
+        {},
+        { headers: { 'Authorization': `Bearer ${accessToken}` } } 
+      );
+    }
+  } catch (error) {
+    console.error("Logout API call failed:", error);
   } finally {
     clearAuthTokens();
   }
@@ -78,7 +82,7 @@ export const refreshAuthToken = async () => { // <--- NEW FUNCTION
 
   try {
     const response = await axios.post(
-      "http://localhost:3000/auth/refresh",
+      "/auth/refresh",
       { refreshToken: currentRefreshToken }
     );
 
