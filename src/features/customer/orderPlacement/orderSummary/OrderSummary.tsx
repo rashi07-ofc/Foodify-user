@@ -21,56 +21,49 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   
 
   const handleOrder = async () => {
-    try {
-      // Get current auth token
-      const token = getAuthToken();
-      if (!token) {
-        navigate("/login");
-        return;
-      }
-      console.log(token);
-      // Create order with auth
-      const orderIdResponse = await axios.post<{ id: string }>(
-        "http://localhost:3006/order/prePlaceOrder",
-        { cartId: "684ac6aca64c3abb72c33ab2" },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      // console.log(orderIdResponse);
-      const orderId = orderIdResponse.data.data.orderId;
-       console.log(orderId);
-      if (modeOfPayment === "online") {
-        console.log("Hii");
-        // console.log(orderId);
-        const stripeResponse = await axios.post<{ url: string }>(
-          "http://localhost:3007/payment/checkout",
-          { orderId },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        window.location.href = stripeResponse.data.data.url;
-      }
-
-      // Cash on delivery
-      console.log("Placing order with:", {
-        orderId,
-        modeOfPayment,
-      });
-
-      console.log(modeOfPayment);
-      console.log(orderId);
-
-      await axios.post(
-        "http://localhost:3006/order/placeOrder",
-        { orderId, modeOfPayment },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      // console.log("Hii hihi");
-
-      navigate("/order-success");
-    } catch (error) {
-      console.error("Order processing failed:", error);
-      alert("Something went wrong while placing the order.");
+  try {
+    const token = getAuthToken();
+    if (!token) {
+      navigate("/login");
+      return;
     }
-  };
+
+    // Step 1: Create order draft
+    const orderIdResponse = await axios.post<{ orderId: string }>(
+      "http://localhost:3006/order/prePlaceOrder",
+      { cartId: "684ac6aca64c3abb72c33ab2" },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    const orderId = orderIdResponse.data.orderId;
+
+    // Step 2: Online Payment Flow
+    if (modeOfPayment === "online") {
+      const stripeResponse = await axios.post<{ data: { url: string } }>(
+        "http://localhost:3007/payment/checkout",
+        { orderId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      // Step 3: Redirect to Stripe with returnUrl including orderId
+      window.location.href = stripeResponse.data.data.url;
+      return; // ⛔ prevent rest of function
+    }
+
+    // Step 4: Cash on Delivery (only for COD)
+    await axios.post(
+      "http://localhost:3006/order/placeOrder",
+      { orderId, modeOfPayment },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    navigate("/order-success");
+  } catch (error) {
+    console.error("Order processing failed:", error);
+    alert("Something went wrong while placing the order.");
+  }
+};
+
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 sticky top-8">
