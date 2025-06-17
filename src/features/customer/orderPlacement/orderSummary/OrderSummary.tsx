@@ -46,7 +46,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
           { orderId },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        window.location.href = stripeResponse.data.url;
+        window.location.href = stripeResponse.data.data.url;
       }
 
       // Cash on delivery

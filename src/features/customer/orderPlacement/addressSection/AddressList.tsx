@@ -54,7 +54,7 @@ const AddressList: React.FC<AddressListProps> = ({
 
         // Use the correct API endpoint: http://localhost:9000/address
         const response = await axios.get<DeliveryAddress[]>(
-          "http://localhost:9000/address", // <-- Updated API endpoint
+          "http://localhost:9000/address/all", // <-- Updated API endpoint
           {
             headers: {
               Authorization: `Bearer ${token}`,

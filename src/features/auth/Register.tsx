@@ -118,11 +118,11 @@ const Register: React.FC = () => {
       const res = await axios.post(
         "http://localhost:9000/auth/signup",
         {
-          name: formData.name, // Include name here if your final signup endpoint needs it
+          username: formData.name, // Include name here if your final signup endpoint needs it
           email: formData.email,
           phone: formData.phone,
           password: formData.password,
-          role: formData.role,
+          role: 1,
           otp, // ✅ use OTP from state
         },
         {
@@ -134,6 +134,11 @@ const Register: React.FC = () => {
       );
 
       console.log("✅ Registration successful!");
+
+      const { accessToken, refreshToken } = res.data;
+
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
 
       navigate("/home", {
         state: { message: "Registration successful!" },

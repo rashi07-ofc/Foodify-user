@@ -30,7 +30,7 @@ export default function ResetPasswordPage() {
 
     try {
       await axios.post(
-        `http://localhost:9008/auth/reset-password/${token}`,
+        `http://localhost:9000/auth/reset-password/${token}`,
         {
           password,
           confirm_password: confirmPassword,

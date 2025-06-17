@@ -71,8 +71,8 @@ const AddressForm: React.FC<AddressFormProps> = ({
         latitude: latitude, // Get from localStorage
         longitude: longitude, // Get from localStorage
       };
-
-      if (isEditing) {
+      
+      if (isEditing) {        
         // Update existing address (PUT request)
         if (!address._id) {
           throw new Error("Cannot update address: Missing address ID.");
