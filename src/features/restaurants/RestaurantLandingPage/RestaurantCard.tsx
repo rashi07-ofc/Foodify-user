@@ -23,7 +23,7 @@ const RestaurantCard: React.FC = () => {
    const restaurantId = id ;
   const [restaurant, setRestaurant] = useState<any>(null);
   const [loading, setLoading] = useState(true);
- console.log(restaurantId)
+
   useEffect(() => {
     fetch(`http://localhost:3005/restaurant/${restaurantId}`)
       .then((res) => res.json())

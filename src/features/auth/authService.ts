@@ -45,7 +45,7 @@ export const login = async (email: string, password: string) => {
   
   setAuthHeaders(accessToken);
   
-  return { accessToken, refreshToken, user: { _id: data._id, email: data.email, role: data.role } }; 
+  return { accessToken, refreshToken }; 
 };
 
 export const Logout = async () => {
@@ -54,7 +54,7 @@ export const Logout = async () => {
   try {
     if (accessToken) { 
       await axios.post(
-        "http://localhost:3000/auth/logout", 
+        "/auth/logout", 
         {},
         { headers: { 'Authorization': `Bearer ${accessToken}` } } 
       );
@@ -82,7 +82,7 @@ export const refreshAuthToken = async () => { // <--- NEW FUNCTION
 
   try {
     const response = await axios.post(
-      "http://localhost:3000/auth/refresh",
+      "/auth/refresh",
       { refreshToken: currentRefreshToken }
     );
 

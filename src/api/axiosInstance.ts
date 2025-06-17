@@ -1,10 +1,10 @@
 import axios from "axios";
 
- const axiosInstanse=axios.create({
+ const axiosInstance=axios.create({
     baseURL:"http://localhost:3005",
 })
 
-axiosInstanse.interceptors.request.use(
+axiosInstance.interceptors.request.use(
     (config)=>{
         const accessToken = localStorage.getItem("authToken");
 
@@ -16,4 +16,4 @@ axiosInstanse.interceptors.request.use(
     (err)=>Promise.reject(err)
 )
 
-export default axiosInstanse;
+export default axiosInstance;
