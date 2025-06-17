@@ -73,7 +73,7 @@ const Login = () => {
 
           <div className="flex justify-end text-sm">
             <Link
-              to="/forget"
+              to="/forgot"
               className="text-orange-500 hover:underline"
             >
               Forgot Password?

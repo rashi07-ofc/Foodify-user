@@ -20,11 +20,12 @@ const cardVariants = {
 
 const RestaurantCard: React.FC = () => {
   const { id } = useParams();
+   const restaurantId = id ;
   const [restaurant, setRestaurant] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-
+ console.log(restaurantId)
   useEffect(() => {
-    fetch(`http://localhost:3005/restaurant/${id}`)
+    fetch(`http://localhost:3005/restaurant/${restaurantId}`)
       .then((res) => res.json())
       .then((data) => {
         setRestaurant(data);
@@ -37,7 +38,8 @@ const RestaurantCard: React.FC = () => {
   }, []);
 
   if (loading) return <div className="text-center mt-10">Loading...</div>;
-  if (!restaurant) return <div className="text-center mt-10">No data found</div>;
+  if (!restaurant)
+    return <div className="text-center mt-10">No data found</div>;
 
   const images = [
     "https://plus.unsplash.com/premium_photo-1661953124283-76d0a8436b87?q=80&w=2088&auto=format&fit=crop",
@@ -60,7 +62,9 @@ const RestaurantCard: React.FC = () => {
 
       {/* Info */}
       <div className="mb-4">
-        <h2 className="text-2xl font-semibold text-gray-800">{restaurant.name}</h2>
+        <h2 className="text-2xl font-semibold text-gray-800">
+          {restaurant.name}
+        </h2>
         <p className="text-gray-600 mt-1">{restaurant.address}</p>
         <p className="text-gray-500 text-sm mt-1">Open: 9:00 AM - 11:00 PM</p>
         <p className="text-gray-500 text-sm mt-1 flex items-center gap-1">
@@ -101,18 +105,19 @@ const RestaurantCard: React.FC = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-2">
         {images.map((src, idx) => (
           <motion.img
-            key={idx}
-            src={src}
-            alt={`food item ${idx + 1}`}
-            loading="lazy"
-            variants={imgVariants}
-            initial="initial"
-            whileHover="hover"
-            className="rounded-lg object-cover h-40 w-full cursor-pointer transition-transform"
-            draggable={false}
+          key={idx}
+          src={src}
+          alt={`food item ${idx + 1}`}
+          loading="lazy"
+          variants={imgVariants}
+          initial="initial"
+          whileHover="hover"
+          className="rounded-lg object-cover h-40 w-full cursor-pointer transition-transform"
+          draggable={false}
           />
         ))}
       </div>
+      {/* <MenuItemCard restaurantId={id} /> */}
     </motion.div>
   );
 };

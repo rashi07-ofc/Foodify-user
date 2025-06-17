@@ -96,7 +96,7 @@ const Navbar: React.FC = () => {
           {!isAuthenticated ? (
             <>
               <button
-                onClick={() => navigate("/signup")}
+                onClick={() => navigate("/otp")}
                 className="text-orange-500 border border-orange-500 px-5 py-2 rounded-full font-medium hover:bg-orange-50 transition"
               >
                 Sign Up

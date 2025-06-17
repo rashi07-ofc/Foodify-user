@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -12,6 +12,7 @@ import type { RootState } from "../../../redux/store";
 import { CiFilter } from "react-icons/ci";
 import { IoSearchOutline, IoLocationOutline } from "react-icons/io5";
 import { MdClear, MdStar } from "react-icons/md";
+// import { BiTime } from "react-icons/bi"; // Not used, can be removed
 import Delivery from "./Delivery";
 import Collections from "./Collections";
 import FAQSection from "./FAQSection";
@@ -51,44 +52,62 @@ const ZomatoCollections: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState<boolean>(false);
+
   const dispatch = useDispatch();
   const { filteredRestaurants, filters } = useSelector(
     (state: RootState) => state.filter
   );
+
   const { location, error: locationError, getLocation } = useGeolocation();
 
+  // Flag to track if the API has been called
+  const hasFetchedRestaurants = useRef(false);
+
+  // 1. Call getLocation once on mount
   useEffect(() => {
     getLocation();
-  }, []);
+  }, []); // Empty dependency array: runs only once
 
-  // Fetch restaurants from API
+  // 2. Fetch restaurants ONLY when location is available OR geolocation fails
   useEffect(() => {
-    const fetchRestaurants = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const demoLocation = {
-          latitude: location?.lat || 12.97,
-          longitude: location?.lon || 77.59,
-          offset: 1,
-          limit: 10,
-        };
+    // Only proceed if location or locationError has a value AND we haven't fetched yet
+    // This ensures the API call happens exactly once after location is determined (or failed).
+    if (!hasFetchedRestaurants.current && (location?.lat || locationError)) {
+      const fetchRestaurants = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+          const latitude = location?.lat || 12.97; // Use actual location or static fallback
+          const longitude = location?.lon || 77.59; // Use actual location or static fallback
 
-        const restaurants = await getNearbyRestaurants(demoLocation);
-        console.log("Nearby Restaurants:", restaurants);
-        setApiRestaurants(restaurants || []);
-      } catch (err) {
-        console.error("Error fetching nearby restaurants:", err);
-        setError("Failed to fetch restaurants from API");
-        setApiRestaurants([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+          const demoLocation = {
+            latitude:latitude,
+            longitude:longitude,
+            offset: 1,
+            limit: 10,
+          };
 
-    fetchRestaurants();
-  }, [location]);
+          console.log("Calling API with location:", demoLocation);
+          const restaurants = await getNearbyRestaurants(demoLocation);
+          console.log("Nearby Restaurants fetched:", restaurants);
+          setApiRestaurants(restaurants || []);
 
+          // Set the ref to true after a successful or attempted fetch
+          hasFetchedRestaurants.current = true;
+        } catch (err) {
+          console.error("Error fetching nearby restaurants:", err);
+          setError("Failed to fetch restaurants from API");
+          setApiRestaurants([]);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchRestaurants();
+    }
+  }, [location, locationError]); // Depend on location and locationError
+
+  // This useEffect applies filters to static data, not directly related to the API call count
   useEffect(() => {
     dispatch(applyFilters(restaurantsData));
   }, [dispatch, filters]);
@@ -331,7 +350,7 @@ const ZomatoCollections: React.FC = () => {
               </div>
             </div>
 
-            {/* Enhanced Filters Section */}
+            {/* Enhanced Filters Section (moved inside the render function) */}
             <div className="py-8 px-4 sm:px-6 lg:px-8 bg-white border-b border-gray-200">
               <div className="max-w-7xl mx-auto">
                 <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
@@ -415,7 +434,6 @@ const ZomatoCollections: React.FC = () => {
                 </div>
               </div>
             </div>
-
             {/* API Restaurants Section */}
             <div className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
               <div className="max-w-7xl mx-auto">

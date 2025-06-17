@@ -17,7 +17,8 @@ export const getNearbyRestaurants=async({longitude,latitude,offset,limit}:Locati
             limit
         }
     });
-
+    console.log(response.data);
+    
     return response.data;
 }
 
