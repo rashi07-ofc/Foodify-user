@@ -23,7 +23,7 @@
 //         path="/admin/special-orders/:orderId"
 //         element={<SpecialOrderDetails />}
 //       /> */}
-     
+
 //       {/* Restaurant Routes */}
 //       <Route path="/restaurant/landing" element={<MainPage />} />
 //       <Route path="/restaurant/delivery" element={<DelieveryLanding />} />
@@ -51,11 +51,17 @@ import Login from "../features/auth/Login";
 import Register from "../features/auth/Register";
 import ZomatoCollections from "../features/restaurants/RestaurantLIst/ZomatoCollections";
 import OTP from "../features/auth/OTP";
+import Navbar from "../components/layout/Navbar";
+import ProfilePage from "../pages/HomePage/ProfilePage";
 
 const router = createBrowserRouter([
   {
     path: 'place-order',
     element: <PlaceOrderPage />
+  },
+  {
+    path: '/profile',
+    element: <ProfilePage />
   },
   {
     path: 'place-order/order-status',
@@ -74,30 +80,33 @@ const router = createBrowserRouter([
     element: <MainPage />
   },
   {
-    path:'/cart',
+    path: '/cart',
     element: <CartPage />
   },
   {
-    path:'/',
-    element:<LandingPage/>
+    path: '/',
+    element: <LandingPage />
   },
   {
-    path:'/login',
-    element:<Login/>
+    path: '/login',
+    element: <Login />
   },
   {
-    path:'/signup',
-    element:<Register/>
-  },
-
-  {
-    path:'/list',
-    element:<ZomatoCollections/>
+    path: '/signup',
+    element: <Register />
   },
 
   {
-    path:'/otp',
-    element:<OTP/>
+    path: '/list',
+    element: <>
+      <Navbar />
+      <ZomatoCollections />
+    </>
+  },
+
+  {
+    path: '/otp',
+    element: <OTP />
   }
 
 
