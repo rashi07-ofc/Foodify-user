@@ -10,8 +10,6 @@ interface MenuItemCardProps {
   restaurantId: string;
 }
 
-
-
 const MenuItemCard: React.FC<MenuItemCardProps> = ({
   id, // menu item ID
   name,
@@ -26,14 +24,21 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   const [quantity, setQuantity] = useState<number>(0);
     const accessToken = getAuthToken(); // or use getAuthToken()
 
-
 const handleAdd = () => {
-  console.log("adding api")
-  const url = `http://localhost:3002/cart/add/${restaurantId}/${id}`;
-  console.log(accessToken)
+  console.log("adding api");
+  const url = "http://localhost:3002/cart/add";
+  console.log(accessToken);
+
   fetch(url, {
     method: "POST",
-     headers: { 'Authorization': `Bearer ${accessToken}` }     
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken}`
+    },
+    body: JSON.stringify({
+      restaurantId,
+      itemId: id
+    })
   })
     .then((res) => {
       if (res.ok) {
@@ -46,11 +51,17 @@ const handleAdd = () => {
 };
 
 const increaseQty = () => {
-  const url = `http://localhost:3002/cart/add/${restaurantId}/${id}`;
+  const url = "http://localhost:3002/cart/add";
   fetch(url, {
     method: "POST",
-     headers: { 'Authorization': `Bearer ${accessToken}` }     
-
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken}`
+    },
+    body: JSON.stringify({
+      restaurantId,
+      itemId: id
+    })
   })
     .then((res) => {
       if (res.ok) {
@@ -62,45 +73,34 @@ const increaseQty = () => {
     .catch((err) => console.error("Increase quantity API error:", err));
 };
 
+const decreaseQty = () => {
+  const url = "http://localhost:3002/cart/remove";
+  const requestBody = 
+    { itemId: id }
+  ;
 
-  const decreaseQty = () => {
-    if (quantity === 1) {
-      const url = `http://localhost:3002/cart/remove/${id}`;
-      fetch(url, {
-        method: "POST",
-     headers: { 'Authorization': `Bearer ${accessToken}` }    , 
+  fetch(url, {
+    method: "POST",
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken}`
+    },
+    body: JSON.stringify(requestBody)
+  })
+    .then((res) => {
+      if (res.ok) {
+        if (quantity === 1) {
+          setQuantity(0);
+        } else {
+          setQuantity((prev) => prev - 1);
+        }
+      } else {
+        console.error("Failed to decrease quantity");
+      }
+    })
+    .catch((err) => console.error("Decrease quantity API error:", err));
+};
 
-        body: JSON.stringify({itemId: id }), 
-      })
-        .then((res) => {
-          if (res.ok) {
-            setQuantity(0);
-          } else {
-            console.error("Failed to remove from cart");
-          }
-        })
-        .catch((err) => console.error("Remove from cart API error:", err));
-    } else {
-      const url = `http://localhost:3002/cart/remove/${id}`; // DELETE for removing the item entirely
-      fetch(url, {
-        method: "POST",
-     headers: { 'Authorization': `Bearer ${accessToken}` }     
-,
-        body: JSON.stringify({
-          itemId: id,
-          delta: -1, // Indicate a decrement
-        }),
-      })
-        .then((res) => {
-          if (res.ok) {
-            setQuantity((prev) => prev - 1);
-          } else {
-            console.error("Failed to decrease quantity");
-          }
-        })
-        .catch((err) => console.error("Decrease quantity API error:", err));
-    }
-  };
 
 
   const globalImages = [

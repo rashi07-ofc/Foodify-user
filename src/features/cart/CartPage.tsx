@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiTrash2, FiShoppingCart, FiPlus, FiMinus } from "react-icons/fi";
 import { getAuthToken } from "../auth/authService";
+import { useCart } from "../../context/CartContext";
+
 
 const CartPage: React.FC = () => {
   const [cartData, setCartData] = useState<any>(null);
@@ -26,6 +28,7 @@ const CartPage: React.FC = () => {
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
+
           },
         }
       );
@@ -64,6 +67,7 @@ const CartPage: React.FC = () => {
       const data = await response.json();
       console.log(data);
       setCartData(data);
+      
       if (data?.restaurantId) {
         fetchAvailableCoupons(data.restaurantId);
       }
@@ -106,72 +110,47 @@ const CartPage: React.FC = () => {
   // Update quantity on backend and refresh
   // Update quantity on backend by calling separate APIs for increase/decrease
   const updateQuantity = async (itemId: string, delta: number) => {
-    try {
-      if (delta === 1) {
-        // Increase quantity by adding item again
-        const restaurantId = cartData.restaurantId;
-        const response = await fetch(
-          `http://localhost:3002/cart/add/${restaurantId}/${itemId}`,
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
+  try {
+    let response;
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || "Failed to add item");
-        }
-      } else if (delta === -1) {
-        const item = cartData.items.find((i: any) => i.itemId === itemId);
-        if (!item) return;
-
-        if (item.quantity === 1) {
-          // Remove item entirely
-          const response = await fetch(
-            `http://localhost:3002/cart/remove/${itemId}`,
-            {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-            }
-          );
-
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || "Failed to remove item");
-          }
-        } else {
-          // Decrease item quantity
-          const response = await fetch(
-            `http://localhost:3002/cart/remove/${itemId}`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${accessToken}`,
-              },
-              body: JSON.stringify({ itemId }),
-            }
-          );
-
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(
-              errorData.message || "Failed to decrease item quantity"
-            );
-          }
-        }
-      }
-
-      await fetchCart();
-    } catch (err: any) {
-      alert(err.message || "Failed to update quantity");
+    if (delta === 1) {
+      // Increase quantity
+      response = await fetch(`http://localhost:3002/cart/add`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          restaurantId: cartData.restaurantId,
+          itemId,
+        }),
+      });
+    } else if (delta === -1) {
+      // Decrease quantity (including case when quantity === 1)
+      response = await fetch(`http://localhost:3002/cart/remove`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          itemId,
+        }),
+      });
     }
-  };
+
+    if (response && !response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to update quantity");
+    }
+
+    await fetchCart();
+  } catch (err: any) {
+    alert(err.message || "Failed to update quantity");
+  }
+};
+
 
   const handleCheckout = async () => {
     try {
@@ -311,12 +290,12 @@ const CartPage: React.FC = () => {
                     <FiPlus />
                   </button>
                 </div>
-                <button
+                {/* <button
                   onClick={() => removeItem(item.itemId)}
                   className="text-orange-500 hover:text-orange-700 text-lg"
                 >
                   <FiTrash2 />
-                </button>
+                </button> */}
               </div>
             </div>
           </motion.div>

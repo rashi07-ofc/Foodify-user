@@ -81,8 +81,8 @@ const ZomatoCollections: React.FC = () => {
           const longitude = location?.lon || 77.59; // Use actual location or static fallback
 
           const demoLocation = {
-            latitude:latitude,
-            longitude:longitude,
+            latitude: 28.6105,
+            longitude:77.37,
             offset: 1,
             limit: 10,
           };

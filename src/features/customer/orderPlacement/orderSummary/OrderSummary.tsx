@@ -16,6 +16,8 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   modeOfPayment,
 }) => {
   const navigate = useNavigate();
+  console.log("addresssss",deliveryAddress);
+  
   const cId = localStorage.getItem("cart_id")
   console.log(cId);
   
@@ -32,7 +34,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
       // Create order with auth
       const orderIdResponse = await axios.post<{ id: string }>(
         "http://localhost:3006/order/prePlaceOrder",
-        { cartId: "684ac6aca64c3abb72c33ab2" },
+        { cartId: "6851b7b5786ecbff4c06e854" },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       // console.log(orderIdResponse);

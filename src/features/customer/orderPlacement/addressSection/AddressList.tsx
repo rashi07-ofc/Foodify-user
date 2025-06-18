@@ -49,6 +49,7 @@ const AddressList: React.FC<AddressListProps> = ({
         );
         console.log(response);
         
+        
 
         setAddresses(response.data);
 
