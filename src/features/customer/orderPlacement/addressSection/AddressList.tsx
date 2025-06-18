@@ -3,8 +3,9 @@ import React, { useState, useEffect } from "react";
 import { Edit2, Plus } from "lucide-react";
 
 import type { DeliveryAddress } from "../../../../types"; 
-import axios from "../../../../api/axios"; 
+import axios from "axios"
 import { getAuthToken } from "../../../auth/authService"; 
+import { useNavigate } from "react-router-dom";
 
 interface AddressListProps {
   initialSelectedAddressId?: string | null;
@@ -24,6 +25,7 @@ const AddressList: React.FC<AddressListProps> = ({
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(initialSelectedAddressId);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAddresses = async () => {
@@ -34,11 +36,10 @@ const AddressList: React.FC<AddressListProps> = ({
         if (!token) {
           setError("Authentication required to load addresses.");
           setLoading(false);
-          // Consider redirecting to login or showing a specific authentication message
+          navigate("/login")
           return;
         }
 
-        // Use the correct API endpoint: http://localhost:9000/address
         const response = await axios.get<DeliveryAddress[]>(
           "http://localhost:9000/address/all", // <-- Updated API endpoint
           {

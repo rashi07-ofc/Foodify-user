@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../auth/authService";
+import { Login as loginApi } from "../auth/authService";
 import { login as loginRedux } from "../../redux/slice/authSlice";
 import { useDispatch } from "react-redux";
 
@@ -19,7 +19,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const user = await login(email, password); // assuming this returns user data
+      const user = await loginApi(email, password); // assuming this returns user data
       dispatch(loginRedux(user)); // sets isLoggedIn = true
       navigate("/home");
     } catch (err: any) {

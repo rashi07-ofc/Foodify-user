@@ -24,7 +24,7 @@ export const clearAuthTokens = () => {
   delete axios.defaults.headers.common["Authorization"];
 };
 
-export const login = async (email: string, password: string) => {
+export const Login = async (email: string, password: string) => {
   const response = await axios.post("auth/login", {
     email,
     password,
@@ -53,7 +53,7 @@ export const Logout = async () => {
     if (accessToken) { 
       console.log("loggin out")
       await axios.post(
-        "/auth/logout", 
+        "/auth/logout",
         {},
         { headers: { 'Authorization': `Bearer ${accessToken}` } } 
       );
@@ -75,7 +75,7 @@ export const refreshAuthToken = async () => {
 
   try {
     const response = await axios.post(
-      "/auth/refresh",
+      "http://localhost:3001/auth/refresh",
       { refreshToken: currentRefreshToken }
     );
 
