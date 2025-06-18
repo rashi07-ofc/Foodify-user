@@ -14,6 +14,7 @@ import {
     FaSpinner,
     FaTrash,
 } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 // Define the UserProfile interface
 interface UserProfile {
@@ -379,7 +380,7 @@ const ProfilePage: React.FC = () => {
         );
     }
 
-  if (loading) {
+  if (isLoading) {
     return (
         <div className="min-h-screen py-12 px-4 bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200">
             <div className="max-w-4xl mx-auto">
@@ -654,7 +655,7 @@ const ProfilePage: React.FC = () => {
     );
   }
 
-  if (!user) {
+  if (!currentUser) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-orange-50">
         <div className="text-center bg-white p-6 rounded-xl shadow-lg">
@@ -679,12 +680,12 @@ const ProfilePage: React.FC = () => {
           <div className="px-6 pb-6 -mt-12 relative">
             <div className="flex flex-col md:flex-row items-center md:items-end gap-4">
               <div className="w-24 h-24 bg-orange-600 rounded-full border-4 border-white shadow flex items-center justify-center">
-                <span className="text-white text-2xl font-bold">{getInitials(user.name)}</span>
+                <span className="text-white text-2xl font-bold">{currentUser.username}</span>
               </div>
               <div className="text-center md:text-left flex-1">
-                <h1 className="text-3xl font-bold text-gray-900">{user.name}</h1>
-                <p className="text-lg text-orange-600 font-semibold">{user.membershipTier}</p>
-                <p className="text-sm text-gray-600">{user.email} • {user.phone}</p>
+                <h1 className="text-3xl font-bold text-gray-900">{currentUser.username}</h1>
+                {/* <p className="text-lg text-orange-600 font-semibold">{currentUser.membershipTier}</p> */}
+                <p className="text-sm text-gray-600">{currentUser.email} • {currentUser.phone}</p>
               </div>
               <button className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition">
                 🎁 Redeem Points
@@ -693,7 +694,7 @@ const ProfilePage: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Tabs */}
+        Tabs
         <div className="bg-white rounded-lg shadow border mb-6">
           <div className="flex border-b overflow-x-auto">
             {[
@@ -711,9 +712,9 @@ const ProfilePage: React.FC = () => {
               </button>
             ))}
           </div>
-        </div>
+        </div> 
 
-        {/* Tab Content */}
+        Tab Content
         <motion.div key={activeTab} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
           {activeTab === 'profile' && (
             <>
@@ -738,7 +739,7 @@ const ProfilePage: React.FC = () => {
               <div className="bg-white rounded-lg shadow border p-6">
                 <h3 className="text-xl font-bold text-gray-900 mb-4">❤️ Favorite Restaurants</h3>
                 <div className="space-y-3">
-                  {user.favoriteRestaurants.map((restaurant, index) => (
+                  {currentUser.favoriteRestaurants.map((restaurant, index) => (
                     <div key={index} className="flex items-center justify-between p-3 bg-orange-100 rounded-lg">
                       <span className="font-medium">{restaurant}</span>
                       <button className="px-3 py-1 bg-orange-500 text-white rounded text-sm hover:bg-orange-600">
@@ -815,7 +816,7 @@ const ProfilePage: React.FC = () => {
             </div>
           )}
 
-          {activeTab === 'preferences' && (
+        {activeTab === 'preferences' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-white rounded-lg shadow border p-6">
                 <h3 className="text-xl font-bold text-gray-900 mb-4">🥗 Dietary Preferences</h3>

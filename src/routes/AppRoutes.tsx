@@ -28,6 +28,8 @@ import PaymentFailure from "../features/customer/orderPlacement/paymentSection/P
 import ForgotPassword from "../pages/forgetPassword/ForgetPassword";
 import ResetPasswordPage from "../features/auth/ResetPassword";
 import { CartProvider } from "../context/CartContext";
+import OrderSuccessPage from "../features/customer/orderPlacement/orderSummary/OrderSuccess";
+import OrderFailurePage from "../features/customer/orderPlacement/orderSummary/OrderFailure";
 
 const router = createBrowserRouter([
   {
@@ -57,7 +59,10 @@ const router = createBrowserRouter([
         element: <PaymentFailure />,
       },
       { path: "/forgot", element: <ForgotPassword /> },
-      {path: '/reset-password', element: <ResetPasswordPage />}
+      {path: '/reset-password', element: <ResetPasswordPage />},
+      {path:"/order-success", element: <OrderSuccessPage />},
+      {path:"/order-failure", element: <OrderFailurePage />}
+
     ],
   },
 ]);

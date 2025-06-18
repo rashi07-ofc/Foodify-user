@@ -16,56 +16,45 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   modeOfPayment,
 }) => {
   const navigate = useNavigate();
-  console.log("addresssss",deliveryAddress);
-  
-  const cId = localStorage.getItem("cart_id")
+  const cId = localStorage.getItem("cart_id");
   console.log(cId);
-  
 
   const handleOrder = async () => {
     try {
-      // Get current auth token
       const token = getAuthToken();
       if (!token) {
         navigate("/login");
         return;
       }
-      console.log(token);
-      // Create order with auth
-      const orderIdResponse = await axios.post<{ id: string }>(
+
+      const orderIdResponse = await axios.post<{ orderId: string }>(
         "http://localhost:3006/order/prePlaceOrder",
         { cartId: "6851b7b5786ecbff4c06e854" },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      // console.log(orderIdResponse);
-      const orderId = orderIdResponse.data.data.orderId;
-       console.log(orderId);
+
+      const orderId = orderIdResponse.data.orderId;
+      localStorage.setItem("orderId", orderId);
       if (modeOfPayment === "online") {
-        console.log("Hii");
-        // console.log(orderId);
-        const stripeResponse = await axios.post<{ url: string }>(
+        const stripeResponse = await axios.post<{ data: { url: string } }>(
           "http://localhost:3007/payment/checkout",
-          { orderId },
+          {
+            orderId,
+            successUrl: "http://localhost:5173/order-success",
+            cancelUrl: "http://localhost:5173/order-failure",
+          },
           { headers: { Authorization: `Bearer ${token}` } }
         );
+
         window.location.href = stripeResponse.data.data.url;
+        return;
       }
-
-      // Cash on delivery
-      console.log("Placing order with:", {
-        orderId,
-        modeOfPayment,
-      });
-
-      console.log(modeOfPayment);
-      console.log(orderId);
 
       await axios.post(
         "http://localhost:3006/order/placeOrder",
         { orderId, modeOfPayment },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      // console.log("Hii hihi");
 
       navigate("/order-success");
     } catch (error) {
@@ -90,12 +79,15 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
                   {deliveryAddress.label}
                 </span>
               )}
-              <p>{deliveryAddress.fullName}</p>
-              <p>{deliveryAddress.phoneNumber}</p>
-              <p>{deliveryAddress.streetAddress}</p>
+              <p>{deliveryAddress.house_no}</p>
+              <p>{deliveryAddress.address_location_1}</p>
+              {deliveryAddress.address_location_2 && (
+                <p>{deliveryAddress.address_location_2}</p>
+              )}
               <p>
-                {deliveryAddress.city} - {deliveryAddress.zipCode}
+                {deliveryAddress.city} - {deliveryAddress.postal_code}
               </p>
+              <p>{deliveryAddress.country}</p>
             </div>
           ) : (
             <p className="text-sm text-gray-400">
