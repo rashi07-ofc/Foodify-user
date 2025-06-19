@@ -37,18 +37,6 @@ const AddressSection: React.FC<AddressSectionProps> = ({
         <h2 className="text-xl font-semibold text-gray-900">Delivery Address</h2>
       </div>
 
-      {/* The logic here needs to be slightly adjusted.
-        AddressList will now manage its own `addresses` state.
-        The `AddressSection` parent component will likely need to know
-        if there are *any* addresses fetched by AddressList to decide 
-        whether to initially show the list or the form if no addresses exist.
-
-        However, based on the current `showAddressForm` prop,
-        we'll assume the parent `PlaceOrderPage` or similar is controlling this.
-        
-        If `showAddressForm` is false, it means we should show the list.
-        If `showAddressForm` is true, it means we should show the form.
-      */}
       
       {!showAddressForm ? ( // If not showing the form, display the AddressList
         <AddressList 
