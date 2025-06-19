@@ -81,8 +81,8 @@ const ZomatoCollections: React.FC = () => {
           const longitude = location?.lon || 77.59; // Use actual location or static fallback
 
           const demoLocation = {
-            latitude:latitude,
-            longitude:longitude,
+            latitude: latitude,
+            longitude: longitude,
             offset: 1,
             limit: 10,
           };
@@ -247,7 +247,7 @@ const ZomatoCollections: React.FC = () => {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       {/* Hero Section */}
       <div className="relative w-full min-h-[60vh] sm:min-h-[70vh] lg:min-h-[80vh] bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 overflow-hidden">
         {/* Background Pattern */}
