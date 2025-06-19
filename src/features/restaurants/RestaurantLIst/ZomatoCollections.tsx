@@ -12,7 +12,6 @@ import type { RootState } from "../../../redux/store";
 import { CiFilter } from "react-icons/ci";
 import { IoSearchOutline, IoLocationOutline } from "react-icons/io5";
 import { MdClear, MdStar } from "react-icons/md";
-// import { BiTime } from "react-icons/bi"; // Not used, can be removed
 import Delivery from "./Delivery";
 import Collections from "./Collections";
 import FAQSection from "./FAQSection";
@@ -25,8 +24,6 @@ import { getNearbyRestaurants } from "../../../api/restaurantFetchApi.ts";
 import HomeBannerImage from "../../../assets/home-banner-image.jpeg";
 import c5 from "../../../assets/c5.png";
 import Navbar from "../../../components/layout/Navbar";
-
-
 
 interface Restaurant {
   _id: string;
@@ -61,29 +58,25 @@ const ZomatoCollections: React.FC = () => {
 
   const { location, error: locationError, getLocation } = useGeolocation();
 
- 
   const hasFetchedRestaurants = useRef(false);
-
 
   useEffect(() => {
     getLocation();
   }, []);
 
-  
   useEffect(() => {
-    
     if (!hasFetchedRestaurants.current && (location?.lat || locationError)) {
       const fetchRestaurants = async () => {
         setLoading(true);
         setError(null);
         try {
-          const latitude = location?.lat || 12.97; 
-          const longitude = location?.lon || 77.59; 
+          const latitude = location?.lat || 28.6105;
+          const longitude = location?.lon || 77.37;
 
           const demoLocation = {
             latitude: latitude,
             longitude: longitude,
-            offset: 1,
+            offset: 0,
             limit: 10,
           };
 
@@ -92,7 +85,6 @@ const ZomatoCollections: React.FC = () => {
           console.log("Nearby Restaurants fetched:", restaurants);
           setApiRestaurants(restaurants || []);
 
-          
           hasFetchedRestaurants.current = true;
         } catch (err) {
           console.error("Error fetching nearby restaurants:", err);
@@ -105,8 +97,7 @@ const ZomatoCollections: React.FC = () => {
 
       fetchRestaurants();
     }
-  }, [location, locationError]); 
-
+  }, [location, locationError]);
 
   useEffect(() => {
     dispatch(applyFilters(restaurantsData));
@@ -350,7 +341,6 @@ const ZomatoCollections: React.FC = () => {
               </div>
             </div>
 
-           
             <div className="py-8 px-4 sm:px-6 lg:px-8 bg-white border-b border-gray-200">
               <div className="max-w-7xl mx-auto">
                 <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">

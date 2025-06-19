@@ -5,11 +5,7 @@
 
 import axiosInstanse from "./axiosInstance";
 
-// interface ApplyCouponPayload {
-//     restaurantId: string;
-//     couponCode: string;
-//     orderAmount: number;
-//   }
+
   
   export const getCoupons =async  (restaurantId: string) =>{
     console.log(restaurantId);
@@ -18,9 +14,6 @@ import axiosInstanse from "./axiosInstance";
       return response.data;
   }
   
-//   export const applyCoupon = async (payload: ApplyCouponPayload) => {
-//     const response = await axiosInstanse.post("/restaurant/apply-coupon", payload);
-//     return response.data;
-//   };
+ 
 
 
