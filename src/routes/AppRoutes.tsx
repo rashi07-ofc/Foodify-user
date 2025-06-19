@@ -16,7 +16,7 @@ import Login from "../features/auth/Login";
 import Register from "../features/auth/Register";
 import ZomatoCollections from "../features/restaurants/RestaurantLIst/ZomatoCollections";
 import OTP from "../features/auth/OTP";
-import ProfilePage from "../pages/ProfilePage"
+import ProfilePage from "../pages/ProfilePage";
 import NewPassword from "../pages/forgetPassword/NewPassword";
 import ResetSuccess from "../pages/forgetPassword/ResetSuccess";
 
@@ -28,8 +28,6 @@ import PaymentFailure from "../features/customer/orderPlacement/paymentSection/P
 import ForgotPassword from "../pages/forgetPassword/ForgetPassword";
 import ResetPasswordPage from "../features/auth/ResetPassword";
 import { CartProvider } from "../context/CartContext";
-import OrderSuccessPage from "../features/customer/orderPlacement/orderSummary/OrderSuccess";
-import OrderFailurePage from "../features/customer/orderPlacement/orderSummary/OrderFailure";
 
 const router = createBrowserRouter([
   {
@@ -59,10 +57,7 @@ const router = createBrowserRouter([
         element: <PaymentFailure />,
       },
       { path: "/forgot", element: <ForgotPassword /> },
-      {path: '/reset-password', element: <ResetPasswordPage />},
-      {path:"/order-success", element: <OrderSuccessPage />},
-      {path:"/order-failure", element: <OrderFailurePage />}
-
+      { path: "/reset-password", element: <ResetPasswordPage /> },
     ],
   },
 ]);
@@ -75,10 +70,9 @@ const AppRoutes = () => {
   return (
     <ResetFlowProvider>
       <CartProvider>
-  <ToastContainer position="top-center" autoClose={2000} />
-      <RouterProvider router={router} />
+        <ToastContainer position="top-center" autoClose={2000} />
+        <RouterProvider router={router} />
       </CartProvider>
-    
     </ResetFlowProvider>
   );
 };

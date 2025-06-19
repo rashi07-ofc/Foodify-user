@@ -19,12 +19,13 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   const navigate = useNavigate();
   const cId = localStorage.getItem("cart_id");
   console.log(cId);
+  const adId = localStorage.getItem("selectedAddressId");
 
   const handleOrder = async () => {
     try {
       const orderIdResponse = await orderApi.post<{ orderId: string }>(
         "http://localhost:3006/order/prePlaceOrder",
-        { cartId: "68525455458de8fc09259077" }
+        { cartId: "68525455458de8fc09259077", addressId: adId }
       );
 
       const orderId = orderIdResponse.data.data.orderId;
