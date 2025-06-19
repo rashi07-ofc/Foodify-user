@@ -22,7 +22,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   const adId = localStorage.getItem("selectedAddressId");
 
   const handleOrder = async () => {
-    try {
+    try {.
       const orderIdResponse = await orderApi.post<{ orderId: string }>(
         "http://localhost:3006/order/prePlaceOrder",
         { cartId: cId, addressId: adId }

@@ -5,10 +5,10 @@ import MenuList from "./MenuList";
 const ReviewCard = React.lazy(() => import("./ReviewCard"));
 const BookTable = React.lazy(() => import("./BookTable"));
 
-const TABS = ["Reviews", "Order Online", "Book a Table"] ;
+const TABS = ["Reviews", "Order Online", "Book a Table"];
 
 const RestaurantTabs: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<typeof TABS[number]>("Reviews");
+  const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>("Reviews");
 
   const renderContent = () => {
     switch (activeTab) {

@@ -21,15 +21,16 @@ const cardVariants = {
 
 const RestaurantCard: React.FC = () => {
   const { id } = useParams();
-   const restaurantId = id ;
+  const restaurantId = id;
   const [restaurant, setRestaurant] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get(`http://localhost:3005/restaurant/${restaurantId}`)
+    axios
+      .get(`http://localhost:3005/restaurant/${restaurantId}`)
       .then((res) => {
         console.log(res);
-        
+
         setRestaurant(res.data);
         setLoading(false);
       })
@@ -103,15 +104,15 @@ const RestaurantCard: React.FC = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-2">
         {images.map((src, idx) => (
           <motion.img
-          key={idx}
-          src={src}
-          alt={`food item`}
-          loading="lazy"
-          variants={imgVariants}
-          initial="initial"
-          whileHover="hover"
-          className="rounded-lg object-cover h-40 w-full cursor-pointer transition-transform"
-          draggable={false}
+            key={idx}
+            src={src}
+            alt={`food item`}
+            loading="lazy"
+            variants={imgVariants}
+            initial="initial"
+            whileHover="hover"
+            className="rounded-lg object-cover h-40 w-full cursor-pointer transition-transform"
+            draggable={false}
           />
         ))}
       </div>

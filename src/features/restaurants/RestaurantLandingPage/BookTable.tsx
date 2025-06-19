@@ -45,7 +45,9 @@ const BookTable: React.FC = () => {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <h2 className="text-3xl font-bold text-orange-600">Reserve Your Table</h2>
+        <h2 className="text-3xl font-bold text-orange-600">
+          Reserve Your Table
+        </h2>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -93,8 +95,8 @@ const BookTable: React.FC = () => {
                     selectedSlot === slot
                       ? "bg-orange-600 text-white"
                       : isUnavailable
-                      ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                      : "bg-gray-100 hover:bg-gray-200 text-gray-800"
+                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                        : "bg-gray-100 hover:bg-gray-200 text-gray-800"
                   }`}
                 >
                   {slot}

@@ -5,7 +5,6 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import "react-toastify/dist/ReactToastify.css";
 
-// Page Components
 import PlaceOrderPage from "../features/customer/orderPlacement/PlaceOrderPage";
 import OrderStatusPage from "../features/customer/orderStatus/OrderStatusPage";
 import OrderHistoryPage from "../features/customer/orderHistory/OrderHistoryPage";
@@ -20,7 +19,6 @@ import ProfilePage from "../pages/ProfilePage";
 import NewPassword from "../pages/forgetPassword/NewPassword";
 import ResetSuccess from "../pages/forgetPassword/ResetSuccess";
 
-// Context + Layout
 import { ResetFlowProvider } from "../context/ResetFlowContext";
 import AppLayout from "../components/layout/AppLayout";
 import PaymentSuccess from "../features/customer/orderPlacement/paymentSection/PaymentSuccess";

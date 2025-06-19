@@ -1,4 +1,4 @@
-import React,{ useState } from "react";
+import React, { useState } from "react";
 import { getAuthToken } from "../../auth/authService";
 import axios from "axios";
 
@@ -12,107 +12,96 @@ interface MenuItemCardProps {
 }
 
 const MenuItemCard: React.FC<MenuItemCardProps> = ({
-  id, 
+  id,
   name,
   price,
   description,
   imageUrl,
-  restaurantId
+  restaurantId,
 }) => {
- 
-  // const userId = "684fac7d6f272b68f7f68792";
   const [quantity, setQuantity] = useState<number>(0);
-    const accessToken = getAuthToken();
-      console.log(accessToken);
+  const accessToken = getAuthToken();
+  console.log(accessToken);
 
+  const handleAdd = async () => {
+    console.log("adding api");
+    const url = "http://localhost:3002/cart/add";
 
-const handleAdd = async () => {
-  console.log("adding api");
-  const url = "http://localhost:3002/cart/add";
-
-  try {
-    const response = await axios.post(
-      url,
-      {
-        restaurantId,
-        itemId: id
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`
+    try {
+      const response = await axios.post(
+        url,
+        {
+          restaurantId,
+          itemId: id,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
         }
-      }
-    );
-    setQuantity(prev => prev + 1);
-    console.log("jhsiufg");
-    console.log("cartid dekho", response.data._id);
-    localStorage.setItem("cartId",response.data._id)
-  } catch (error) {
-    console.log(error);
-  }
-};
+      );
+      setQuantity((prev) => prev + 1);
+      console.log("jhsiufg");
+      console.log("cartid dekho", response.data._id);
+      localStorage.setItem("cartId", response.data._id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-const increaseQty = async () => {
-  const url = "http://localhost:3002/cart/add";
+  const increaseQty = async () => {
+    const url = "http://localhost:3002/cart/add";
 
-  try {
-    const response = await axios.post(
-      url,
-      { restaurantId, itemId: id },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`
+    try {
+      const response = await axios.post(
+        url,
+        { restaurantId, itemId: id },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
         }
-      }
-    );
+      );
 
-   
-      setQuantity(prev => prev + 1);
+      setQuantity((prev) => prev + 1);
       console.log("Quantity increased");
       console.log("cartid dekho", response.data);
-    
-  } catch (error) {
-    console.error("Increase quantity API error:", error);
-          console.error("Failed to increase quantity bhjfg");
+    } catch (error) {
+      console.error("Increase quantity API error:", error);
+      console.error("Failed to increase quantity bhjfg");
+    }
+  };
 
-  }
-};
+  const decreaseQty = async () => {
+    const url = "http://localhost:3002/cart/remove";
 
-const decreaseQty = async () => {
-  const url = "http://localhost:3002/cart/remove";
-
-  try {
-    const response = await axios.post(
-      url,
-      { itemId: id },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`
+    try {
+      const response = await axios.post(
+        url,
+        { itemId: id },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
         }
-      }
-    );
+      );
 
-      setQuantity(prev => (prev === 1 ? 0 : prev - 1));
+      setQuantity((prev) => (prev === 1 ? 0 : prev - 1));
       console.log("Quantity decreased");
-    
-  } catch (error) {
-    console.error("Decrease quantity API error:", error);
-          console.error("Failed to decrease quantity");
-
-  }
-};
-
-
+    } catch (error) {
+      console.error("Decrease quantity API error:", error);
+      console.error("Failed to decrease quantity");
+    }
+  };
 
   const globalImages = [
     "https://cdn.pixabay.com/photo/2020/05/17/04/22/pizza-5179939_960_720.jpg",
     "https://eastindianrecipes.net/wp-content/uploads/2022/09/How-to-Make-North-Indian-Thali-Vegetarian-7.jpg",
     "https://c4.wallpaperflare.com/wallpaper/969/527/616/pizza-wallpaper-preview.jpg",
   ];
-
 
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
@@ -154,8 +143,7 @@ const decreaseQty = async () => {
               <span className="px-4 font-medium text-gray-700">{quantity}</span>
               <button
                 onClick={increaseQty}
-           
-                className="px-3 py-1 text-green-600 hover:text-green-800" 
+                className="px-3 py-1 text-green-600 hover:text-green-800"
               >
                 +
               </button>

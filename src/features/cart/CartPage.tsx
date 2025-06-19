@@ -14,31 +14,32 @@ const CartPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const [tax, setTax] = useState(0);
-  const [availableCoupons, setAvailableCoupons] = useState<{ couponId: string; discount: string; expiryDate: string }[]>([]);
- const accessToken = getAuthToken();
+  const [availableCoupons, setAvailableCoupons] = useState<
+    { couponId: string; discount: string; expiryDate: string }[]
+  >([]);
+  const accessToken = getAuthToken();
 
- const fetchAvailableCoupons = async(restaurantId:string)=>{
-  try{
-    console.log("Calling coupon api");
-    const response=await axios.get(`http://localhost:3002/coupons/${restaurantId}`,{
-      headers:{
-        Authorization:`Bearer ${accessToken}`,
-      }
-    })
-    console.log("here is response of coupon API", response.data);
-    setAvailableCoupons(response.data.coupons || []);
-    
-  }
-   catch (err: any) {
-    console.error("Coupon fetch error:", err.response?.data?.message || err.message);
-    setAvailableCoupons([]);
-  }
- }
-
-
-  // const fetchAvailableCoupons = async (restaurantId: string) => {
-  //   try {
-  //     console.log("calling copon api");
+  const fetchAvailableCoupons = async (restaurantId: string) => {
+    try {
+      console.log("Calling coupon api");
+      const response = await axios.get(
+        `http://localhost:3002/coupons/${restaurantId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      console.log("here is response of coupon API", response.data);
+      setAvailableCoupons(response.data.coupons || []);
+    } catch (err: any) {
+      console.error(
+        "Coupon fetch error:",
+        err.response?.data?.message || err.message
+      );
+      setAvailableCoupons([]);
+    }
+  };
 
   //     const response = await fetch(
   //       `http://localhost:3002/coupons/${restaurantId}`,
@@ -66,37 +67,36 @@ const CartPage: React.FC = () => {
   // };
 
   // Fetch cart from server
- const fetchCart = async () => {
-  try {
-    setLoading(true);
-    const response = await axios.get('http://localhost:3002/cart/get', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+  const fetchCart = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get("http://localhost:3002/cart/get", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
-    const data = response.data.cart;
-    console.log(data);
-    
-    setCartData(data);
+      const data = response.data.cart;
+      console.log(data);
 
-    if (data?.restaurantId) {
-      fetchAvailableCoupons(data.restaurantId);
+      setCartData(data);
+
+      if (data?.restaurantId) {
+        fetchAvailableCoupons(data.restaurantId);
+      }
+
+      setDiscount(data.discount || 0);
+      setTax(data.tax || 0);
+      setCouponCode(data.couponCode || "");
+      setError(null);
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.message || err.message;
+      console.error("Cart fetch error:", errorMsg);
+      setError(errorMsg);
+    } finally {
+      setLoading(false);
     }
-
-    setDiscount(data.discount || 0);
-    setTax(data.tax || 0);
-    setCouponCode(data.couponCode || "");
-    setError(null);
-  } catch (err: any) {
-    const errorMsg = err.response?.data?.message || err.message;
-    console.error("Cart fetch error:", errorMsg);
-    setError(errorMsg);
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   useEffect(() => {
     fetchCart();
@@ -104,7 +104,7 @@ const CartPage: React.FC = () => {
 
   const deleteCart = async () => {
     try {
-        await axios.delete("http://localhost:3002/cart/delete", {
+      await axios.delete("http://localhost:3002/cart/delete", {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -117,38 +117,40 @@ const CartPage: React.FC = () => {
     }
   };
 
-  
   const updateQuantity = async (itemId: string, delta: number) => {
-  try {
-    if (delta === 1) {
-      await axios.post(`http://localhost:3002/cart/add`,
-        {
-          restaurantId: cartData.restaurantId,
-          itemId,
-        }, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
+    try {
+      if (delta === 1) {
+        await axios.post(
+          `http://localhost:3002/cart/add`,
+          {
+            restaurantId: cartData.restaurantId,
+            itemId,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+      } else if (delta === -1) {
+        await axios.post(
+          `http://localhost:3002/cart/remove`,
+          {
+            itemId,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
         );
       }
-     else if (delta === -1) {
-      await axios.post(`http://localhost:3002/cart/remove`, {
-        itemId,},
-       {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      
-      });
+      await fetchCart();
+    } catch (err: any) {
+      alert(err.message || "Failed to update quantity");
     }
-    await fetchCart();
-  } catch (err: any) {
-    alert(err.message || "Failed to update quantity");
-  }
-};
-
+  };
 
   const handleCheckout = async () => {
     try {
@@ -166,29 +168,6 @@ const CartPage: React.FC = () => {
       alert(err.message || "Checkout failed. Please try again.");
     }
   };
-
-  // const removeItem = async (itemId: string) => {
-  //   try {
-  //     const response = await fetch(
-  //       `http://localhost:3002/cart/remove/${itemId}`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           Authorization: `Bearer ${accessToken}`,
-  //         },
-  //       }
-  //     );
-
-  //     if (!response.ok) {
-  //       const errorData = await response.json();
-  //       throw new Error(errorData.message || "Failed to remove item");
-  //     }
-
-  //     await fetchCart();
-  //   } catch (err: any) {
-  //     alert(err.message || "Failed to remove item");
-  //   }
-  // };
 
   const applyCoupon = () => {
     if (couponCode.trim().toLowerCase() === "save20") {
@@ -279,35 +258,30 @@ const CartPage: React.FC = () => {
                     <FiPlus />
                   </button>
                 </div>
-                {/* <button
-                  onClick={() => removeItem(item.itemId)}
-                  className="text-orange-500 hover:text-orange-700 text-lg"
-                >
-                  <FiTrash2 />
-                </button> */}
               </div>
             </div>
           </motion.div>
         ))}
       </AnimatePresence>
 
-    {availableCoupons.length > 0 ? (
-  <div className="text-sm text-gray-500 text-left space-y-2">
-    <h4 className="font-semibold mb-2">Available Coupons:</h4>
-    <ul className="list-disc list-inside">
-      {availableCoupons.map((coupon) => (
-        <li key={coupon.couponId}>
-          <span className="font-medium">{coupon.couponId}</span> — Save{" "}
-          <span className="text-orange-600">{coupon.discount}</span>, expires on{" "}
-          <span>{coupon.expiryDate}</span>
-        </li>
-      ))}
-    </ul>
-  </div>
-) : (
-  <div className="text-sm text-gray-400 italic mt-4">No coupons found.</div>
-)}
-
+      {availableCoupons.length > 0 ? (
+        <div className="text-sm text-gray-500 text-left space-y-2">
+          <h4 className="font-semibold mb-2">Available Coupons:</h4>
+          <ul className="list-disc list-inside">
+            {availableCoupons.map((coupon) => (
+              <li key={coupon.couponId}>
+                <span className="font-medium">{coupon.couponId}</span> — Save{" "}
+                <span className="text-orange-600">{coupon.discount}</span>,
+                expires on <span>{coupon.expiryDate}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <div className="text-sm text-gray-400 italic mt-4">
+          No coupons found.
+        </div>
+      )}
 
       <div className="mt-10 bg-white p-6 rounded-xl shadow-lg text-right space-y-2">
         <p>Subtotal: ₹{itemTotal.toFixed(2)}</p>
