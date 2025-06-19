@@ -16,7 +16,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   modeOfPayment,
 }) => {
   const navigate = useNavigate();
-  const cId = localStorage.getItem("cart_id");
+  const cId = localStorage.getItem("cartId");
   console.log(cId);
 
   const handleOrder = async () => {
@@ -29,11 +29,12 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
 
       const orderIdResponse = await axios.post<{ orderId: string }>(
         "http://localhost:3006/order/prePlaceOrder",
-        { cartId: "6851b7b5786ecbff4c06e854" },
+
+        { cartId :cId},
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      const orderId = orderIdResponse.data.orderId;
+      const orderId = orderIdResponse.data.data.orderId;
       localStorage.setItem("orderId", orderId);
       if (modeOfPayment === "online") {
         const stripeResponse = await axios.post<{ data: { url: string } }>(

@@ -129,7 +129,8 @@ const Register: React.FC = () => {
 
       console.log("✅ Registration successful!");
 
-      const { accessToken, refreshToken } = res.data;
+      const { accessToken, refreshToken } = res.data.data;
+      console.log(accessToken)
 
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);

@@ -1,6 +1,5 @@
-// components/MenuList.tsx
 import React, { useEffect, useState } from "react";
-import MenuItemCard from "./MenuItemCard"; // Make sure the path is correct
+import MenuItemCard from "./MenuItemCard"; 
 import { useParams } from "react-router-dom";
 import axios from "axios";
 interface MenuItem {
@@ -16,12 +15,12 @@ interface MenuItem {
 const MenuList: React.FC = () => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const { id: restaurantId } = useParams(); // Renamed 'id' to 'restaurantId' for clarity
+  const { id: restaurantId } = useParams(); 
 
 
 useEffect(() => {
   const fetchMenu = async () => {
-    const token = localStorage.getItem("accessToken"); // Or get it from Redux/context if needed
+    const token = localStorage.getItem("accessToken");
 
     if (!restaurantId) return;
     if (!token) {
@@ -35,7 +34,7 @@ useEffect(() => {
         `http://localhost:3005/restaurant/${restaurantId}/menu`,
         {
           headers: {
-            Authorization: `Bearer ${token}`, // ✅ Pass the token here
+            Authorization: `Bearer ${token}`, 
           },
         }
       );
@@ -59,7 +58,6 @@ useEffect(() => {
 
   fetchMenu();
 }, [restaurantId]);
-// Dependency array should include restaurantId
  
   if (loading) {
     return <p className="text-center mt-8">Loading menu...</p>;
@@ -76,14 +74,12 @@ useEffect(() => {
       {menuItems.map((item) => (
         <MenuItemCard
           key={item._id}
-          id={item._id} // This is the menu item's ID
+          id={item._id} 
           name={item.name}
           description={item.description}
           price={item.price}
           imageUrl={item.imageUrl} 
-          restaurantId={item.restaurantId}// Changed from 'image' to 'imageUrl' to match prop name
-          // --- PASS THE RESTAURANT ID HERE ---
-        />
+          restaurantId={item.restaurantId}        />
       ))}
     </div>
   );

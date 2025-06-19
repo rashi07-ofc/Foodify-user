@@ -30,6 +30,8 @@ import ResetPasswordPage from "../features/auth/ResetPassword";
 import { CartProvider } from "../context/CartContext";
 import OrderSuccessPage from "../features/customer/orderPlacement/orderSummary/OrderSuccess";
 import OrderFailurePage from "../features/customer/orderPlacement/orderSummary/OrderFailure";
+import ComplaintPopup from "../pages/HomePage/ComplaintPopup";
+import YourOrder from "../pages/HomePage/YourOrder";
 
 const router = createBrowserRouter([
   {
@@ -50,6 +52,10 @@ const router = createBrowserRouter([
       { path: "landing/:id", element: <MainPage /> },
       { path: "cart", element: <CartPage /> },
       { path: "profile", element: <ProfilePage /> },
+      { path: "complaint", element: <ComplaintPopup /> },
+            { path: "your-order", element: <YourOrder /> },
+
+
       {
         path: "/order-success",
         element: <PaymentSuccess />,

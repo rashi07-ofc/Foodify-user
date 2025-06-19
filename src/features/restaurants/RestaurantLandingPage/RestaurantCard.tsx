@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { MdPhone, MdDirections, MdRateReview } from "react-icons/md";
 import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const buttonVariants = {
   hover: { scale: 1.05, boxShadow: "0 4px 8px rgba(0,0,0,0.15)" },
@@ -25,10 +26,11 @@ const RestaurantCard: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:3005/restaurant/${restaurantId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setRestaurant(data);
+    axios.get(`http://localhost:3005/restaurant/${restaurantId}`)
+      .then((res) => {
+        console.log(res);
+        
+        setRestaurant(res.data);
         setLoading(false);
       })
       .catch((error) => {
@@ -55,12 +57,10 @@ const RestaurantCard: React.FC = () => {
       initial="hidden"
       animate="visible"
     >
-      {/* Rating Badge */}
       <div className="absolute top-4 right-4 bg-orange-500 text-white px-3 py-1 rounded-md text-sm font-semibold shadow">
         4.5 ★
       </div>
 
-      {/* Info */}
       <div className="mb-4">
         <h2 className="text-2xl font-semibold text-gray-800">
           {restaurant.name}
@@ -72,7 +72,6 @@ const RestaurantCard: React.FC = () => {
         </p>
       </div>
 
-      {/* Action Buttons */}
       <div className="flex gap-4 flex-wrap mb-6">
         <motion.button
           variants={buttonVariants}
@@ -101,13 +100,12 @@ const RestaurantCard: React.FC = () => {
         </motion.button>
       </div>
 
-      {/* Images Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-2">
         {images.map((src, idx) => (
           <motion.img
           key={idx}
           src={src}
-          alt={`food item ${idx + 1}`}
+          alt={`food item`}
           loading="lazy"
           variants={imgVariants}
           initial="initial"
@@ -117,7 +115,6 @@ const RestaurantCard: React.FC = () => {
           />
         ))}
       </div>
-      {/* <MenuItemCard restaurantId={id} /> */}
     </motion.div>
   );
 };
