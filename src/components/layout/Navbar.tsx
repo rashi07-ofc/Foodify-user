@@ -6,14 +6,15 @@ import type { RootState } from "../../redux/store";
 import { logout } from "../../redux/slice/authSlice"; 
 
 const Navbar: React.FC = () => {
-  const isAuthenticated = !!localStorage.getItem("accessToken");
+  // const isAuthenticated = !!localStorage.getItem("accessToken");
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isLoggedIn);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+  // const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   const cartItemCount = useSelector(
     (state: RootState) => state.cart.items.length
   );

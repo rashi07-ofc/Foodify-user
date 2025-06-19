@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axiosInstance from "../../../../api/axios";
+import axios from "axios";
 import axiosLib from "axios";
 import { getAuthToken } from "../../../auth/authService";
 import type { DeliveryAddress } from "../../../../types";
@@ -71,18 +71,18 @@ const AddressForm: React.FC<AddressFormProps> = ({
         if (!address._id) {
           throw new Error("Cannot update address: Missing address ID.");
         }
-        await axiosInstance.put("http://localhost:9000/address", payload, {
+        await axios.put("http://localhost:9000/address", payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
         alert("Address updated successfully!");
       } else {
-        await axiosInstance.post("http://localhost:9000/address", payload, {
+        await axios.post("http://localhost:9000/address", payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
         alert("Address added successfully!");
       }
 
-      onSaveSuccess();
+      // onSaveSuccess();
     } catch (err: unknown) {
       console.error("Error saving address:", err);
       const errorMessage =

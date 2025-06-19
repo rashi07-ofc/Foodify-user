@@ -1,9 +1,10 @@
 // OrderSummary.tsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "../../../../api/axios"; // Use your configured axios instance
-import { getAuthToken } from "../../../auth/authService"; // Import the helper
+// import axios from "axios";
+// import { getAuthToken } from "../../../auth/authService"; // Import the helper
 import type { DeliveryAddress, PaymentMethod } from "../../../../types";
+import orderApi from "../../../../api/order";
 
 interface OrderSummaryProps {
   deliveryAddress: DeliveryAddress;
@@ -18,44 +19,36 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   const navigate = useNavigate();
   const cId = localStorage.getItem("cartId");
   console.log(cId);
+  const adId = localStorage.getItem("selectedAddressId");
 
   const handleOrder = async () => {
     try {
-      const token = getAuthToken();
-      if (!token) {
-        navigate("/login");
-        return;
-      }
-
-      const orderIdResponse = await axios.post<{ orderId: string }>(
+      const orderIdResponse = await orderApi.post<{ orderId: string }>(
         "http://localhost:3006/order/prePlaceOrder",
-
-        { cartId :cId},
-        { headers: { Authorization: `Bearer ${token}` } }
+        { cartId: "68525455458de8fc09259077", addressId: adId }
       );
 
       const orderId = orderIdResponse.data.data.orderId;
       localStorage.setItem("orderId", orderId);
+
       if (modeOfPayment === "online") {
-        const stripeResponse = await axios.post<{ data: { url: string } }>(
+        const stripeResponse = await orderApi.post<{ data: { url: string } }>(
           "http://localhost:3007/payment/checkout",
           {
             orderId,
             successUrl: "http://localhost:5173/order-success",
             cancelUrl: "http://localhost:5173/order-failure",
-          },
-          { headers: { Authorization: `Bearer ${token}` } }
+          }
         );
 
         window.location.href = stripeResponse.data.data.url;
         return;
       }
 
-      await axios.post(
-        "http://localhost:3006/order/placeOrder",
-        { orderId, modeOfPayment },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await orderApi.post("http://localhost:3006/order/placeOrder", {
+        orderId,
+        modeOfPayment,
+      });
 
       navigate("/order-success");
     } catch (error) {

@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { login } from '../../redux/slice/authSlice'
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
@@ -11,7 +13,7 @@ const Register: React.FC = () => {
     phone: "",
     password: "",
     confirmPassword: "",
-    role: 2,
+    role: 1,
   });
 
   const [otp, setOtp] = useState("");
@@ -70,26 +72,27 @@ const Register: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleInitiateSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+  // const handleInitiateSignup = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (!validateForm()) return;
 
-    setIsLoading(true);
-    try {
-      await axios.post("http://localhost:9000/auth/signup", formData);
-      console.log("✅ OTP initiation successful");
-    } catch (error: any) {
-      console.error(error);
-      setErrors({
-        form:
-          error.response?.data?.message ||
-          "Something went wrong while initiating signup",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //   setIsLoading(true);
+  //   try {
+  //     await axios.post("http://localhost:9000/auth/signup", formData);
+  //     console.log("✅ OTP initiation successful");
+  //   } catch (error: any) {
+  //     console.error(error);
+  //     setErrors({
+  //       form:
+  //         error.response?.data?.message ||
+  //         "Something went wrong while initiating signup",
+  //     });
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
+  const dispatch = useDispatch();
 
   const handleRegisterAndOtpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -109,7 +112,7 @@ const Register: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const res = await axios.post(
+      const res = await axios.post<{accessToken: string, refreshToken: string}>(
         "http://localhost:9000/auth/signup",
         {
           username: formData.name,
@@ -130,10 +133,11 @@ const Register: React.FC = () => {
       console.log("✅ Registration successful!");
 
       const { accessToken, refreshToken } = res.data.data;
-      console.log(accessToken)
 
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
+
+      dispatch(login({ accessToken, refreshToken }));
 
       navigate("/home", {
         state: { message: "Registration successful!" },
