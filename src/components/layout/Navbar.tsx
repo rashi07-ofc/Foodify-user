@@ -2,18 +2,19 @@ import React, { useState, useRef, useEffect } from "react";
 import { Menu, User, ShoppingCart, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import type { RootState } from "../../redux/store"; // Corrected import
-import { logout } from "../../redux/slice/authSlice"; // Corrected import
+import type { RootState } from "../../redux/store"; 
+import { logout } from "../../redux/slice/authSlice"; 
 
 const Navbar: React.FC = () => {
-  const isAuthenticated = !!localStorage.getItem("accessToken");
+  // const isAuthenticated = !!localStorage.getItem("accessToken");
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isLoggedIn);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+  // const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   const cartItemCount = useSelector(
     (state: RootState) => state.cart.items.length
   );
@@ -143,7 +144,7 @@ const Navbar: React.FC = () => {
                     </button>
                     <button
                       onClick={() => {
-                        navigate("/order-history");
+                        navigate("/your-order");
                         setShowDropdown(false);
                       }}
                       className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"

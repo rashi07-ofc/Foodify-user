@@ -1,6 +1,4 @@
-// authService.ts
-
-import axios from "../../api/axios"; 
+import axios from "../../api/axios";
 import { getDeviceId } from "../../utils/deviceId";
 
 //access token ke liye
@@ -26,22 +24,22 @@ export const clearAuthTokens = () => {
   delete axios.defaults.headers.common["Authorization"];
 };
 
-export const login = async (email: string, password: string) => {
-  const response = await axios.post("/auth/login", {
+export const Login = async (email: string, password: string) => {
+  const response = await axios.post("auth/login", {
     email,
     password,
     device_id: getDeviceId(),
     role: 1,
   });
 
-  const { accessToken, refreshToken, data } = response.data;
-
+  const { accessToken, refreshToken } = response.data;
+ 
   localStorage.setItem("accessToken", accessToken);
   localStorage.setItem("refreshToken", refreshToken);
   
-  if (data && data._id) {
-    localStorage.setItem("userId", data._id); 
-  }
+  // if (data && data._id) {
+  //   localStorage.setItem("userId", data._id); 
+  // }
   
   setAuthHeaders(accessToken);
   
@@ -53,8 +51,9 @@ export const Logout = async () => {
 
   try {
     if (accessToken) { 
+      console.log("loggin out")
       await axios.post(
-        "/auth/logout", 
+        "/auth/logout",
         {},
         { headers: { 'Authorization': `Bearer ${accessToken}` } } 
       );
@@ -62,50 +61,39 @@ export const Logout = async () => {
   } catch (error) {
     console.error("Logout API call failed:", error);
   } finally {
-    clearAuthTokens(); 
+    clearAuthTokens();
   }
 };
 
-/**
- * @description Makes an API call to refresh the access and refresh tokens.
- * @returns {Promise<{ accessToken: string; refreshToken: string; user: { _id: string; email: string; role: number; } }>} New tokens and user data.
- * @throws Will throw an error if the refresh token API call fails.
- */
-export const refreshAuthToken = async () => { // <--- NEW FUNCTION
+export const refreshAuthToken = async () => { 
   const currentRefreshToken = getRefreshToken();
 
   if (!currentRefreshToken) {
-    // If no refresh token exists, no point in trying to refresh
     console.warn("No refresh token found in localStorage. Cannot refresh token.");
     throw new Error("No refresh token available.");
   }
 
   try {
     const response = await axios.post(
-      "/auth/refresh",
+      "http://localhost:3001/auth/refresh",
       { refreshToken: currentRefreshToken }
     );
 
     const { accessToken, refreshToken, data } = response.data;
 
-    // Update localStorage with new tokens
     localStorage.setItem("accessToken", accessToken);
     localStorage.setItem("refreshToken", refreshToken);
 
-    // Update userId if provided in refresh response (optional, depending on your backend)
     if (data && data._id) {
       localStorage.setItem("userId", data._id);
     }
 
-    // Set new access token in default Axios headers
     setAuthHeaders(accessToken);
 
     return { accessToken, refreshToken, user: { _id: data?._id || localStorage.getItem("userId") || '', email: data?.email || '', role: data?.role || 0 } };
   } catch (error) {
     console.error("Failed to refresh token:", error);
-    // Important: If refresh fails (e.g., refresh token expired/invalid),
-    // the user is effectively logged out and should be redirected to login.
-    clearAuthTokens(); // Clear all tokens if refresh fails
-    throw error; // Re-throw to be handled by the caller (e.g., an Axios interceptor)
+    clearAuthTokens();
+    throw error;
   }
 };

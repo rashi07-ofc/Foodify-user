@@ -5,7 +5,6 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import "react-toastify/dist/ReactToastify.css";
 
-// Page Components
 import PlaceOrderPage from "../features/customer/orderPlacement/PlaceOrderPage";
 import OrderStatusPage from "../features/customer/orderStatus/OrderStatusPage";
 import OrderHistoryPage from "../features/customer/orderHistory/OrderHistoryPage";
@@ -16,17 +15,21 @@ import Login from "../features/auth/Login";
 import Register from "../features/auth/Register";
 import ZomatoCollections from "../features/restaurants/RestaurantLIst/ZomatoCollections";
 import OTP from "../features/auth/OTP";
-import ProfilePage from "../pages/HomePage/ProfilePage";
+import ProfilePage from "../pages/ProfilePage";
 import NewPassword from "../pages/forgetPassword/NewPassword";
 import ResetSuccess from "../pages/forgetPassword/ResetSuccess";
 
-// Context + Layout
 import { ResetFlowProvider } from "../context/ResetFlowContext";
 import AppLayout from "../components/layout/AppLayout";
 import PaymentSuccess from "../features/customer/orderPlacement/paymentSection/PaymentSuccess";
 import PaymentFailure from "../features/customer/orderPlacement/paymentSection/PaymentFailure";
 import ForgotPassword from "../pages/forgetPassword/ForgetPassword";
 import ResetPasswordPage from "../features/auth/ResetPassword";
+import { CartProvider } from "../context/CartContext";
+import OrderSuccessPage from "../features/customer/orderPlacement/orderSummary/OrderSuccess";
+import OrderFailurePage from "../features/customer/orderPlacement/orderSummary/OrderFailure";
+import ComplaintPopup from "../pages/HomePage/ComplaintPopup";
+import YourOrder from "../pages/HomePage/YourOrder";
 
 const router = createBrowserRouter([
   {
@@ -47,6 +50,10 @@ const router = createBrowserRouter([
       { path: "landing/:id", element: <MainPage /> },
       { path: "cart", element: <CartPage /> },
       { path: "profile", element: <ProfilePage /> },
+      { path: "complaint", element: <ComplaintPopup /> },
+            { path: "your-order", element: <YourOrder /> },
+
+
       {
         path: "/order-success",
         element: <PaymentSuccess />,
@@ -56,7 +63,7 @@ const router = createBrowserRouter([
         element: <PaymentFailure />,
       },
       { path: "/forgot", element: <ForgotPassword /> },
-      {path: '/reset-password', element: <ResetPasswordPage />}
+      { path: "/reset-password", element: <ResetPasswordPage /> },
     ],
   },
 ]);
@@ -68,8 +75,10 @@ const AppRoutes = () => {
 
   return (
     <ResetFlowProvider>
-      <ToastContainer position="top-center" autoClose={2000} />
-      <RouterProvider router={router} />
+      <CartProvider>
+        <ToastContainer position="top-center" autoClose={2000} />
+        <RouterProvider router={router} />
+      </CartProvider>
     </ResetFlowProvider>
   );
 };

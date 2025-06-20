@@ -8,8 +8,8 @@ import FoodLoader from "./FoodLoader";
 import Navbar from "../../../components/layout/Navbar";
 import { useParams } from "react-router-dom";
 const MainPage: React.FC = () => {
-    const {id}=useParams();
-    // console.log(id);
+  const { id } = useParams();
+  // console.log(id);
   return (
     <>
       <div className="max-w-6xl mx-auto px-6 md:px-12 lg:px-20 pb-12 pt-20">

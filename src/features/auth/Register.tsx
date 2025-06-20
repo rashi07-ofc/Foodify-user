@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { login } from '../../redux/slice/authSlice'
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
@@ -11,13 +13,12 @@ const Register: React.FC = () => {
     phone: "",
     password: "",
     confirmPassword: "",
-    role: 2,
+    role: 1,
   });
 
   const [otp, setOtp] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
-  // Removed showOtp state, as it's no longer needed for conditional rendering
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -71,37 +72,33 @@ const Register: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleInitiateSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm()) return; // Still validate main form fields
+  // const handleInitiateSignup = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (!validateForm()) return;
 
-    setIsLoading(true);
-    try {
-      // You might still want to call this if OTP sending is a separate step
-      await axios.post("http://localhost:9000/auth/signup", formData);
-      console.log("✅ OTP initiation successful");
-      // The `setShowOtp(true)` line was here, now removed.
-    } catch (error: any) {
-      console.error(error);
-      setErrors({
-        form:
-          error.response?.data?.message ||
-          "Something went wrong while initiating signup",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //   setIsLoading(true);
+  //   try {
+  //     await axios.post("http://localhost:9000/auth/signup", formData);
+  //     console.log("✅ OTP initiation successful");
+  //   } catch (error: any) {
+  //     console.error(error);
+  //     setErrors({
+  //       form:
+  //         error.response?.data?.message ||
+  //         "Something went wrong while initiating signup",
+  //     });
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
+  const dispatch = useDispatch();
 
-  // This will now be the main form submission handler
   const handleRegisterAndOtpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate the main form fields
     if (!validateForm()) return;
 
-    // Validate OTP field - only checks if it's empty
     if (!otp.trim()) {
       setErrors((prev) => ({ ...prev, otp: "OTP is required" }));
       return;
@@ -115,15 +112,15 @@ const Register: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const res = await axios.post(
+      const res = await axios.post<{accessToken: string, refreshToken: string}>(
         "http://localhost:9000/auth/signup",
         {
-          name: formData.name, // Include name here if your final signup endpoint needs it
+          username: formData.name,
           email: formData.email,
           phone: formData.phone,
           password: formData.password,
-          role: formData.role,
-          otp, // ✅ use OTP from state
+          role: 1,
+          otp,
         },
         {
           headers: {
@@ -134,6 +131,13 @@ const Register: React.FC = () => {
       );
 
       console.log("✅ Registration successful!");
+
+      const { accessToken, refreshToken } = res.data.data;
+
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+
+      dispatch(login({ accessToken, refreshToken }));
 
       navigate("/home", {
         state: { message: "Registration successful!" },
@@ -169,7 +173,6 @@ const Register: React.FC = () => {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          {/* Main form now combines all fields and handles full registration */}
           <form className="space-y-6" onSubmit={handleRegisterAndOtpSubmit}>
             {errors.form && (
               <div className="rounded-md bg-orange-50 p-4 text-orange-700">
@@ -205,7 +208,6 @@ const Register: React.FC = () => {
               </div>
             ))}
 
-            {/* OTP input field - always visible */}
             <div>
               <label htmlFor="otp" className="block text-sm font-medium text-gray-700">
                 Enter OTP sent to your phone/email

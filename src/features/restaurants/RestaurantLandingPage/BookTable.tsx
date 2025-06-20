@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
 
-// Define available and unavailable time slots
 const timeSlots = [
   "10:00 AM",
   "11:00 AM",
@@ -19,7 +18,6 @@ const BookTable: React.FC = () => {
   const [selectedSlot, setSelectedSlot] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Handle form submission
   const handleSubmit = () => {
     if (!date || !selectedSlot) {
       toast.error("Please select both date and time slot");
@@ -32,27 +30,25 @@ const BookTable: React.FC = () => {
       toast.success(
         `Booking confirmed for ${members} people on ${date} at ${selectedSlot}`
       );
-    }, 1200);
+    }, 2000);
   };
 
-  // Restrict to today or future dates
   const today = new Date().toISOString().split("T")[0];
 
   return (
     <div className="flex flex-col lg:flex-row gap-10 p-6 bg-white rounded-lg shadow-lg">
-      {/* This renders the toast notifications */}
       <Toaster />
 
-      {/* Form Section */}
       <motion.div
         className="space-y-6 w-full lg:max-w-md"
         initial={{ opacity: 0, x: -40 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <h2 className="text-3xl font-bold text-orange-600">Reserve Your Table</h2>
+        <h2 className="text-3xl font-bold text-orange-600">
+          Reserve Your Table
+        </h2>
 
-        {/* Date Picker */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Select Date
@@ -66,7 +62,6 @@ const BookTable: React.FC = () => {
           />
         </div>
 
-        {/* Number of Guests */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Number of Guests
@@ -83,7 +78,6 @@ const BookTable: React.FC = () => {
           />
         </div>
 
-        {/* Time Slot Selection */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Select Time Slot
@@ -101,8 +95,8 @@ const BookTable: React.FC = () => {
                     selectedSlot === slot
                       ? "bg-orange-600 text-white"
                       : isUnavailable
-                      ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                      : "bg-gray-100 hover:bg-gray-200 text-gray-800"
+                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                        : "bg-gray-100 hover:bg-gray-200 text-gray-800"
                   }`}
                 >
                   {slot}
@@ -112,7 +106,6 @@ const BookTable: React.FC = () => {
           </div>
         </div>
 
-        {/* Submit Button */}
         <motion.button
           onClick={handleSubmit}
           whileHover={{ scale: 1.02 }}
@@ -128,7 +121,6 @@ const BookTable: React.FC = () => {
         </motion.button>
       </motion.div>
 
-      {/* Image Section (visible only on large screens) */}
       <motion.div
         className="flex-1 hidden lg:block"
         initial={{ opacity: 0, x: 50 }}

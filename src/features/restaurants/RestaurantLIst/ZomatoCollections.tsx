@@ -70,12 +70,12 @@ const ZomatoCollections: React.FC = () => {
         setLoading(true);
         setError(null);
         try {
-          const latitude = location?.lat || 28.6105;
-          const longitude = location?.lon || 77.37;
+          const latitude = location?.lat || 28.6105; // Use actual location or static fallback
+          const longitude = location?.lon || 77.37; // Use actual location or static fallback
 
           const demoLocation = {
-            latitude: latitude,
-            longitude: longitude,
+            latitude: 28.6105,
+            longitude: 77.37,
             offset: 0,
             limit: 10,
           };

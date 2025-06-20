@@ -4,7 +4,6 @@ import {
   getAuthToken,
   getRefreshToken,
   clearAuthTokens,
-  refreshAuthToken,
 } from "../features/auth/authService";
 
 type CustomInternalAxiosRequestConfig = InternalAxiosRequestConfig & {
@@ -12,7 +11,7 @@ type CustomInternalAxiosRequestConfig = InternalAxiosRequestConfig & {
 };
 
 const api = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: "http://localhost:3001",
   timeout: 15000,
 });
 
@@ -43,30 +42,28 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const { accessToken: newAccessToken } = await refreshAuthToken();
+        const refreshToken = getRefreshToken();
+        const { data } = await api.post("/auth/refresh", { refreshToken });
 
+        const newAccessToken = data.accessToken;
+        localStorage.setItem("accessToken", newAccessToken);
+
+        api.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
         if (originalRequest.headers) {
           originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
         }
 
         console.log("Token refreshed successfully. Retrying original request.");
-
         return api(originalRequest);
       } catch (refreshError) {
-        console.error(
-          "Failed to refresh token. User needs to re-authenticate.",
-          refreshError
-        );
-
+        console.error("Failed to refresh token. Logging out.");
         clearAuthTokens();
-
+        alert("Session expired. Please login again.");
         window.location.href = "/login";
-
         return Promise.reject(refreshError);
       }
     }
 
-    console.error("API call failed:", error);
     return Promise.reject(error);
   }
 );

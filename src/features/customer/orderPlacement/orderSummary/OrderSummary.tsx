@@ -1,9 +1,9 @@
-// OrderSummary.tsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "../../../../api/axios"; // Use your configured axios instance
-import { getAuthToken } from "../../../auth/authService"; // Import the helper
+// import axios from "axios";
+// import { getAuthToken } from "../../../auth/authService"; // Import the helper
 import type { DeliveryAddress, PaymentMethod } from "../../../../types";
+import orderApi from "../../../../api/order";
 
 interface OrderSummaryProps {
   deliveryAddress: DeliveryAddress;
@@ -16,51 +16,38 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   modeOfPayment,
 }) => {
   const navigate = useNavigate();
+  const cId = localStorage.getItem("cartId");
+  console.log(cId);
+  const adId = localStorage.getItem("selectedAddressId");
 
   const handleOrder = async () => {
     try {
-      // Get current auth token
-      const token = getAuthToken();
-      if (!token) {
-        navigate("/login");
-        return;
-      }
-      console.log(token);
-      // Create order with auth
-      const orderIdResponse = await axios.post<{ id: string }>(
+            const orderIdResponse = await orderApi.post<{ orderId: string }>(
         "http://localhost:3006/order/prePlaceOrder",
-        { cartId: "684ac6aca64c3abb72c33ab2" },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { cartId: cId, addressId: adId }, 
       );
 
-      const orderId = orderIdResponse.data.orderId;
+      const orderId = orderIdResponse.data.data.orderId;
+      localStorage.setItem("orderId", orderId);
 
       if (modeOfPayment === "online") {
-        console.log("Hii");
-        // console.log(orderId);
-        const stripeResponse = await axios.post<{ url: string }>(
+        const stripeResponse = await orderApi.post<{ data: { url: string } }>(
           "http://localhost:3007/payment/checkout",
-          { orderId },
-          { headers: { Authorization: `Bearer ${token}` } }
+          {
+            orderId,
+            successUrl: "http://localhost:5173/order-success",
+            cancelUrl: "http://localhost:5173/order-failure",
+          }
         );
-        window.location.href = stripeResponse.data.url;
+
+        window.location.href = stripeResponse.data.data.url;
+        return;
       }
 
-      // Cash on delivery
-      console.log("Placing order with:", {
+      await orderApi.post("http://localhost:3006/order/placeOrder", {
         orderId,
         modeOfPayment,
       });
-
-      console.log(modeOfPayment);
-      console.log(orderId);
-
-      await axios.post(
-        "http://localhost:3006/order/placeOrder",
-        { orderId, modeOfPayment },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      // console.log("Hii hihi");
 
       navigate("/order-success");
     } catch (error) {
@@ -85,12 +72,15 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
                   {deliveryAddress.label}
                 </span>
               )}
-              <p>{deliveryAddress.fullName}</p>
-              <p>{deliveryAddress.phoneNumber}</p>
-              <p>{deliveryAddress.streetAddress}</p>
+              <p>{deliveryAddress.house_no}</p>
+              <p>{deliveryAddress.address_location_1}</p>
+              {deliveryAddress.address_location_2 && (
+                <p>{deliveryAddress.address_location_2}</p>
+              )}
               <p>
-                {deliveryAddress.city} - {deliveryAddress.zipCode}
+                {deliveryAddress.city} - {deliveryAddress.postal_code}
               </p>
+              <p>{deliveryAddress.country}</p>
             </div>
           ) : (
             <p className="text-sm text-gray-400">

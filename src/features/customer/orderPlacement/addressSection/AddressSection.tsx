@@ -1,15 +1,15 @@
 // AddressSection.tsx
 import { MapPin } from "lucide-react";
-import AddressList from "./AddressList";
+import AddressList from "./AddressList"; // AddressList now fetches its own data
 import AddressForm from "./AddressForm";
 import type { DeliveryAddress } from "../../../../types/index";
 
 interface AddressSectionProps {
-  savedAddresses: DeliveryAddress[];
-  selectedAddressId: string;
+  // `savedAddresses` prop is removed as AddressList will fetch its own
+  initialSelectedAddressId: string | null; // Pass this to AddressList
   showAddressForm: boolean;
   isEditingAddress: boolean;
-  deliveryAddress: DeliveryAddress;
+  deliveryAddress: DeliveryAddress; // For the form
   onAddressSelection: (addressId: string) => void;
   onAddNewAddress: () => void;
   onEditAddress: (addressId: string) => void;
@@ -19,8 +19,7 @@ interface AddressSectionProps {
 }
 
 const AddressSection: React.FC<AddressSectionProps> = ({
-  savedAddresses,
-  selectedAddressId,
+  initialSelectedAddressId, // Now receiving this
   showAddressForm,
   isEditingAddress,
   deliveryAddress,
@@ -38,15 +37,15 @@ const AddressSection: React.FC<AddressSectionProps> = ({
         <h2 className="text-xl font-semibold text-gray-900">Delivery Address</h2>
       </div>
 
-      {savedAddresses.length > 0 && !showAddressForm ? (
+      
+      {!showAddressForm ? ( // If not showing the form, display the AddressList
         <AddressList 
-          addresses={savedAddresses}
-          selectedAddressId={selectedAddressId}
+          initialSelectedAddressId={initialSelectedAddressId} // Pass the initial selection to AddressList
           onSelect={onAddressSelection}
           onEdit={onEditAddress}
-          onAddNew={onAddNewAddress}
+          onAddNew={onAddNewAddress} // This button will still be in AddressList
         />
-      ) : (
+      ) : ( // Otherwise, display the AddressForm
         <AddressForm
           address={deliveryAddress}
           isEditing={isEditingAddress}
