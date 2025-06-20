@@ -5,10 +5,10 @@ import MenuList from "./MenuList";
 const ReviewCard = React.lazy(() => import("./ReviewCard"));
 const BookTable = React.lazy(() => import("./BookTable"));
 
-const TABS = ["Reviews", "Order Online", "Book a Table"] as const;
+const TABS = ["Reviews", "Order Online", "Book a Table"];
 
 const RestaurantTabs: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<typeof TABS[number]>("Reviews");
+  const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>("Reviews");
 
   const renderContent = () => {
     switch (activeTab) {
@@ -40,7 +40,6 @@ const RestaurantTabs: React.FC = () => {
 
   return (
     <div className="mt-10 max-w-7xl mx-auto px-4">
-      {/* Tabs */}
       <div className="flex justify-center mb-6 space-x-4 border-b border-gray-200 pb-2">
         {TABS.map((tab) => (
           <button
@@ -57,7 +56,6 @@ const RestaurantTabs: React.FC = () => {
         ))}
       </div>
 
-      {/* Tab Content */}
       <div className="mt-6 text-gray-700 text-sm md:text-base">
         {renderContent()}
       </div>

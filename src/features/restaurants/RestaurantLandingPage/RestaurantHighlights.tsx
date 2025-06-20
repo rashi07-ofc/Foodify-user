@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   FaWifi,
   FaCreditCard,
@@ -6,7 +6,7 @@ import {
   FaUtensils,
   FaLeaf,
   FaClock,
-} from 'react-icons/fa';
+} from "react-icons/fa";
 
 interface Highlight {
   key: string;
@@ -16,34 +16,34 @@ interface Highlight {
 
 const ALL_HIGHLIGHTS: Highlight[] = [
   {
-    key: 'veg',
+    key: "veg",
     icon: <FaLeaf className="text-orange-500" />,
-    label: 'Pure Veg',
+    label: "Pure Veg",
   },
   {
-    key: 'open',
+    key: "open",
     icon: <FaClock className="text-orange-400" />,
-    label: 'Open Now',
+    label: "Open Now",
   },
   {
-    key: 'indoor',
+    key: "indoor",
     icon: <FaUtensils className="text-orange-500" />,
-    label: 'Indoor Seating',
+    label: "Indoor Seating",
   },
   {
-    key: 'wifi',
+    key: "wifi",
     icon: <FaWifi className="text-orange-300" />,
-    label: 'Free Wi-Fi',
+    label: "Free Wi-Fi",
   },
   {
-    key: 'cards',
+    key: "cards",
     icon: <FaCreditCard className="text-orange-500" />,
-    label: 'Accepts Cards',
+    label: "Accepts Cards",
   },
   {
-    key: 'parking',
+    key: "parking",
     icon: <FaParking className="text-orange-400" />,
-    label: 'Parking Available',
+    label: "Parking Available",
   },
 ];
 
@@ -51,7 +51,9 @@ interface RestaurantHighlightsProps {
   features: string[];
 }
 
-const RestaurantHighlights: React.FC<RestaurantHighlightsProps> = ({ features }) => {
+const RestaurantHighlights: React.FC<RestaurantHighlightsProps> = ({
+  features,
+}) => {
   const activeHighlights = ALL_HIGHLIGHTS.filter((highlight) =>
     features.includes(highlight.key)
   );

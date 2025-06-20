@@ -62,15 +62,18 @@ const PlaceOrderPage: React.FC = () => {
     }));
   };
 
-  const handleAddressSelection = (addressId: string) => {
-    setSelectedAddressId(addressId);
-    const selectedAddress = savedAddresses.find((addr) => addr.id === addressId);
-    if (selectedAddress) {
-      setDeliveryAddress(selectedAddress);
-    }
-    setShowAddressForm(false);
-    setIsEditingAddress(false);
-  };
+const handleAddressSelection = (addressId: string) => {
+  console.log("Selected address ID:", addressId);
+  setSelectedAddressId(addressId);
+  const selectedAddress = savedAddresses.find((addr) => addr.id === addressId);
+  console.log("Selected address object:", selectedAddress);
+  if (selectedAddress) {
+    setDeliveryAddress(selectedAddress);
+  }
+  setShowAddressForm(false);
+  setIsEditingAddress(false);
+};
+
 
   const handleAddNewAddress = () => {
     setShowAddressForm(true);

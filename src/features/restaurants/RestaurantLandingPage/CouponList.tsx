@@ -22,7 +22,7 @@ const CouponList: React.FC<{ restaurantId: string; orderAmount: number }> = ({
       try {
         const result = await getCoupons(restaurantId);
         // console.log("Result",result);
-        setCoupons(result); // adjust if your API returns a different structure
+        setCoupons(result); 
       } catch (error) {
         console.error("Error fetching coupons:", error);
       }

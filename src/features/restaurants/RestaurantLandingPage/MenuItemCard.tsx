@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { getAuthToken } from "../../auth/authService";
+import axios from "axios";
 
 interface MenuItemCardProps {
-  id: string; // This is the menu item ID
+  id: string;
   name: string;
   price: number;
   description: string;
@@ -10,108 +11,97 @@ interface MenuItemCardProps {
   restaurantId: string;
 }
 
-
-
 const MenuItemCard: React.FC<MenuItemCardProps> = ({
-  id, // menu item ID
+  id,
   name,
   price,
   description,
   imageUrl,
-  restaurantId
+  restaurantId,
 }) => {
-  // It's better to fetch userId from context or global state if available,
-  // hardcoding it here is not ideal for a real application.
-  // const userId = "684fac7d6f272b68f7f68792";
   const [quantity, setQuantity] = useState<number>(0);
-    const accessToken = getAuthToken(); // or use getAuthToken()
+  const accessToken = getAuthToken();
+  console.log(accessToken);
 
+  const handleAdd = async () => {
+    console.log("adding api");
+    const url = "http://localhost:3002/cart/add";
 
-const handleAdd = () => {
-  console.log("adding api")
-  const url = `http://localhost:3002/cart/add/${restaurantId}/${id}`;
-  console.log(accessToken)
-  fetch(url, {
-    method: "POST",
-     headers: { 'Authorization': `Bearer ${accessToken}` }     
-  })
-    .then((res) => {
-      if (res.ok) {
-        setQuantity((prev) => prev + 1);
-      } else {
-        console.error("Failed to add to cart");
-      }
-    })
-    .catch((err) => console.error("Add to cart API error:", err));
-};
-
-const increaseQty = () => {
-  const url = `http://localhost:3002/cart/add/${restaurantId}/${id}`;
-  fetch(url, {
-    method: "POST",
-     headers: { 'Authorization': `Bearer ${accessToken}` }     
-
-  })
-    .then((res) => {
-      if (res.ok) {
-        setQuantity((prev) => prev + 1);
-      } else {
-        console.error("Failed to increase quantity");
-      }
-    })
-    .catch((err) => console.error("Increase quantity API error:", err));
-};
-
-
-  const decreaseQty = () => {
-    if (quantity === 1) {
-      const url = `http://localhost:3002/cart/remove/${id}`;
-      fetch(url, {
-        method: "POST",
-     headers: { 'Authorization': `Bearer ${accessToken}` }    , 
-
-        body: JSON.stringify({itemId: id }), 
-      })
-        .then((res) => {
-          if (res.ok) {
-            setQuantity(0);
-          } else {
-            console.error("Failed to remove from cart");
-          }
-        })
-        .catch((err) => console.error("Remove from cart API error:", err));
-    } else {
-      const url = `http://localhost:3002/cart/remove/${id}`; // DELETE for removing the item entirely
-      fetch(url, {
-        method: "POST",
-     headers: { 'Authorization': `Bearer ${accessToken}` }     
-,
-        body: JSON.stringify({
+    try {
+      const response = await axios.post(
+        url,
+        {
+          restaurantId,
           itemId: id,
-          delta: -1, // Indicate a decrement
-        }),
-      })
-        .then((res) => {
-          if (res.ok) {
-            setQuantity((prev) => prev - 1);
-          } else {
-            console.error("Failed to decrease quantity");
-          }
-        })
-        .catch((err) => console.error("Decrease quantity API error:", err));
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      setQuantity((prev) => prev + 1);
+      console.log("jhsiufg");
+      console.log("cartid dekho", response.data._id);
+      localStorage.setItem("cartId", response.data._id);
+    } catch (error) {
+      console.log(error);
     }
   };
 
+  const increaseQty = async () => {
+    const url = "http://localhost:3002/cart/add";
+
+    try {
+      const response = await axios.post(
+        url,
+        { restaurantId, itemId: id },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      setQuantity((prev) => prev + 1);
+      console.log("Quantity increased");
+      console.log("cartid dekho", response.data);
+    } catch (error) {
+      console.error("Increase quantity API error:", error);
+      console.error("Failed to increase quantity bhjfg");
+    }
+  };
+
+  const decreaseQty = async () => {
+    const url = "http://localhost:3002/cart/remove";
+
+    try {
+      const response = await axios.post(
+        url,
+        { itemId: id },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      setQuantity((prev) => (prev === 1 ? 0 : prev - 1));
+      console.log("Quantity decreased");
+    } catch (error) {
+      console.error("Decrease quantity API error:", error);
+      console.error("Failed to decrease quantity");
+    }
+  };
 
   const globalImages = [
     "https://cdn.pixabay.com/photo/2020/05/17/04/22/pizza-5179939_960_720.jpg",
     "https://eastindianrecipes.net/wp-content/uploads/2022/09/How-to-Make-North-Indian-Thali-Vegetarian-7.jpg",
     "https://c4.wallpaperflare.com/wallpaper/969/527/616/pizza-wallpaper-preview.jpg",
   ];
-
-  // const getRandomImage = () =>
-  //   globalImages[Math.floor(Math.random() * globalImages.length)];
-
 
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
@@ -153,8 +143,7 @@ const increaseQty = () => {
               <span className="px-4 font-medium text-gray-700">{quantity}</span>
               <button
                 onClick={increaseQty}
-                // --- Orange theme for increase button (adjusted for harmony) ---
-                className="px-3 py-1 text-green-600 hover:text-green-800" // Kept green for "add" as it signifies positive action, but you can change to orange if preferred.
+                className="px-3 py-1 text-green-600 hover:text-green-800"
               >
                 +
               </button>

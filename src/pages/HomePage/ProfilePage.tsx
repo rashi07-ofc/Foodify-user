@@ -31,6 +31,8 @@ interface UserProfile {
 const ProfilePage: React.FC = () => {
     const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
     const [isEditing, setIsEditing] = useState(false);
+    const [loading,setLoading]=useState("");
+    const [user,setUser]=useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [isUploading, setIsUploading] = useState(false); // New state for upload loading
     const [formData, setFormData] = useState<UserProfile>({

@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiTrash2, FiShoppingCart, FiPlus, FiMinus } from "react-icons/fi";
 import { getAuthToken } from "../auth/authService";
+import axios from "axios";
+import { restaurant } from "../restaurants/RestaurantLandingPage/restaurantData";
 
 const CartPage: React.FC = () => {
   const [cartData, setCartData] = useState<any>(null);
@@ -19,9 +21,8 @@ const CartPage: React.FC = () => {
 
   const fetchAvailableCoupons = async (restaurantId: string) => {
     try {
-      console.log("calling copon api");
-
-      const response = await fetch(
+      console.log("Calling coupon api");
+      const response = await axios.get(
         `http://localhost:3002/coupons/${restaurantId}`,
         {
           headers: {
@@ -29,50 +30,69 @@ const CartPage: React.FC = () => {
           },
         }
       );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to fetch coupons");
-      }
-
-      const data = await response.json();
-      console.log("here is reposne of copon api", data);
-
-      setAvailableCoupons(data.coupons || []);
+      console.log("here is response of coupon API", response.data);
+      setAvailableCoupons(response.data.coupons || []);
     } catch (err: any) {
-      console.error("Coupon fetch error:", err.message);
+      console.error(
+        "Coupon fetch error:",
+        err.response?.data?.message || err.message
+      );
       setAvailableCoupons([]);
     }
   };
+
+  //     const response = await fetch(
+  //       `http://localhost:3002/coupons/${restaurantId}`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${accessToken}`,
+
+  //         },
+  //       }
+  //     );
+
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       throw new Error(errorData.message || "Failed to fetch coupons");
+  //     }
+
+  //     const data = await response.json();
+  //     console.log("here is reposne of copon api", data);
+
+  //     setAvailableCoupons(data.coupons || []);
+  //   } catch (err: any) {
+  //     console.error("Coupon fetch error:", err.message);
+  //     setAvailableCoupons([]);
+  //   }
+  // };
 
   // Fetch cart from server
   const fetchCart = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:3002/cart/get`, {
+      const response = await axios.get("http://localhost:3002/cart/get", {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log("backendendejne", response);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to fetch cart");
-      }
-
-      const data = await response.json();
+      const data = response.data.cart;
       console.log(data);
+
       setCartData(data);
+
       if (data?.restaurantId) {
         fetchAvailableCoupons(data.restaurantId);
       }
+
       setDiscount(data.discount || 0);
       setTax(data.tax || 0);
       setCouponCode(data.couponCode || "");
       setError(null);
     } catch (err: any) {
-      setError(err.message || "Failed to load cart");
+      const errorMsg = err.response?.data?.message || err.message;
+      console.error("Cart fetch error:", errorMsg);
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -82,20 +102,14 @@ const CartPage: React.FC = () => {
     fetchCart();
   }, []);
 
-  // Delete entire cart
   const deleteCart = async () => {
     try {
-      const response = await fetch("http://localhost:3002/cart/delete", {
+      await axios.delete("http://localhost:3002/cart/delete", {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to delete cart");
-      }
 
       setCartData(null);
     } catch (err: any) {
@@ -103,70 +117,35 @@ const CartPage: React.FC = () => {
     }
   };
 
-  // Update quantity on backend and refresh
-  // Update quantity on backend by calling separate APIs for increase/decrease
   const updateQuantity = async (itemId: string, delta: number) => {
     try {
       if (delta === 1) {
-        // Increase quantity by adding item again
-        const restaurantId = cartData.restaurantId;
-        const response = await fetch(
-          `http://localhost:3002/cart/add/${restaurantId}/${itemId}`,
+        await axios.post(
+          `http://localhost:3002/cart/add`,
           {
-            method: "POST",
+            restaurantId: cartData.restaurantId,
+            itemId,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+      } else if (delta === -1) {
+        await axios.post(
+          `http://localhost:3002/cart/remove`,
+          {
+            itemId,
+          },
+          {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
           }
         );
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || "Failed to add item");
-        }
-      } else if (delta === -1) {
-        const item = cartData.items.find((i: any) => i.itemId === itemId);
-        if (!item) return;
-
-        if (item.quantity === 1) {
-          // Remove item entirely
-          const response = await fetch(
-            `http://localhost:3002/cart/remove/${itemId}`,
-            {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-            }
-          );
-
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || "Failed to remove item");
-          }
-        } else {
-          // Decrease item quantity
-          const response = await fetch(
-            `http://localhost:3002/cart/remove/${itemId}`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${accessToken}`,
-              },
-              body: JSON.stringify({ itemId }),
-            }
-          );
-
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(
-              errorData.message || "Failed to decrease item quantity"
-            );
-          }
-        }
       }
-
       await fetchCart();
     } catch (err: any) {
       alert(err.message || "Failed to update quantity");
@@ -175,19 +154,12 @@ const CartPage: React.FC = () => {
 
   const handleCheckout = async () => {
     try {
-      const response = await fetch("http://localhost:3002/cart/get", {
-        method: "GET",
+      const response = await axios.get("http://localhost:3002/cart/get", {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to fetch cart data");
-      }
-
-      const data = await response.json();
+      const data = await response.data;
       localStorage.setItem("cart_id", data._id);
       console.log(data);
 
@@ -197,31 +169,6 @@ const CartPage: React.FC = () => {
     }
   };
 
-  // Remove item on backend and refresh
-  const removeItem = async (itemId: string) => {
-    try {
-      const response = await fetch(
-        `http://localhost:3002/cart/remove/${itemId}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to remove item");
-      }
-
-      await fetchCart();
-    } catch (err: any) {
-      alert(err.message || "Failed to remove item");
-    }
-  };
-
-  // Apply coupon locally (you can extend this to validate from backend)
   const applyCoupon = () => {
     if (couponCode.trim().toLowerCase() === "save20") {
       const newDiscount = cartData.itemTotal * 0.2;
@@ -236,7 +183,7 @@ const CartPage: React.FC = () => {
   if (error)
     return <div className="text-center mt-10 text-red-600">Error: {error}</div>;
 
-  if (!cartData || cartData.items.length === 0) {
+  if (!cartData || cartData.items?.length === 0) {
     return (
       <div className="text-center mt-16">
         <img
@@ -246,7 +193,7 @@ const CartPage: React.FC = () => {
         />
         <p className="text-xl text-gray-500 mb-4">Oops! Your cart is empty.</p>
         <button
-          onClick={() => navigate("/restaurant/landing")}
+          onClick={() => navigate("/home")}
           className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full"
         >
           Browse Menu
@@ -311,38 +258,31 @@ const CartPage: React.FC = () => {
                     <FiPlus />
                   </button>
                 </div>
-                <button
-                  onClick={() => removeItem(item.itemId)}
-                  className="text-orange-500 hover:text-orange-700 text-lg"
-                >
-                  <FiTrash2 />
-                </button>
               </div>
             </div>
           </motion.div>
         ))}
       </AnimatePresence>
 
-      {/* Coupon */}
-    {availableCoupons.length > 0 ? (
-  <div className="text-sm text-gray-500 text-left space-y-2">
-    <h4 className="font-semibold mb-2">Available Coupons:</h4>
-    <ul className="list-disc list-inside">
-      {availableCoupons.map((coupon) => (
-        <li key={coupon.couponId}>
-          <span className="font-medium">{coupon.couponId}</span> — Save{" "}
-          <span className="text-orange-600">{coupon.discount}</span>, expires on{" "}
-          <span>{coupon.expiryDate}</span>
-        </li>
-      ))}
-    </ul>
-  </div>
-) : (
-  <div className="text-sm text-gray-400 italic mt-4">No coupons found.</div>
-)}
+      {availableCoupons.length > 0 ? (
+        <div className="text-sm text-gray-500 text-left space-y-2">
+          <h4 className="font-semibold mb-2">Available Coupons:</h4>
+          <ul className="list-disc list-inside">
+            {availableCoupons.map((coupon) => (
+              <li key={coupon.couponId}>
+                <span className="font-medium">{coupon.couponId}</span> — Save{" "}
+                <span className="text-orange-600">{coupon.discount}</span>,
+                expires on <span>{coupon.expiryDate}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <div className="text-sm text-gray-400 italic mt-4">
+          No coupons found.
+        </div>
+      )}
 
-
-      {/* Price Breakdown */}
       <div className="mt-10 bg-white p-6 rounded-xl shadow-lg text-right space-y-2">
         <p>Subtotal: ₹{itemTotal.toFixed(2)}</p>
         <p>Tax: ₹{tax.toFixed(2)}</p>
@@ -357,7 +297,6 @@ const CartPage: React.FC = () => {
         </p>
       </div>
 
-      {/* Checkout Button */}
       <motion.button
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.95 }}

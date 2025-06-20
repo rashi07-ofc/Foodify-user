@@ -5,7 +5,6 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import "react-toastify/dist/ReactToastify.css";
 
-// Page Components
 import PlaceOrderPage from "../features/customer/orderPlacement/PlaceOrderPage";
 import OrderStatusPage from "../features/customer/orderStatus/OrderStatusPage";
 import OrderHistoryPage from "../features/customer/orderHistory/OrderHistoryPage";
@@ -20,7 +19,6 @@ import ProfilePage from "../pages/ProfilePage";
 import NewPassword from "../pages/forgetPassword/NewPassword";
 import ResetSuccess from "../pages/forgetPassword/ResetSuccess";
 
-// Context + Layout
 import { ResetFlowProvider } from "../context/ResetFlowContext";
 import AppLayout from "../components/layout/AppLayout";
 import PaymentSuccess from "../features/customer/orderPlacement/paymentSection/PaymentSuccess";
@@ -28,6 +26,10 @@ import PaymentFailure from "../features/customer/orderPlacement/paymentSection/P
 import ForgotPassword from "../pages/forgetPassword/ForgetPassword";
 import ResetPasswordPage from "../features/auth/ResetPassword";
 import { CartProvider } from "../context/CartContext";
+import OrderSuccessPage from "../features/customer/orderPlacement/orderSummary/OrderSuccess";
+import OrderFailurePage from "../features/customer/orderPlacement/orderSummary/OrderFailure";
+import ComplaintPopup from "../pages/HomePage/ComplaintPopup";
+import YourOrder from "../pages/HomePage/YourOrder";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +50,10 @@ const router = createBrowserRouter([
       { path: "landing/:id", element: <MainPage /> },
       { path: "cart", element: <CartPage /> },
       { path: "profile", element: <ProfilePage /> },
+      { path: "complaint", element: <ComplaintPopup /> },
+            { path: "your-order", element: <YourOrder /> },
+
+
       {
         path: "/order-success",
         element: <PaymentSuccess />,

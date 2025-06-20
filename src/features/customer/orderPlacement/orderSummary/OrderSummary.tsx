@@ -16,15 +16,15 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   modeOfPayment,
 }) => {
   const navigate = useNavigate();
-  const cId = localStorage.getItem("cart_id");
+  const cId = localStorage.getItem("cartId");
   console.log(cId);
   const adId = localStorage.getItem("selectedAddressId");
 
   const handleOrder = async () => {
     try {
-      const orderIdResponse = await orderApi.post<{ orderId: string }>(
+            const orderIdResponse = await orderApi.post<{ orderId: string }>(
         "http://localhost:3006/order/prePlaceOrder",
-        { cartId: cId, addressId: adId }, 
+        { cartId: cId, addressId: adId }
       );
 
       const orderId = orderIdResponse.data.data.orderId;
