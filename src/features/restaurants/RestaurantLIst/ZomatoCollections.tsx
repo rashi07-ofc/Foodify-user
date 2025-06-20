@@ -25,6 +25,7 @@ import { getNearbyRestaurants } from "../../../api/restaurantFetchApi.ts";
 import HomeBannerImage from "../../../assets/home-banner-image.jpeg";
 import c5 from "../../../assets/c5.png";
 import Navbar from "../../../components/layout/Navbar";
+import ChatWidget from "../../../pages/HomePage/ChatWidget.tsx";
 
 // Define the Restaurant interface to match the API response
 interface Restaurant {
@@ -561,6 +562,7 @@ const ZomatoCollections: React.FC = () => {
           <Delivery />
         )}
       </div>
+      <ChatWidget />
 
       {/* <Footer /> */}
     </>

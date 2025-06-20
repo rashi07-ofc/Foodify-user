@@ -23,7 +23,7 @@ const ChatWidget: React.FC = () => {
     setInput("");
 
     try {
-      const response = await fetch("", {
+      const response = await fetch("http://localhost:9000/chatbot/message", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: input }),

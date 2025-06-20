@@ -77,7 +77,7 @@ const CartPage: React.FC = () => {
         },
       });
 
-      const data = response.data.cart;
+      const data = response.data;
       console.log(data);
 
       setCartData(data);
