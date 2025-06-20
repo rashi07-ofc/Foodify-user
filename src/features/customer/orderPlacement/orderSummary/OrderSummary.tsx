@@ -24,7 +24,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
     try {
             const orderIdResponse = await orderApi.post<{ orderId: string }>(
         "http://localhost:3006/order/prePlaceOrder",
-        { cartId: cId, addressId: adId }
+        { cartId: cId, addressId: adId }, 
       );
 
       const orderId = orderIdResponse.data.data.orderId;

@@ -11,6 +11,7 @@ const CartPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
+  const [totalQuantity, setTotalQuantity] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const [tax, setTax] = useState(0);
@@ -80,7 +81,8 @@ const CartPage: React.FC = () => {
       console.log(data);
 
       setCartData(data);
-
+    const quantity = data.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+    setTotalQuantity(quantity);
       if (data?.restaurantId) {
         fetchAvailableCoupons(data.restaurantId);
       }
