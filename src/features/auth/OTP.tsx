@@ -71,6 +71,7 @@ const OTP: React.FC = () => {
           <input
             id="email"
             type="email"
+            onKeyDown={e => e.key === "Enter" && handleSendOtp()}
             className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-700 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             placeholder="you@example.com"
             value={email}
