@@ -82,7 +82,7 @@ const ZomatoCollections: React.FC = () => {
 
           const demoLocation = {
             latitude: 28.6105,
-            longitude:77.37,
+            longitude: 77.37,
             offset: 0,
             limit: 10,
           };

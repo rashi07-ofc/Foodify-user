@@ -3,7 +3,7 @@ import {Logout} from '../../features/auth/authService';
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    isLoggedIn: false,
+    isLoggedIn: !!localStorage.getItem("accessToken"),
     user: null,
   },
   reducers: {

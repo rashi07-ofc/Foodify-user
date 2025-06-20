@@ -33,3 +33,28 @@ export interface DeliveryAddress {
 
 // Keep other types like PaymentMethod if you have them
 export type PaymentMethod = "online" | "cod";
+
+
+export interface UserProfile {
+  _id: string;
+  username: string;
+  email: string;
+  phone: string;
+  gender: string;
+  date_of_birth: string;
+  country: string;
+  image?: string;
+}
+
+export interface Address {
+  _id: string;
+  label: string;
+  house_no: string;
+  address_location_1: string;
+  address_location_2?: string;
+  city: string;
+  postal_code: number;
+  country: string;
+  latitude: number;
+  longitude: number;
+}
