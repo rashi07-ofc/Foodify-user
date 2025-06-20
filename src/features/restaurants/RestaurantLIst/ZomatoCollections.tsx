@@ -24,6 +24,7 @@ import { getNearbyRestaurants } from "../../../api/restaurantFetchApi.ts";
 import HomeBannerImage from "../../../assets/home-banner-image.jpeg";
 import c5 from "../../../assets/c5.png";
 import Navbar from "../../../components/layout/Navbar";
+import ChatWidget from "../../../pages/HomePage/ChatWidget.tsx";
 
 interface Restaurant {
   _id: string;
@@ -553,6 +554,7 @@ const ZomatoCollections: React.FC = () => {
       </div>
 
       {/* <Footer /> */}
+      <ChatWidget />
     </>
   );
 };
