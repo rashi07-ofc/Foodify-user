@@ -1,8 +1,8 @@
-import React from "react";
-import { MdPhone } from "react-icons/md";
+import React, { useEffect, useState } from "react";
+import { MdPhone, MdDirections, MdRateReview } from "react-icons/md";
 import { motion } from "framer-motion";
-import { MdDirections, MdRateReview } from "react-icons/md";
-import { restaurant } from "./restaurantData";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const buttonVariants = {
   hover: { scale: 1.05, boxShadow: "0 4px 8px rgba(0,0,0,0.15)" },
@@ -20,7 +20,36 @@ const cardVariants = {
 };
 
 const RestaurantCard: React.FC = () => {
-  const { name, address, timing, phone, rating, images } = restaurant;
+  const { id } = useParams();
+  const restaurantId = id;
+  const [restaurant, setRestaurant] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3005/restaurant/${restaurantId}`)
+      .then((res) => {
+        console.log(res);
+
+        setRestaurant(res.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch restaurant:", error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <div className="text-center mt-10">Loading...</div>;
+  if (!restaurant)
+    return <div className="text-center mt-10">No data found</div>;
+
+  const images = [
+    "https://plus.unsplash.com/premium_photo-1661953124283-76d0a8436b87?q=80&w=2088&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=1170&auto=format&fit=crop",
+    "https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?q=80&w=1189&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1170&auto=format&fit=crop",
+  ];
 
   return (
     <motion.div
@@ -29,28 +58,27 @@ const RestaurantCard: React.FC = () => {
       initial="hidden"
       animate="visible"
     >
-      {/* Rating Badge */}
-      <div className="absolute top-4 right-4 bg-green-600 text-white px-3 py-1 rounded-md text-sm font-semibold shadow">
-        {rating} ★
+      <div className="absolute top-4 right-4 bg-orange-500 text-white px-3 py-1 rounded-md text-sm font-semibold shadow">
+        4.5 ★
       </div>
 
-      {/* Info */}
       <div className="mb-4">
-        <h2 className="text-2xl font-semibold text-gray-800">{name}</h2>
-        <p className="text-gray-600 mt-1">{address}</p>
-        <p className="text-gray-500 text-sm mt-1">Open: {timing}</p>
+        <h2 className="text-2xl font-semibold text-gray-800">
+          {restaurant.name}
+        </h2>
+        <p className="text-gray-600 mt-1">{restaurant.address}</p>
+        <p className="text-gray-500 text-sm mt-1">Open: 9:00 AM - 11:00 PM</p>
         <p className="text-gray-500 text-sm mt-1 flex items-center gap-1">
-          <MdPhone className="text-gray-600" /> {phone}
+          <MdPhone className="text-orange-400" /> {restaurant.phone}
         </p>
       </div>
 
-      {/* Action Buttons */}
       <div className="flex gap-4 flex-wrap mb-6">
         <motion.button
           variants={buttonVariants}
           whileHover="hover"
           whileTap="tap"
-          className="flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded transition text-sm select-none"
+          className="flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-2 rounded transition text-sm select-none"
         >
           <MdDirections size={18} />
           Direction
@@ -60,7 +88,7 @@ const RestaurantCard: React.FC = () => {
           variants={buttonVariants}
           whileHover="hover"
           whileTap="tap"
-          className="flex items-center gap-2 bg-pink-100 text-pink-700 px-4 py-2 rounded transition text-sm select-none"
+          className="flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-2 rounded transition text-sm select-none"
           onClick={() => {
             const el = document.getElementById("restaurant-tabs");
             if (el) {
@@ -73,13 +101,12 @@ const RestaurantCard: React.FC = () => {
         </motion.button>
       </div>
 
-      {/* Images Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-2">
         {images.map((src, idx) => (
           <motion.img
             key={idx}
             src={src}
-            alt={`food item ${idx + 1}`}
+            alt={`food item`}
             loading="lazy"
             variants={imgVariants}
             initial="initial"

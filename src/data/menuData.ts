@@ -4,6 +4,7 @@ export interface MenuItem {
   price: number;
   description: string;
   image: string;
+  isVeg: boolean; 
 }
 
 export interface CategorizedMenu {
@@ -18,6 +19,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 399,
       description: 'Crispy rolls stuffed with vegetables.',
       image: 'https://images.pexels.com/photos/2641886/pexels-photo-2641886.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 2,
@@ -25,6 +27,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 350,
       description: 'Toasted bread with garlic and herbs.',
       image: 'https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 3,
@@ -32,6 +35,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 375,
       description: 'Creamy hummus served with warm pita bread.',
       image: 'https://images.pexels.com/photos/1640770/pexels-photo-1640770.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 4,
@@ -39,6 +43,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 420,
       description: 'Mushrooms filled with cheese and herbs.',
       image: 'https://images.pexels.com/photos/70497/pexels-photo-70497.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 5,
@@ -46,6 +51,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 360,
       description: 'Grilled bread topped with fresh tomatoes and basil.',
       image: 'https://images.pexels.com/photos/1437267/pexels-photo-1437267.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 6,
@@ -53,6 +59,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 410,
       description: 'Corn chips covered with melted cheese and jalapeños.',
       image: 'https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 19,
@@ -60,6 +67,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 445,
       description: 'Golden fried corn tossed in spices.',
       image: 'https://images.pexels.com/photos/594590/pexels-photo-594590.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 20,
@@ -67,6 +75,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 490,
       description: 'Bite-sized paneer snacks with a spicy crust.',
       image: 'https://images.pexels.com/photos/5665663/pexels-photo-5665663.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 21,
@@ -74,6 +83,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 340,
       description: 'Crispy pastry stuffed with spiced potatoes.',
       image: 'https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 22,
@@ -81,6 +91,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 495,
       description: 'Broccoli marinated in tandoori masala and grilled.',
       image: 'https://images.pexels.com/photos/262978/pexels-photo-262978.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 23,
@@ -88,6 +99,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 510,
       description: 'Fried paneer cubes tossed in Indo-Chinese sauce.',
       image: 'https://images.pexels.com/photos/5665663/pexels-photo-5665663.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 24,
@@ -95,6 +107,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 365,
       description: 'Deep-fried vegetable patties.',
       image: 'https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
   ],
 
@@ -105,6 +118,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 950,
       description: 'Creamy tomato gravy with grilled chicken.',
       image: 'https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 8,
@@ -112,6 +126,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 850,
       description: 'Cottage cheese cooked in spicy tikka masala.',
       image: 'https://images.pexels.com/photos/1640770/pexels-photo-1640770.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 9,
@@ -119,6 +134,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 1200,
       description: 'Perfectly grilled salmon with lemon butter sauce.',
       image: 'https://images.pexels.com/photos/3296273/pexels-photo-3296273.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 10,
@@ -126,6 +142,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 780,
       description: 'Aromatic basmati rice cooked with vegetables and spices.',
       image: 'https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 11,
@@ -133,6 +150,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 840,
       description: 'Classic Italian pasta in creamy Alfredo sauce.',
       image: 'https://images.pexels.com/photos/1437267/pexels-photo-1437267.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 12,
@@ -140,6 +158,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 1050,
       description: 'Chicken marinated in yogurt and spices, roasted in tandoor.',
       image: 'https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 25,
@@ -147,6 +166,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 735,
       description: 'Slow-cooked black lentils in creamy gravy.',
       image: 'https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 26,
@@ -154,6 +174,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 690,
       description: 'Kidney beans curry served with steamed rice.',
       image: 'https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 27,
@@ -161,6 +182,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 875,
       description: 'Paneer cooked with bell peppers in tomato gravy.',
       image: 'https://images.pexels.com/photos/5665663/pexels-photo-5665663.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 28,
@@ -168,6 +190,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 720,
       description: 'Spicy chickpeas served with fried Indian bread.',
       image: 'https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 29,
@@ -175,6 +198,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 1150,
       description: 'Coastal-style fish curry with coconut and spices.',
       image: 'https://images.pexels.com/photos/3296273/pexels-photo-3296273.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 30,
@@ -182,6 +206,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 800,
       description: 'Boiled eggs simmered in onion-tomato masala.',
       image: 'https://images.pexels.com/photos/1640770/pexels-photo-1640770.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
   ],
 
@@ -192,6 +217,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 260,
       description: 'Deep-fried milk balls soaked in sugar syrup.',
       image: 'https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 14,
@@ -199,6 +225,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 275,
       description: 'Vanilla ice cream with chocolate drizzle and nuts.',
       image: 'https://images.pexels.com/photos/302680/pexels-photo-302680.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 15,
@@ -206,6 +233,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 290,
       description: 'Rich chocolate brownie served warm.',
       image: 'https://images.pexels.com/photos/45202/chocolate-brownie-cake-dessert-45202.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 16,
@@ -213,6 +241,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 250,
       description: 'Soft cottage cheese balls in flavored milk.',
       image: 'https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 17,
@@ -220,6 +249,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 275,
       description: 'Fluffy mousse made with fresh mango pulp.',
       image: 'https://images.pexels.com/photos/302680/pexels-photo-302680.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 18,
@@ -227,6 +257,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 295,
       description: 'Grated carrots cooked with milk and dry fruits.',
       image: 'https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 31,
@@ -234,6 +265,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 270,
       description: 'Rice pudding with cardamom and saffron.',
       image: 'https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 32,
@@ -241,6 +273,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 320,
       description: 'Traditional Indian frozen dessert.',
       image: 'https://images.pexels.com/photos/302680/pexels-photo-302680.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 33,
@@ -248,6 +281,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 285,
       description: 'Mixed fruits in creamy custard.',
       image: 'https://images.pexels.com/photos/302680/pexels-photo-302680.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 34,
@@ -255,6 +289,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 330,
       description: 'Rich lentil dessert cooked in ghee.',
       image: 'https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 35,
@@ -262,6 +297,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 345,
       description: 'Fried bread soaked in sweetened milk.',
       image: 'https://images.pexels.com/photos/302680/pexels-photo-302680.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
     {
       id: 36,
@@ -269,6 +305,7 @@ export const categorizedMenu: CategorizedMenu = {
       price: 360,
       description: 'Sweet pancakes served with rabri.',
       image: 'https://images.pexels.com/photos/302680/pexels-photo-302680.jpeg?auto=compress&cs=tinysrgb&w=600',
+      isVeg: true,
     },
   ],
 };

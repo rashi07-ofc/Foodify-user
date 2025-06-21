@@ -1,54 +1,64 @@
-# React + TypeScript + Vite
+# 🚀 Foodify Restaurant Manager Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, performant restaurant management frontend built using **React**, **TypeScript**, **Redux Toolkit**, **GSAP**, and **Tailwind CSS**. This project is the interface for restaurant managers to register, manage orders, chat with bots, and more — all powered by WebSocket and RESTful APIs.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📁 Project Structure
 
-## Expanding the ESLint configuration
+frontend-rm/
+├── public/ # Static assets
+├── src/
+│ ├── api/ # Axios instances and API helpers
+│ ├── assets/ # Images, icons, SVGs
+│ ├── components/ # Reusable UI components
+│ ├── context/ # Context providers
+│ ├── data/ # Static/fake data
+│ ├── features/ # Feature modules (auth, chat, orders, etc.)
+│ ├── hooks/ # Custom React hooks
+│ ├── pages/ # Top-level pages
+│ ├── redux/ # Redux slices, store config
+│ ├── routes/ # React Router configs
+│ ├── types/ # TypeScript type declarations
+│ ├── utils/ # Utility functions
+│ ├── App.tsx # Main app component
+│ ├── main.tsx # App entry point
+├── eslint.config.js
+├── tailwind.config.js
+├── vite.config.ts
+├── tsconfig*.json
+├── package.json
+└── README.md
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+yaml
+Copy
+Edit
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🧰 Tech Stack
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Technology        | Purpose                                      |
+|-------------------|----------------------------------------------|
+| React + TypeScript | UI + Type safety                             |
+| Vite              | Fast bundler and dev server                  |
+| Tailwind CSS      | Utility-first styling                        |
+| Redux Toolkit     | State management                             |
+| React Router DOM  | Page routing                                 |
+| Axios             | HTTP client for API calls                    |
+| GSAP              | Animations for UI interactions               |
+| WebSockets        | Real-time order updates                      |
+| ESLint + Prettier | Code linting and formatting                  |
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+---
+
+## 🌐 Features
+
+- 🔐 **Auth Flow** (Login, Register with OTP)
+- 🧾 **Order Placement & Success Page**
+- 💬 **Chat Widget with GSAP animation**
+- 📦 **Real-time order updates via WebSocket**
+- 🎨 **Smooth transitions using GSAP**
+- 📱 **Responsive UI with Tailwind CSS**
+
+---

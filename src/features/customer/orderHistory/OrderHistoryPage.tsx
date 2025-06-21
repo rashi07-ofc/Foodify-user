@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { orderHistory as mockOrderData } from "./mockOrderHistory";
+import axios from "axios";
 
 type OrderItem = {
   name: string;
@@ -21,19 +21,34 @@ const OrderHistoryPage = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setTimeout(() => {
-      setOrderHistory(mockOrderData);
-      setLoading(false);
-    }, 500);
+    const fetchOrderHistory = async () => {
+      const token = localStorage.getItem("token");
+
+      try {
+        const response = await axios.post(
+          "http://localhost:3006/order/allOrder",
+          {
+            offset: 0,
+            limit: 10,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        console.log("Order history:", response.data);
+      } catch (error) {
+        console.error("Failed to fetch order history:", error);
+      }
+    };
+
+    fetchOrderHistory();
   }, []);
 
-  const handleViewDetails = (order: Order) => {
-    setSelectedOrder(order);
-  };
-
-  const handleCloseDetails = () => {
-    setSelectedOrder(null);
-  };
+  const handleViewDetails = (order: Order) => setSelectedOrder(order);
+  const handleCloseDetails = () => setSelectedOrder(null);
 
   if (loading) {
     return (
@@ -96,7 +111,7 @@ const OrderHistoryPage = () => {
                         ? "text-green-500"
                         : order.status === "Cancelled"
                         ? "text-red-500"
-                        : "text-yellow-500" // Assuming other statuses are pending/processing
+                        : "text-yellow-500"
                     }`}
                   >
                     {order.status}
@@ -104,7 +119,7 @@ const OrderHistoryPage = () => {
                 </div>
                 <button
                   onClick={() => handleViewDetails(order)}
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue active:bg-blue-800 text-sm"
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md focus:outline-none text-sm"
                 >
                   View Details
                 </button>
@@ -115,9 +130,8 @@ const OrderHistoryPage = () => {
 
         {selectedOrder && (
           <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center z-50">
-            {/* Blurry backdrop */}
             <div
-              className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-30 backdrop-filter backdrop-blur-sm"
+              className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-30 backdrop-blur-sm"
               onClick={handleCloseDetails}
             ></div>
 

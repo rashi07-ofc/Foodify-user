@@ -5,6 +5,7 @@ import AddressSection from "./addressSection/AddressSection";
 import PaymentSection from "./paymentSection/PaymentSection";
 import OrderSummary from "./orderSummary/OrderSummary";
 import type { DeliveryAddress, OrderData, PaymentMethod } from "../../../types/index";
+import Navbar from "../../../components/layout/Navbar";
 
 const PlaceOrderPage: React.FC = () => {
   // State declarations
@@ -42,7 +43,7 @@ const PlaceOrderPage: React.FC = () => {
     zipCode: "",
     label: "",
   });
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("mock");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("online");
   const [orderPlaced, setOrderPlaced] = useState<boolean>(false);
   const [orderData, setOrderData] = useState<OrderData | null>(null);
 
@@ -61,15 +62,18 @@ const PlaceOrderPage: React.FC = () => {
     }));
   };
 
-  const handleAddressSelection = (addressId: string) => {
-    setSelectedAddressId(addressId);
-    const selectedAddress = savedAddresses.find((addr) => addr.id === addressId);
-    if (selectedAddress) {
-      setDeliveryAddress(selectedAddress);
-    }
-    setShowAddressForm(false);
-    setIsEditingAddress(false);
-  };
+const handleAddressSelection = (addressId: string) => {
+  console.log("Selected address ID:", addressId);
+  setSelectedAddressId(addressId);
+  const selectedAddress = savedAddresses.find((addr) => addr.id === addressId);
+  console.log("Selected address object:", selectedAddress);
+  if (selectedAddress) {
+    setDeliveryAddress(selectedAddress);
+  }
+  setShowAddressForm(false);
+  setIsEditingAddress(false);
+};
+
 
   const handleAddNewAddress = () => {
     setShowAddressForm(true);
@@ -172,14 +176,16 @@ const PlaceOrderPage: React.FC = () => {
       zipCode: "",
       label: "",
     });
-    setPaymentMethod("mock");
+    setPaymentMethod("cashOnDelivery");
   };
 
-  if (orderPlaced && orderData && orderData.paymentMethod === "cod") {
+  if (orderPlaced && orderData && orderData.paymentMethod === "cashOnDelivery") {
     return <OrderConfirmation orderData={orderData} onReset={resetOrder} />;
   }
 
   return (
+    <>
+    <Navbar/>
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
@@ -212,13 +218,14 @@ const PlaceOrderPage: React.FC = () => {
           <div className="lg:col-span-1">
             <OrderSummary 
               deliveryAddress={deliveryAddress}
-              paymentMethod={paymentMethod}
+              modeOfPayment={paymentMethod}
               onPlaceOrder={handlePlaceOrder}
             />
           </div>
         </div>
       </div>
     </div>
+    </>
   );
 };
 
