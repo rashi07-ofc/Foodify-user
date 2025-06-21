@@ -75,7 +75,7 @@ export const refreshAuthToken = async () => {
 
   try {
     const response = await axios.post(
-      "http://localhost:3001/auth/refresh",
+      "/auth/refresh",
       { refreshToken: currentRefreshToken }
     );
 
