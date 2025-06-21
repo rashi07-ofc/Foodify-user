@@ -1,11 +1,13 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from '../../redux/slice/authSlice'
+import { login } from "../../redux/slice/authSlice";
+import gsap from "gsap";
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -15,10 +17,36 @@ const Register: React.FC = () => {
     confirmPassword: "",
     role: 1,
   });
-
   const [otp, setOtp] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
+
+  // 🧠 Refs for animation
+  const headingRef = useRef(null);
+  const formCardRef = useRef(null);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    const tl = gsap.timeline({ defaults: { ease: "power2.out", duration: 0.4 } });
+
+    tl.fromTo(headingRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0 })
+      .fromTo(
+        formCardRef.current,
+        { opacity: 0, scale: 0.95 },
+        { opacity: 1, scale: 1 },
+        "-=0.3"
+      )
+      .fromTo(
+        formRef.current?.querySelectorAll("div, button"),
+        { opacity: 0, y: 10 },
+        {
+          opacity: 1,
+          y: 0,
+          stagger: 0.08,
+        },
+        "-=0.2"
+      );
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -72,28 +100,6 @@ const Register: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // const handleInitiateSignup = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   if (!validateForm()) return;
-
-  //   setIsLoading(true);
-  //   try {
-  //     await axios.post("http://localhost:9000/auth/signup", formData);
-  //     console.log("✅ OTP initiation successful");
-  //   } catch (error: any) {
-  //     console.error(error);
-  //     setErrors({
-  //       form:
-  //         error.response?.data?.message ||
-  //         "Something went wrong while initiating signup",
-  //     });
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-  const dispatch = useDispatch();
-
   const handleRegisterAndOtpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -103,16 +109,11 @@ const Register: React.FC = () => {
       setErrors((prev) => ({ ...prev, otp: "OTP is required" }));
       return;
     }
-    // Removed the validation for OTP length and format (e.g., 4 to 6 digits)
-    // if (!/^\d{4,6}$/.test(otp)) {
-    //   setErrors((prev) => ({ ...prev, otp: "OTP must be 4 to 6 digits" }));
-    //   return;
-    // }
 
     setIsLoading(true);
 
     try {
-      const res = await axios.post<{accessToken: string, refreshToken: string}>(
+      const res = await axios.post<{ accessToken: string; refreshToken: string }>(
         "http://localhost:9000/auth/signup",
         {
           username: formData.name,
@@ -130,18 +131,13 @@ const Register: React.FC = () => {
         }
       );
 
-      console.log("✅ Registration successful!");
-
       const { accessToken, refreshToken } = res.data.data;
 
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
 
       dispatch(login({ accessToken, refreshToken }));
-
-      navigate("/home", {
-        state: { message: "Registration successful!" },
-      });
+      navigate("/home", { state: { message: "Registration successful!" } });
     } catch (error: any) {
       console.error(error);
       setErrors({
@@ -156,7 +152,7 @@ const Register: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md" ref={headingRef}>
         <h2 className="text-center text-3xl font-extrabold text-gray-900">
           Create your account
         </h2>
@@ -171,9 +167,9 @@ const Register: React.FC = () => {
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md" ref={formCardRef}>
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleRegisterAndOtpSubmit}>
+          <form ref={formRef} className="space-y-6" onSubmit={handleRegisterAndOtpSubmit}>
             {errors.form && (
               <div className="rounded-md bg-orange-50 p-4 text-orange-700">
                 {errors.form}

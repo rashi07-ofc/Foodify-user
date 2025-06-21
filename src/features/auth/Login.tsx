@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Login as loginApi } from "../auth/authService";
 import { login as loginRedux } from "../../redux/slice/authSlice";
 import { useDispatch } from "react-redux";
+import gsap from "gsap";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -13,21 +14,49 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    const tl = gsap.timeline({ defaults: { ease: "power2.out", duration: 0.4 } });
+
+    tl.fromTo(
+      containerRef.current,
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0 }
+    )
+      .fromTo(
+        headingRef.current,
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0 },
+        "-=0.2"
+      )
+      .fromTo(
+        formRef.current?.querySelectorAll("div, button"),
+        { opacity: 0, y: 10 },
+        {
+          opacity: 1,
+          y: 0,
+          stagger: 0.1,
+        },
+        "-=0.2"
+      );
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
 
     try {
-      const user = await loginApi(email, password); // assuming this returns user data
-      dispatch(loginRedux(user)); // sets isLoggedIn = true
+      const user = await loginApi(email, password);
+      dispatch(loginRedux(user));
       navigate("/home");
     } catch (err: any) {
       console.error("Login failed:", err);
-      if (err.response && err.response.data && err.response.data.message) {
+      if (err.response?.data?.message) {
         setError(err.response.data.message);
-      } else if (err.message) {
-        setError("Login failed: " + err.message);
       } else {
         setError("Login failed. Please check your email and password.");
       }
@@ -38,12 +67,18 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6 space-y-6">
-        <h2 className="text-2xl font-bold text-gray-800 text-center">
+      <div
+        ref={containerRef}
+        className="w-full max-w-md bg-white rounded-lg shadow-lg p-6 space-y-6"
+      >
+        <h2
+          ref={headingRef}
+          className="text-2xl font-bold text-gray-800 text-center"
+        >
           Login to your account
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block mb-1 text-sm text-gray-600">Email</label>
             <input

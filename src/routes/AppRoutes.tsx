@@ -51,12 +51,11 @@ const router = createBrowserRouter([
       { path: "cart", element: <CartPage /> },
       { path: "profile", element: <ProfilePage /> },
       { path: "complaint", element: <ComplaintPopup /> },
-            { path: "your-order", element: <YourOrder /> },
-
+      { path: "your-order", element: <YourOrder /> },
 
       {
         path: "/order-success",
-        element: <PaymentSuccess />,
+        element: <OrderSuccessPage />,
       },
       {
         path: "/order-failure",

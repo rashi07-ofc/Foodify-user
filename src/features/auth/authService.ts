@@ -24,6 +24,7 @@ export const clearAuthTokens = () => {
   delete axios.defaults.headers.common["Authorization"];
 };
 
+// login ke liye api call
 export const Login = async (email: string, password: string) => {
   const response = await axios.post("auth/login", {
     email,
@@ -46,6 +47,7 @@ export const Login = async (email: string, password: string) => {
   return { accessToken, refreshToken }; 
 };
 
+// logout ke liye api call
 export const Logout = async () => {
   const accessToken = getAuthToken();
 
@@ -65,6 +67,7 @@ export const Logout = async () => {
   }
 };
 
+// refresh token ke liye api call
 export const refreshAuthToken = async () => { 
   const currentRefreshToken = getRefreshToken();
 
@@ -84,13 +87,14 @@ export const refreshAuthToken = async () => {
     localStorage.setItem("accessToken", accessToken);
     localStorage.setItem("refreshToken", refreshToken);
 
-    if (data && data._id) {
-      localStorage.setItem("userId", data._id);
-    }
+    // if (data && data._id) {
+    //   localStorage.setItem("userId", data._id);
+    // }
 
     setAuthHeaders(accessToken);
 
-    return { accessToken, refreshToken, user: { _id: data?._id || localStorage.getItem("userId") || '', email: data?.email || '', role: data?.role || 0 } };
+    // return { accessToken, refreshToken, user: { _id: data?._id || localStorage.getItem("userId") || '', email: data?.email || '', role: data?.role || 0 } };
+    return { accessToken, refreshToken };
   } catch (error) {
     console.error("Failed to refresh token:", error);
     clearAuthTokens();

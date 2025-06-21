@@ -16,6 +16,7 @@
     "aos": "2.3.4",
     "axios": "1.10.0",
     "framer-motion": "12.17.0",
+    "gsap": "^3.13.0",
     "lucide-react": "0.514.0",
     "prettier": "3.5.3",
     "react": "19.1.0",
