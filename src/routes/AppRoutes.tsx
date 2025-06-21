@@ -59,7 +59,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/order-failure",
-        element: <PaymentFailure />,
+        element: <OrderFailurePage />,
       },
       { path: "/forgot", element: <ForgotPassword /> },
       { path: "/reset-password", element: <ResetPasswordPage /> },

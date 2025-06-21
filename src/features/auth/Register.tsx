@@ -1,127 +1,73 @@
-import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { login } from "../../redux/slice/authSlice";
+import axios from "axios";
 import gsap from "gsap";
 
-const Register: React.FC = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+// Yup Schema
+const schema = yup.object().shape({
+  name: yup.string().required("Name is required"),
+  email: yup.string().email("Invalid email").required("Email is required"),
+  phone: yup
+    .string()
+    .matches(/^\+?[\d\s\-\(\)]{10,15}$/, "Invalid phone number")
+    .required("Phone number is required"),
+  password: yup.string().min(8, "Min 8 characters").required("Password required"),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref("password")], "Passwords must match")
+    .required("Confirm your password"),
+  otp: yup.string().required("OTP is required"),
+});
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    password: "",
-    confirmPassword: "",
-    role: 1,
-  });
-  const [otp, setOtp] = useState("");
-  const [errors, setErrors] = useState<Record<string, string>>({});
+type FormData = yup.InferType<typeof schema>;
+
+const Register: React.FC = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [formError, setFormError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // 🧠 Refs for animation
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({ resolver: yupResolver(schema) });
+
   const headingRef = useRef(null);
   const formCardRef = useRef(null);
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     const tl = gsap.timeline({ defaults: { ease: "power2.out", duration: 0.4 } });
-
     tl.fromTo(headingRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0 })
-      .fromTo(
-        formCardRef.current,
-        { opacity: 0, scale: 0.95 },
-        { opacity: 1, scale: 1 },
-        "-=0.3"
-      )
+      .fromTo(formCardRef.current, { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1 }, "-=0.3")
       .fromTo(
         formRef.current?.querySelectorAll("div, button"),
         { opacity: 0, y: 10 },
-        {
-          opacity: 1,
-          y: 0,
-          stagger: 0.08,
-        },
+        { opacity: 1, y: 0, stagger: 0.08 },
         "-=0.2"
       );
   }, []);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    if (name === "otp") {
-      setOtp(value);
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
-
-    if (errors[name]) {
-      const newErrors = { ...errors };
-      delete newErrors[name];
-      setErrors(newErrors);
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.name.trim()) newErrors.name = "Name is required";
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid";
-    }
-
-    if (!formData.phone.trim()) {
-      newErrors.phone = "Phone number is required";
-    } else if (
-      !/^\+?[\d\s\-\(\)]{10,15}$/.test(formData.phone.replace(/\s/g, ""))
-    ) {
-      newErrors.phone = "Phone number is invalid";
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters";
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleRegisterAndOtpSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) return;
-
-    if (!otp.trim()) {
-      setErrors((prev) => ({ ...prev, otp: "OTP is required" }));
-      return;
-    }
-
+  const onSubmit = async (data: FormData) => {
     setIsLoading(true);
+    setFormError("");
 
     try {
       const res = await axios.post<{ accessToken: string; refreshToken: string }>(
         "http://localhost:9000/auth/signup",
         {
-          username: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          password: formData.password,
+          username: data.name,
+          email: data.email,
+          phone: data.phone,
+          password: data.password,
           role: 1,
-          otp,
+          otp: data.otp,
         },
         {
           headers: {
@@ -132,19 +78,15 @@ const Register: React.FC = () => {
       );
 
       const { accessToken, refreshToken } = res.data.data;
-
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
-
       dispatch(login({ accessToken, refreshToken }));
       navigate("/home", { state: { message: "Registration successful!" } });
     } catch (error: any) {
       console.error(error);
-      setErrors({
-        form:
-          error.response?.data?.message ||
-          "Registration failed. Please check your details and OTP.",
-      });
+      setFormError(
+        error.response?.data?.message || "Registration failed. Please check your details and OTP."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -153,15 +95,10 @@ const Register: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md" ref={headingRef}>
-        <h2 className="text-center text-3xl font-extrabold text-gray-900">
-          Create your account
-        </h2>
+        <h2 className="text-center text-3xl font-extrabold text-gray-900">Create your account</h2>
         <p className="mt-2 text-center text-sm text-gray-600">
           Already registered?{" "}
-          <Link
-            to="/login"
-            className="font-medium text-orange-600 hover:text-orange-500"
-          >
+          <Link to="/login" className="font-medium text-orange-600 hover:text-orange-500">
             Login
           </Link>
         </p>
@@ -169,72 +106,45 @@ const Register: React.FC = () => {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md" ref={formCardRef}>
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form ref={formRef} className="space-y-6" onSubmit={handleRegisterAndOtpSubmit}>
-            {errors.form && (
-              <div className="rounded-md bg-orange-50 p-4 text-orange-700">
-                {errors.form}
-              </div>
-            )}
+          <form ref={formRef} className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+            {formError && <div className="text-sm text-red-500">{formError}</div>}
 
             {[
-              { label: "Full Name", id: "name", type: "text" },
-              { label: "Email", id: "email", type: "email" },
-              { label: "Phone", id: "phone", type: "tel", placeholder: "+91 9876543210" },
-              { label: "Password", id: "password", type: "password" },
-              { label: "Confirm Password", id: "confirmPassword", type: "password" },
-            ].map(({ label, id, type, ...rest }) => (
+              { id: "name", label: "Full Name", type: "text" },
+              { id: "email", label: "Email", type: "email" },
+              { id: "phone", label: "Phone", type: "tel", placeholder: "+91 9876543210" },
+              { id: "password", label: "Password", type: "password" },
+              { id: "confirmPassword", label: "Confirm Password", type: "password" },
+              { id: "otp", label: "OTP", type: "text" },
+            ].map(({ id, label, ...rest }) => (
               <div key={id}>
                 <label htmlFor={id} className="block text-sm font-medium text-gray-700">
                   {label}
                 </label>
                 <input
-                  id={id}
-                  name={id}
-                  type={type}
-                  value={formData[id as keyof typeof formData] as string}
-                  onChange={handleChange}
+                  {...register(id as keyof FormData)}
                   {...rest}
                   className={`mt-1 block w-full px-3 py-2 border ${
-                    errors[id] ? "border-orange-400" : "border-gray-300"
-                  } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm`}
+                    errors[id as keyof FormData] ? "border-red-400" : "border-gray-300"
+                  } rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm`}
                 />
-                {errors[id] && (
-                  <p className="mt-1 text-sm text-orange-600">{errors[id]}</p>
+                {errors[id as keyof FormData] && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors[id as keyof FormData]?.message}
+                  </p>
                 )}
               </div>
             ))}
 
-            <div>
-              <label htmlFor="otp" className="block text-sm font-medium text-gray-700">
-                Enter OTP sent to your phone/email
-              </label>
-              <input
-                id="otp"
-                name="otp"
-                type="text"
-                maxLength={6}
-                value={otp}
-                onChange={handleChange}
-                className={`mt-1 block w-full px-3 py-2 border ${
-                  errors.otp ? "border-orange-400" : "border-gray-300"
-                } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm`}
-              />
-              {errors.otp && (
-                <p className="mt-1 text-sm text-orange-600">{errors.otp}</p>
-              )}
-            </div>
-
-            <div>
-              <button
-                type="submit"
-                disabled={isLoading}
-                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 ${
-                  isLoading ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-              >
-                {isLoading ? "Registering..." : "Register"}
-              </button>
-            </div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 ${
+                isLoading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            >
+              {isLoading ? "Registering..." : "Register"}
+            </button>
           </form>
         </div>
       </div>

@@ -26,7 +26,7 @@ const ChatWidget: React.FC = () => {
       tl.to(chatBoxRef.current, {
         opacity: 0,
         y: 100,
-        duration: 0.4,
+        duration: 0.7,
         ease: "power3.in",
         onComplete: () => setShouldRender(false),
       });
