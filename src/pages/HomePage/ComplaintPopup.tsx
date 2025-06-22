@@ -56,7 +56,7 @@ const ComplaintPopup: React.FC<Props> = ({ orderId, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-white/50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+    <div className="fixed inset-0 bg-white/70 backdrop-blur-sm flex justify-center items-center z-50 p-4">
 
       <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg relative">
         <h2 className="text-2xl font-semibold text-center text-orange-600 mb-6">
