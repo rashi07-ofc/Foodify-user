@@ -25,7 +25,7 @@ import PaymentSuccess from "../features/customer/orderPlacement/paymentSection/P
 import PaymentFailure from "../features/customer/orderPlacement/paymentSection/PaymentFailure";
 import ForgotPassword from "../pages/forgetPassword/ForgetPassword";
 import ResetPasswordPage from "../features/auth/ResetPassword";
-import { CartProvider } from "../context/CartContext";
+// import { CartProvider } from "../context/CartContext";
 import OrderSuccessPage from "../features/customer/orderPlacement/orderSummary/OrderSuccess";
 import OrderFailurePage from "../features/customer/orderPlacement/orderSummary/OrderFailure";
 import ComplaintPopup from "../pages/HomePage/ComplaintPopup";
@@ -75,10 +75,10 @@ const AppRoutes = () => {
 
   return (
     <ResetFlowProvider>
-      <CartProvider>
+      {/* <CartProvider> */}
         <ToastContainer position="top-center" autoClose={2000} />
         <RouterProvider router={router} />
-      </CartProvider>
+      {/* </CartProvider> */}
     </ResetFlowProvider>
   );
 };
