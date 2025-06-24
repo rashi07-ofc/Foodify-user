@@ -16,6 +16,8 @@ const MenuList: React.FC = () => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
   const { id: restaurantId } = useParams();
+  console.log(restaurantId);
+  
 
   useEffect(() => {
     const fetchMenu = async () => {

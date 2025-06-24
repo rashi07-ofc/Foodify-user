@@ -57,10 +57,14 @@ const brands = [
 ];
 
 const Delivery: React.FC = () => {
+
+
+  //usestates
   const [restaurants, setRestaurants] = useState<Restaurant[]>();
   const [tag, setTag] = useState<string>("pizza");
   const navigate = useNavigate();
 
+  //to set initial tag to pizza and fetch corresponding tag restaurants.
   useEffect(() => {
     const getData = async () => {
       const data = await getRestaurantsByTags(tag);

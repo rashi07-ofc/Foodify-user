@@ -43,6 +43,9 @@ interface Restaurant {
 }
 
 const ZomatoCollections: React.FC = () => {
+
+
+  //defining states
   const [activePage, setActivePage] = useState<number>(0);
   const [apiRestaurants, setApiRestaurants] = useState<Restaurant[]>([]);
   const [filteredApiRestaurants, setFilteredApiRestaurants] = useState<
@@ -52,6 +55,7 @@ const ZomatoCollections: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState<boolean>(false);
 
+
   const dispatch = useDispatch();
   const { filteredRestaurants, filters } = useSelector(
     (state: RootState) => state.filter
@@ -59,13 +63,17 @@ const ZomatoCollections: React.FC = () => {
 
   const { location, error: locationError, getLocation } = useGeolocation();
 
+  //creates a React ref object named hasFetchedRestaurants, initialized with a value of false.
   const hasFetchedRestaurants = useRef(false);
 
   useEffect(() => {
     getLocation();
   }, []);
 
+
+  // fetches nearby restaurants via an API
   useEffect(() => {
+    //conditional gaurd reduce api calls
     if (!hasFetchedRestaurants.current && (location?.lat || locationError)) {
       const fetchRestaurants = async () => {
         setLoading(true);
@@ -100,6 +108,8 @@ const ZomatoCollections: React.FC = () => {
     }
   }, [location, locationError]);
 
+
+  //filters
   useEffect(() => {
     dispatch(applyFilters(restaurantsData));
   }, [dispatch, filters]);
@@ -145,6 +155,8 @@ const ZomatoCollections: React.FC = () => {
     dispatch(clearFilters());
   };
 
+
+  
   const navigate = useNavigate();
 
   const ratingButtons = [
@@ -153,6 +165,7 @@ const ZomatoCollections: React.FC = () => {
     { rating: "5", label: "5 Star", color: "red" },
   ];
 
+  //filters ui
   <div className="py-8 px-4 sm:px-6 lg:px-8 bg-white border-b border-gray-200">
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
