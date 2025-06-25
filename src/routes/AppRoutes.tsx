@@ -23,7 +23,7 @@ import { ResetFlowProvider } from "../context/ResetFlowContext";
 import AppLayout from "../components/layout/AppLayout";
 import ForgotPassword from "../pages/forgetPassword/ForgetPassword";
 import ResetPasswordPage from "../features/auth/ResetPassword";
-import { CartProvider } from "../context/CartContext";
+// import { CartProvider } from "../context/CartContext";
 import OrderSuccessPage from "../features/customer/orderPlacement/orderSummary/OrderSuccess";
 import OrderFailurePage from "../features/customer/orderPlacement/orderSummary/OrderFailure";
 import YourOrder from "../pages/HomePage/YourOrder";
@@ -73,10 +73,10 @@ const AppRoutes = () => {
 
   return (
     <ResetFlowProvider>
-      <CartProvider>
+      {/* <CartProvider> */}
         <ToastContainer position="top-center" autoClose={2000} />
         <RouterProvider router={router} />
-      </CartProvider>
+      {/* </CartProvider> */}
     </ResetFlowProvider>
   );
 };
