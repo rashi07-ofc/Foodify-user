@@ -77,14 +77,15 @@ const CartPage: React.FC = () => {
           },
         }
       );
-      console.log("applY reponse", response.data.newTotal);
+      console.log("applY reponse", response.data);
 
       setTotal(response.data.newTotal);
       setMaxDis(response.data.maxDiscount);
       setRemove(true);
+      const msg=response.data.message;
       // setCouponCode(response.data.Code || "");
 
-      toast.success("Coupon applied successfully!");
+      toast.success(msg);
       // fetchCart();
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Failed to apply coupon");
@@ -94,7 +95,7 @@ const CartPage: React.FC = () => {
   //remove coupon
   const removeCoupon = async () => {
     try {
-      await axios.post(
+      const res=await axios.post(
         `http://localhost:3002/cart/removeCoupon`,
         {
           couponId,
@@ -105,9 +106,11 @@ const CartPage: React.FC = () => {
           },
         }
       );
+   console.log(res , dfcgvhb);
+   
       setRemove(false);
       toast.success("Coupon removed successfully");
-      fetchCart();
+      // fetchCart();
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Failed to remove coupon");
     }
@@ -151,7 +154,7 @@ const CartPage: React.FC = () => {
       if (data?.restaurantId) {
         fetchAvailableCoupons(data.restaurantId);
       }
-      setTotal(data.itemTotal);
+      setTotal(data.total);
       setDiscount(data.discount || 0);
       setTax(data.tax || 0);
       setCouponCode(data.couponCode || "");

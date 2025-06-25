@@ -1,11 +1,12 @@
 import React, { useState, Suspense } from "react";
 import { dummyReviews } from "../../../data/reviewData";
 import FoodLoader from "./FoodLoader";
+import BookingHall from "../Booking/BookingHall";
 const MenuLIst =React.lazy(()=>import("./MenuList"))
 const ReviewCard = React.lazy(() => import("./ReviewCard"));
 const BookTable = React.lazy(() => import("./BookTable"));
 
-const TABS = ["Reviews", "Order Online", "Book a Table"];
+const TABS = ["Reviews", "Order Online", "Book a Table", "Book Hall"];
 
 const RestaurantTabs: React.FC = () => {
   const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>("Reviews");
@@ -35,6 +36,13 @@ const RestaurantTabs: React.FC = () => {
             <BookTable />
           </Suspense>
         );
+
+      case "Book Hall":
+        return (
+           <Suspense fallback={<FoodLoader />}>
+            <BookingHall />
+          </Suspense>
+        )
 
       default:
         return null;
