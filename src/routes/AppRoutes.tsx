@@ -21,21 +21,19 @@ import ResetSuccess from "../pages/forgetPassword/ResetSuccess";
 
 import { ResetFlowProvider } from "../context/ResetFlowContext";
 import AppLayout from "../components/layout/AppLayout";
-import PaymentSuccess from "../features/customer/orderPlacement/paymentSection/PaymentSuccess";
-import PaymentFailure from "../features/customer/orderPlacement/paymentSection/PaymentFailure";
 import ForgotPassword from "../pages/forgetPassword/ForgetPassword";
 import ResetPasswordPage from "../features/auth/ResetPassword";
 // import { CartProvider } from "../context/CartContext";
 import OrderSuccessPage from "../features/customer/orderPlacement/orderSummary/OrderSuccess";
 import OrderFailurePage from "../features/customer/orderPlacement/orderSummary/OrderFailure";
-import ComplaintPopup from "../pages/HomePage/ComplaintPopup";
 import YourOrder from "../pages/HomePage/YourOrder";
-import BookingHall from "../features/restaurants/Booking/BookingHall";
+// import ErrorPage from "../features/auth/ErrorPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <AppLayout />,
+    // errorElement: <ErrorPage />,
     children: [
       { path: "", element: <LandingPage /> },
       { path: "login", element: <Login /> },
@@ -51,22 +49,16 @@ const router = createBrowserRouter([
       { path: "landing/:id", element: <MainPage /> },
       { path: "cart", element: <CartPage /> },
       { path: "profile", element: <ProfilePage /> },
-      { path: "complaint", element: <ComplaintPopup /> },
-<<<<<<< Updated upstream
-            { path: "your-order", element: <YourOrder /> },
-=======
+      // { path: "complaint", element: <ComplaintPopup /> },
       { path: "your-order", element: <YourOrder /> },
-            { path: "booking", element: <BookingHall/> },
->>>>>>> Stashed changes
-
 
       {
         path: "/order-success",
-        element: <PaymentSuccess />,
+        element: <OrderSuccessPage />,
       },
       {
         path: "/order-failure",
-        element: <PaymentFailure />,
+        element: <OrderFailurePage />,
       },
       { path: "/forgot", element: <ForgotPassword /> },
       { path: "/reset-password", element: <ResetPasswordPage /> },
@@ -81,8 +73,10 @@ const AppRoutes = () => {
 
   return (
     <ResetFlowProvider>
+      {/* <CartProvider> */}
         <ToastContainer position="top-center" autoClose={2000} />
         <RouterProvider router={router} />
+      {/* </CartProvider> */}
     </ResetFlowProvider>
   );
 };

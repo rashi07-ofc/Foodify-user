@@ -1,11 +1,22 @@
-// OrderSuccessPage.tsx
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { getAuthToken } from "../../../auth/authService";
+import gsap from "gsap";
+import Confetti from "react-confetti";
+import { useWindowSize } from "react-use";
+import { CheckCircle } from "lucide-react";
 
 export default function OrderSuccessPage() {
   const navigate = useNavigate();
+  const [showConfetti, setShowConfetti] = useState(true);
+
+  const containerRef = useRef(null);
+  const headingRef = useRef(null);
+  const subTextRef = useRef(null);
+  const buttonRef = useRef(null);
+
+  const { width, height } = useWindowSize();
 
   useEffect(() => {
     const placeFinalOrder = async () => {
@@ -13,7 +24,7 @@ export default function OrderSuccessPage() {
       const orderId = localStorage.getItem("orderId");
 
       if (!orderId || !token) {
-        navigate("/"); // fallback to home if missing info
+        navigate("/");
         return;
       }
 
@@ -24,9 +35,10 @@ export default function OrderSuccessPage() {
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        // Clean up
         localStorage.removeItem("orderId");
         localStorage.removeItem("cart_id");
+
+        setTimeout(() => setShowConfetti(false), 5000);
       } catch (error) {
         console.error("Final order placement failed:", error);
         navigate("/order-failure");
@@ -36,16 +48,57 @@ export default function OrderSuccessPage() {
     placeFinalOrder();
   }, [navigate]);
 
+  useEffect(() => {
+    const tl = gsap.timeline({ defaults: { ease: "power2.out", duration: 0.5 } });
+
+    tl.fromTo(containerRef.current, { opacity: 0 }, { opacity: 1 })
+      .fromTo(
+        headingRef.current,
+        { opacity: 0, scale: 0.8 },
+        { opacity: 1, scale: 1 },
+        "-=0.3"
+      )
+      .fromTo(
+        subTextRef.current,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0 },
+        "-=0.3"
+      )
+      .fromTo(
+        buttonRef.current,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0 },
+        "-=0.2"
+      );
+  }, []);
+
   return (
-    <div className="text-center p-10">
-      <h1 className="text-2xl font-bold text-green-600">Order Successful!</h1>
-      <p className="text-gray-600 mt-2">Thank you for your purchase.</p>
-      <button
-        onClick={() => navigate("/home")}
-        className="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-white relative">
+      {showConfetti && (
+        <Confetti width={width} height={height} recycle={false} />
+      )}
+
+      <div
+        ref={containerRef}
+        className="bg-white p-10 rounded-3xl shadow-xl max-w-md w-full text-center"
       >
-        Go to Home
-      </button>
+        <CheckCircle className="text-green-500 mx-auto mb-4" size={64} />
+
+        <h1 ref={headingRef} className="text-3xl font-bold text-green-700">
+          Order Successful!
+        </h1>
+        <p ref={subTextRef} className="text-gray-600 mt-3 text-base">
+          Your order has been placed successfully. <br /> Thank you for shopping with us!
+        </p>
+
+        <button
+          ref={buttonRef}
+          onClick={() => navigate("/home")}
+          className="mt-6 w-full bg-blue-600 hover:bg-blue-700 transition-colors text-white font-semibold py-3 px-6 rounded-lg shadow-md"
+        >
+          Go to Home
+        </button>
+      </div>
     </div>
   );
 }
