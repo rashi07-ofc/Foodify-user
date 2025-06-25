@@ -1,25 +1,23 @@
 // AddressList.tsx
-import React, { useState, useEffect } from "react";
-import { Edit2, Plus } from "lucide-react";
-
+import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
+import { Edit2, Plus, Trash2 } from "lucide-react";
 import type { DeliveryAddress } from "../../../../types";
 import axios from "axios";
 import { getAuthToken } from "../../../auth/authService";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify"; // Import toast from react-toastify
 
 interface AddressListProps {
   initialSelectedAddressId?: string | null;
-  onSelect: (addressId: string) => void;
-  onEdit: (addressId: string) => void;
+  onSelect: (addressId: string, addressDetails: DeliveryAddress) => void;
+  onEdit: (addressDetails: DeliveryAddress) => void;
   onAddNew: () => void;
 }
 
-const AddressList: React.FC<AddressListProps> = ({
-  initialSelectedAddressId = null,
-  onSelect,
-  onEdit,
-  onAddNew,
-}) => {
+const AddressList = forwardRef<
+  { fetchAddresses: () => void },
+  AddressListProps
+>(({ initialSelectedAddressId = null, onSelect, onEdit, onAddNew }, ref) => {
   const [addresses, setAddresses] = useState<DeliveryAddress[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
     initialSelectedAddressId
@@ -28,88 +26,185 @@ const AddressList: React.FC<AddressListProps> = ({
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchAddresses = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const token = getAuthToken();
-        if (!token) {
-          setError("Authentication required to load addresses.");
-          setLoading(false);
-          navigate("/login");
-          return;
-        }
+  const fetchAddresses = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const token = getAuthToken();
+      if (!token) {
+        setError("Authentication required to load addresses.");
+        toast.error("You need to be logged in to view addresses.");
+        setLoading(false);
+        return;
+      }
 
-        const response = await axios.get<DeliveryAddress[]>(
-          "http://localhost:9000/address/user",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+      const response = await axios.get<DeliveryAddress[]>(
+        "http://localhost:9000/address/user",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const addressList = response.data.map((addr) => ({
+        ...addr,
+        id: addr._id,
+      }));
+      setAddresses(addressList);
+
+      const storedSelectedId = localStorage.getItem("selectedAddressId");
+      let initialSelectionMade = false;
+
+      if (
+        storedSelectedId &&
+        addressList.some((addr) => addr.id === storedSelectedId)
+      ) {
+        setSelectedAddressId(storedSelectedId);
+        onSelect(
+          storedSelectedId,
+          addressList.find((addr) => addr.id === storedSelectedId)!
         );
-
-        const addressList = response.data;
-        console.log(response.data);
-
-        const normalizedAddresses = addressList.map((addr) => ({
-          ...addr,
-          id: addr._id,
-        }));
-
-        setAddresses(normalizedAddresses);
-
-        const addressIds = normalizedAddresses.map((addr) => addr._id);
-        localStorage.setItem("addressIds", JSON.stringify(addressIds));
-
-        const storedSelectedId = localStorage.getItem("selectedAddressId");
-
-        if (
-          storedSelectedId &&
-          addressList.some((addr) => addr._id === storedSelectedId)
-        ) {
-          setSelectedAddressId(storedSelectedId);
-          onSelect(storedSelectedId);
-        } else if (!initialSelectedAddressId && addressList.length > 0) {
-          const defaultId = addressList[0]._id;
-          setSelectedAddressId(defaultId);
-          localStorage.setItem("selectedAddressId", defaultId);
-          onSelect(defaultId);
-        } else if (
-          initialSelectedAddressId &&
-          !addressList.some((addr) => addr._id === initialSelectedAddressId)
-        ) {
-          if (addressList.length > 0) {
-            const fallbackId = addressList[0]._id;
-            setSelectedAddressId(fallbackId);
-            localStorage.setItem("selectedAddressId", fallbackId);
-            onSelect(fallbackId);
-          } else {
-            setSelectedAddressId(null);
-            localStorage.removeItem("selectedAddressId");
-            onSelect("");
-          }
-        }
-      } catch (err) {
-        console.error("Error fetching addresses:", err);
-        setError("Failed to load addresses. Please try again.");
-        setAddresses([]);
+        initialSelectionMade = true;
+      } else if (
+        initialSelectedAddressId &&
+        addressList.some((addr) => addr.id === initialSelectedAddressId)
+      ) {
+        setSelectedAddressId(initialSelectedAddressId);
+        onSelect(
+          initialSelectedAddressId,
+          addressList.find((addr) => addr.id === initialSelectedAddressId)!
+        );
+        initialSelectionMade = true;
+      } else if (addressList.length > 0) {
+        const defaultId = addressList[0].id;
+        setSelectedAddressId(defaultId);
+        localStorage.setItem("selectedAddressId", defaultId!);
+        onSelect(defaultId!, addressList[0]);
+        initialSelectionMade = true;
+      } else {
         setSelectedAddressId(null);
         localStorage.removeItem("selectedAddressId");
-        onSelect("");
-      } finally {
-        setLoading(false);
+        onSelect("", {
+          address_location_1: "",
+          city: "",
+          postal_code: 0,
+          country: "",
+        } as DeliveryAddress);
+        initialSelectionMade = true;
       }
-    };
 
+      if (!initialSelectionMade && addressList.length > 0) {
+        const defaultId = addressList[0].id;
+        setSelectedAddressId(defaultId);
+        localStorage.setItem("selectedAddressId", defaultId!);
+        onSelect(defaultId!, addressList[0]);
+      }
+    } catch (err) {
+      console.error("Error fetching addresses:", err);
+      setError("Failed to load addresses. Please try again.");
+      toast.error("Failed to load addresses. Please try again.");
+      setAddresses([]);
+      setSelectedAddressId(null);
+      localStorage.removeItem("selectedAddressId");
+      onSelect("", {
+        address_location_1: "",
+        city: "",
+        postal_code: 0,
+        country: "",
+      } as DeliveryAddress);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useImperativeHandle(ref, () => ({
+    fetchAddresses,
+  }));
+
+  useEffect(() => {
     fetchAddresses();
-  }, [initialSelectedAddressId, onSelect, navigate]);
+  }, [initialSelectedAddressId, navigate]);
 
   const handleSelectAddress = (addressId: string) => {
     setSelectedAddressId(addressId);
     localStorage.setItem("selectedAddressId", addressId);
-    onSelect(addressId);
+    const selectedAddr = addresses.find((addr) => addr.id === addressId);
+    if (selectedAddr) {
+      onSelect(addressId, selectedAddr);
+    }
+  };
+
+  const handleDeleteAddress = async (addressId: string) => {
+    if (
+      !window.confirm(
+        "Are you sure you want to delete this address? This action cannot be undone."
+      )
+    ) {
+      return;
+    }
+
+    const toastId = toast.info("Deleting address...", {
+      autoClose: false,
+      closeButton: false,
+      isLoading: true,
+    });
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      // logic to delete the address
+      const token = getAuthToken();
+      if (!token) {
+        toast.update(toastId, {
+          render: "Authentication required to delete addresses.",
+          type: "error",
+          autoClose: 3000,
+          isLoading: false,
+        });
+        setLoading(false);
+        return;
+      }
+
+      // api call to delete address
+      await axios.delete(`http://localhost:9000/address/${addressId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      //toast update
+      toast.update(toastId, {
+        render: "Address deleted successfully!",
+        type: "success",
+        autoClose: 3000,
+        isLoading: false,
+      });
+      fetchAddresses();
+
+      if (selectedAddressId === addressId) {
+        setSelectedAddressId(null);
+        localStorage.removeItem("selectedAddressId");
+        onSelect("", {
+          address_location_1: "",
+          city: "",
+          postal_code: 0,
+          country: "",
+        } as DeliveryAddress);
+      }
+    } catch (err) {
+      console.error("Error deleting address:", err);
+      toast.update(toastId, {
+        render: "Failed to delete address. Please try again.",
+        type: "error",
+        autoClose: 3000,
+        isLoading: false,
+      });
+      setError("Failed to delete address. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading) {
@@ -134,10 +229,10 @@ const AddressList: React.FC<AddressListProps> = ({
         <div className="text-center py-8 text-red-600">
           <p>{error}</p>
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => fetchAddresses()}
             className="mt-2 text-sm text-blue-600 hover:underline"
           >
-            Reload Page
+            Retry
           </button>
         </div>
       </div>
@@ -161,13 +256,13 @@ const AddressList: React.FC<AddressListProps> = ({
         ) : (
           addresses.map((address) => (
             <div
-              key={address._id}
+              key={address.id}
               className={`border rounded-lg p-4 cursor-pointer transition-all ${
-                selectedAddressId === address._id
+                selectedAddressId === address.id
                   ? "border-orange-500 bg-orange-50 shadow-md"
                   : "border-gray-300 hover:border-gray-400 hover:shadow-sm"
               }`}
-              onClick={() => handleSelectAddress(address._id)}
+              onClick={() => handleSelectAddress(address.id!)}
             >
               <div className="flex justify-between items-start">
                 <div className="flex-1">
@@ -180,19 +275,33 @@ const AddressList: React.FC<AddressListProps> = ({
                   </div>
                   <p className="text-sm text-gray-600">
                     {address.house_no && `${address.house_no}, `}
-                    {address.address_location_1}, {address.city} -{" "}
-                    {address.postal_code}
+                    {address.address_location_1}
+                    {address.address_location_2
+                      ? `, ${address.address_location_2}`
+                      : ""}
+                    , {address.city} - {address.postal_code}
                   </p>
                 </div>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onEdit(address._id);
-                  }}
-                  className="text-gray-400 hover:text-orange-600 transition-colors"
-                >
-                  <Edit2 className="w-4 h-4" />
-                </button>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEdit(address);
+                    }}
+                    className="text-gray-400 hover:text-orange-600 transition-colors"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteAddress(address.id!);
+                    }}
+                    className="text-gray-400 hover:text-red-600 transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </div>
           ))
@@ -208,6 +317,6 @@ const AddressList: React.FC<AddressListProps> = ({
       </button>
     </div>
   );
-};
+});
 
 export default AddressList;

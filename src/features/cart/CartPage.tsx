@@ -77,7 +77,7 @@ const CartPage: React.FC = () => {
           },
         }
       );
-      console.log("applY reponse", response.data);
+      console.log("applY reponse", response.data.newTotal);
 
       setTotal(response.data.newTotal);
       setMaxDis(response.data.maxDiscount);

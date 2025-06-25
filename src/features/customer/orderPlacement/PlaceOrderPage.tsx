@@ -1,183 +1,105 @@
 // PlaceOrderPage.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import OrderConfirmation from "./orderConfirmation/OrderConfirmation";
 import AddressSection from "./addressSection/AddressSection";
 import PaymentSection from "./paymentSection/PaymentSection";
 import OrderSummary from "./orderSummary/OrderSummary";
-import type { DeliveryAddress, OrderData, PaymentMethod } from "../../../types/index";
+import type { DeliveryAddress, PaymentMethod } from "../../../types/index";
 import Navbar from "../../../components/layout/Navbar";
+import { toast } from 'react-toastify';
+
+interface OrderData {
+  deliveryAddress: DeliveryAddress;
+  paymentMethod: PaymentMethod;
+}
 
 const PlaceOrderPage: React.FC = () => {
-  // State declarations
-  const [savedAddresses, setSavedAddresses] = useState<DeliveryAddress[]>([
-    {
-      id: "1",
-      fullName: "John Doe",
-      phoneNumber: "+1234567890",
-      streetAddress: "123 Main Street, Apt 4B",
-      city: "New York",
-      zipCode: "10001",
-      label: "Home",
-    },
-    {
-      id: "2",
-      fullName: "John Doe",
-      phoneNumber: "+1234567890",
-      streetAddress: "456 Business Ave, Suite 200",
-      city: "New York",
-      zipCode: "10002",
-      label: "Office",
-    },
-  ]);
-
-  const [selectedAddressId, setSelectedAddressId] = useState<string>("");
+  const [currentDeliveryAddress, setCurrentDeliveryAddress] = useState<DeliveryAddress | null>(null);
   const [showAddressForm, setShowAddressForm] = useState<boolean>(false);
   const [isEditingAddress, setIsEditingAddress] = useState<boolean>(false);
-  const [editingAddressId, setEditingAddressId] = useState<string>("");
-  const [deliveryAddress, setDeliveryAddress] = useState<DeliveryAddress>({
-    id: "",
-    fullName: "",
-    phoneNumber: "",
-    streetAddress: "",
-    city: "",
-    zipCode: "",
-    label: "",
-  });
+  const [editingAddressData, setEditingAddressData] = useState<DeliveryAddress | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("online");
   const [orderPlaced, setOrderPlaced] = useState<boolean>(false);
   const [orderData, setOrderData] = useState<OrderData | null>(null);
 
-  // Check if user has saved addresses on component mount
-  useEffect(() => {
-    if (savedAddresses.length === 0) {
-      setShowAddressForm(true);
-    }
-  }, [savedAddresses.length]);
+  const addressListRef = useRef<{ fetchAddresses: () => void }>(null);
 
-  // Handler functions
-  const handleInputChange = (field: keyof DeliveryAddress, value: string) => {
-    setDeliveryAddress((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+  const handleAddressSelection = useCallback((selectedId: string, addressDetails: DeliveryAddress) => {
+    setCurrentDeliveryAddress(addressDetails);
+    setShowAddressForm(false);
+    setIsEditingAddress(false);
+    setEditingAddressData(null);
+  }, []);
 
-const handleAddressSelection = (addressId: string) => {
-  console.log("Selected address ID:", addressId);
-  setSelectedAddressId(addressId);
-  const selectedAddress = savedAddresses.find((addr) => addr.id === addressId);
-  console.log("Selected address object:", selectedAddress);
-  if (selectedAddress) {
-    setDeliveryAddress(selectedAddress);
-  }
-  setShowAddressForm(false);
-  setIsEditingAddress(false);
-};
-
-
-  const handleAddNewAddress = () => {
+  const handleAddNewAddress = useCallback(() => {
     setShowAddressForm(true);
     setIsEditingAddress(false);
-    setSelectedAddressId("");
-    setDeliveryAddress({
-      id: "",
-      fullName: "",
-      phoneNumber: "",
-      streetAddress: "",
+    setEditingAddressData({
+      address_location_1: "",
       city: "",
-      zipCode: "",
-      label: "",
+      postal_code: 0,
+      country: "",
+      label: "Other",
+      house_no: "",
+      address_location_2: "",
     });
-  };
+  }, []);
 
-  const handleEditAddress = (addressId: string) => {
-    const addressToEdit = savedAddresses.find((addr) => addr.id === addressId);
-    if (addressToEdit) {
-      setDeliveryAddress(addressToEdit);
-      setEditingAddressId(addressId);
-      setIsEditingAddress(true);
-      setShowAddressForm(true);
-      setSelectedAddressId("");
-    }
-  };
+  const handleEditAddress = useCallback((addressDetails: DeliveryAddress) => {
+    setShowAddressForm(true);
+    setIsEditingAddress(true);
+    setEditingAddressData(addressDetails);
+  }, []);
 
-  const handleSaveAddress = () => {
-    if (
-      !deliveryAddress.fullName ||
-      !deliveryAddress.phoneNumber ||
-      !deliveryAddress.streetAddress ||
-      !deliveryAddress.city ||
-      !deliveryAddress.zipCode
-    ) {
-      alert("Please fill in all address fields");
-      return;
-    }
-
-    if (isEditingAddress && editingAddressId) {
-      // Update existing address
-      setSavedAddresses((prev) =>
-        prev.map((addr) =>
-          addr.id === editingAddressId
-            ? { ...deliveryAddress, id: editingAddressId }
-            : addr
-        )
-      );
-      setIsEditingAddress(false);
-      setEditingAddressId("");
-    } else {
-      // Add new address
-      const newAddress = {
-        ...deliveryAddress,
-        id: Date.now().toString(),
-        label: deliveryAddress.label || "Other",
-      };
-      setSavedAddresses((prev) => [...prev, newAddress]);
-      setDeliveryAddress(newAddress);
-    }
-
+  const handleAddressFormSaveSuccess = useCallback(() => {
     setShowAddressForm(false);
-  };
+    setIsEditingAddress(false);
+    setEditingAddressData(null);
+    if (addressListRef.current) {
+      addressListRef.current.fetchAddresses();
+    }
+  }, []);
+
+  const handleCancelAddressForm = useCallback(() => {
+    setShowAddressForm(false);
+    setIsEditingAddress(false);
+    setEditingAddressData(null);
+  }, []);
 
   const handlePlaceOrder = () => {
-    // Check if address is selected or filled
     if (
-      !deliveryAddress.fullName ||
-      !deliveryAddress.phoneNumber ||
-      !deliveryAddress.streetAddress ||
-      !deliveryAddress.city ||
-      !deliveryAddress.zipCode
+      !currentDeliveryAddress ||
+      !currentDeliveryAddress.address_location_1 ||
+      !currentDeliveryAddress.postal_code ||
+      !currentDeliveryAddress.city ||
+      !currentDeliveryAddress.country
     ) {
-      alert("Please select or enter a delivery address");
+      toast.error("Please select or enter a complete delivery address.");
       return;
     }
 
     const order: OrderData = {
-      deliveryAddress,
+      deliveryAddress: currentDeliveryAddress,
       paymentMethod,
+      // Add actual cart items, total amount, etc. here based on your app's state
     };
 
     setOrderData(order);
     setOrderPlaced(true);
   };
 
-  const resetOrder = () => {
+  const resetOrder = useCallback(() => {
     setOrderPlaced(false);
     setOrderData(null);
-    setSelectedAddressId("");
-    setShowAddressForm(savedAddresses.length === 0);
+    setCurrentDeliveryAddress(null);
+    setShowAddressForm(false);
     setIsEditingAddress(false);
-    setEditingAddressId("");
-    setDeliveryAddress({
-      id: "",
-      fullName: "",
-      phoneNumber: "",
-      streetAddress: "",
-      city: "",
-      zipCode: "",
-      label: "",
-    });
+    setEditingAddressData(null);
     setPaymentMethod("cashOnDelivery");
-  };
+    if (addressListRef.current) {
+      addressListRef.current.fetchAddresses();
+    }
+  }, []);
 
   if (orderPlaced && orderData && orderData.paymentMethod === "cashOnDelivery") {
     return <OrderConfirmation orderData={orderData} onReset={resetOrder} />;
@@ -185,46 +107,58 @@ const handleAddressSelection = (addressId: string) => {
 
   return (
     <>
-    <Navbar/>
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Place Your Order</h1>
-          <p className="text-gray-600">Complete your delivery details and payment information</p>
-        </div>
-
-        <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <AddressSection 
-              savedAddresses={savedAddresses}
-              selectedAddressId={selectedAddressId}
-              showAddressForm={showAddressForm}
-              isEditingAddress={isEditingAddress}
-              deliveryAddress={deliveryAddress}
-              onAddressSelection={handleAddressSelection}
-              onAddNewAddress={handleAddNewAddress}
-              onEditAddress={handleEditAddress}
-              onSaveAddress={handleSaveAddress}
-              onInputChange={handleInputChange}
-              onCancelForm={() => setShowAddressForm(false)}
-            />
-            
-            <PaymentSection 
-              paymentMethod={paymentMethod}
-              onPaymentMethodChange={setPaymentMethod}
-            />
+      <Navbar />
+      <div className="min-h-screen bg-gray-50 py-8 px-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Place Your Order</h1>
+            <p className="text-gray-600">Complete your delivery details and payment information</p>
           </div>
 
-          <div className="lg:col-span-1">
-            <OrderSummary 
-              deliveryAddress={deliveryAddress}
-              modeOfPayment={paymentMethod}
-              onPlaceOrder={handlePlaceOrder}
-            />
+          <div className="grid lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <AddressSection
+                ref={addressListRef}
+                initialSelectedAddressId={currentDeliveryAddress?.id || null}
+                showAddressForm={showAddressForm}
+                isEditingAddress={isEditingAddress}
+                deliveryAddress={editingAddressData || {
+                  address_location_1: "",
+                  city: "",
+                  postal_code: 0,
+                  country: "",
+                  label: "Other",
+                  house_no: "",
+                  address_location_2: "",
+                }}
+                onAddressSelection={handleAddressSelection}
+                onAddNewAddress={handleAddNewAddress}
+                onEditAddress={handleEditAddress}
+                onSaveAddress={handleAddressFormSaveSuccess}
+                onInputChange={(field, value) => {
+                  setEditingAddressData(prev => ({
+                    ...prev!,
+                    [field]: value
+                  }));
+                }}
+                onCancelForm={handleCancelAddressForm}
+              />
+
+              <PaymentSection
+                paymentMethod={paymentMethod}
+                onPaymentMethodChange={setPaymentMethod}
+              />
+            </div>
+
+            <div className="lg:col-span-1">
+              <OrderSummary
+                deliveryAddress={currentDeliveryAddress}
+                modeOfPayment={paymentMethod}
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </>
   );
 };

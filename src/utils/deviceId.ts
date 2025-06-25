@@ -1,4 +1,3 @@
-// utils/deviceId.ts
 export const getDeviceId = (): string => {
   let deviceId = localStorage.getItem("device_id");
 

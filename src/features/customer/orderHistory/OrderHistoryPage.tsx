@@ -26,7 +26,7 @@ const OrderHistoryPage = () => {
 
       try {
         const response = await axios.post(
-          "http://localhost:3006/order/allOrder",
+          "http://localhost:3006/order/userAllOrder",
           {
             offset: 0,
             limit: 10,

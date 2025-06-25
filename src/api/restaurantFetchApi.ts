@@ -13,8 +13,8 @@ export const getNearbyRestaurants=async({longitude,latitude,offset,limit}:Locati
         params:{
             latitude,
             longitude,
-            offset,
-            limit
+            offset: 0,
+            limit: 10
         }
     });
     console.log(response.data);

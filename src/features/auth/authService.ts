@@ -82,7 +82,7 @@ export const refreshAuthToken = async () => {
       { refreshToken: currentRefreshToken }
     );
 
-    const { accessToken, refreshToken, data } = response.data;
+    const { accessToken, refreshToken } = response.data;
 
     localStorage.setItem("accessToken", accessToken);
     localStorage.setItem("refreshToken", refreshToken);
