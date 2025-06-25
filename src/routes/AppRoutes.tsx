@@ -30,6 +30,7 @@ import OrderSuccessPage from "../features/customer/orderPlacement/orderSummary/O
 import OrderFailurePage from "../features/customer/orderPlacement/orderSummary/OrderFailure";
 import ComplaintPopup from "../pages/HomePage/ComplaintPopup";
 import YourOrder from "../pages/HomePage/YourOrder";
+import BookingHall from "../features/restaurants/Booking/BookingHall";
 
 const router = createBrowserRouter([
   {
@@ -51,7 +52,12 @@ const router = createBrowserRouter([
       { path: "cart", element: <CartPage /> },
       { path: "profile", element: <ProfilePage /> },
       { path: "complaint", element: <ComplaintPopup /> },
+<<<<<<< Updated upstream
             { path: "your-order", element: <YourOrder /> },
+=======
+      { path: "your-order", element: <YourOrder /> },
+            { path: "booking", element: <BookingHall/> },
+>>>>>>> Stashed changes
 
 
       {
@@ -75,10 +81,8 @@ const AppRoutes = () => {
 
   return (
     <ResetFlowProvider>
-      {/* <CartProvider> */}
         <ToastContainer position="top-center" autoClose={2000} />
         <RouterProvider router={router} />
-      {/* </CartProvider> */}
     </ResetFlowProvider>
   );
 };

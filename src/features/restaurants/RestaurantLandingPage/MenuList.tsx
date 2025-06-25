@@ -41,11 +41,10 @@ const MenuList: React.FC = () => {
             },
           }
         );
-
-        const data = response.data;
-        if (Array.isArray(data.menuItems)) {
-          setMenuItems(data.menuItems);
-        } else if (Array.isArray(data)) {
+       console.log(response.data);
+       
+        const data = response.data;  
+        if (Array.isArray(data)) {
           setMenuItems(data);
         } else {
           console.warn("Unexpected API response format:", data);

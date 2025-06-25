@@ -7,19 +7,20 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setTotalQuantity } from "../../redux/slice/cartSlice";
 import { toast, ToastContainer } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
 
 const CartPage: React.FC = () => {
   const dispatch = useDispatch();
   const [cartData, setCartData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [couponCode, setCouponCode] = useState("");
-  const[total,setTotal]=useState(0);
+  const [total, setTotal] = useState(0);
   const [code, setCode] = useState("");
   const [discountPercent, setDiscountPercent] = useState(0);
   const [expiryDate, setExpiryDate] = useState("");
   const [discount, setDiscount] = useState(0);
-  const[couponId,setCouponId]=useState("");
+  const [remove, setRemove] = useState(false);
+  const [maxDiscount, setMaxDis] = useState<number | null>(null);
+  const [couponId, setCouponId] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [tax, setTax] = useState(0);
   const [availableCoupons, setAvailableCoupons] = useState<
@@ -39,14 +40,14 @@ const CartPage: React.FC = () => {
           },
         }
       );
-      setCouponId(response.data[0]._id)
+      setCouponId(response.data[0]._id);
       console.log(response.data[0]._id, "coupon id");
       const dataa = response.data[0];
       setCode(dataa.code);
       setDiscountPercent(dataa.discountPercent);
       setExpiryDate(dataa.expiryDate);
       setAvailableCoupons(response.data[0] || []);
-      console.log(availableCoupons , "available coupon");
+      console.log(availableCoupons, "available coupon");
     } catch (err: any) {
       console.error(
         "Coupon fetch error:",
@@ -56,53 +57,61 @@ const CartPage: React.FC = () => {
     }
   };
 
-
-  //apply coupoj api 
+  //apply coupoj api
   const applyCoupon = async () => {
-  try {
-    if (!couponCode.trim()) {
-      toast.warning("Please enter a coupon code");
-      return;
-    }
-
-    await axios.post(
-      `http://localhost:3002/cart/applyCoupon/${couponId}`, 
-      {
-        couponId: couponId
-      },
-      // `http://localhost:3002/cart/applyCoupon/${couponId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+    try {
+      if (!couponCode.trim()) {
+        toast.warning("Please enter a coupon code");
+        return;
       }
-    );
 
-    toast.success("Coupon applied successfully!");
-    fetchCart(); 
-  } catch (err: any) {
-    toast.error(err.response?.data?.message || "Failed to apply coupon");
-  }
-};
+      const response = await axios.post(
+        `http://localhost:3002/cart/applyCoupon/${couponId}`,
+        {
+          couponId: couponId,
+        },
+        // `http://localhost:3002/cart/applyCoupon/${couponId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      console.log("applY reponse", response.data.newTotal);
 
-//remove coupon 
-const removeCoupon = async () => {
-  try {
-    await axios.post(`http://localhost:3002/cart/removeCoupon`, {
-      couponId
-    },{
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+      setTotal(response.data.newTotal);
+      setMaxDis(response.data.maxDiscount);
+      setRemove(true);
+      // setCouponCode(response.data.Code || "");
 
-    toast.success("Coupon removed successfully");
-    fetchCart(); // Refresh cart to reflect changes
-  } catch (err: any) {
-    toast.error(err.response?.data?.message || "Failed to remove coupon");
-  }
-};
+      toast.success("Coupon applied successfully!");
+      // fetchCart();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to apply coupon");
+    }
+  };
 
+  //remove coupon
+  const removeCoupon = async () => {
+    try {
+      await axios.post(
+        `http://localhost:3002/cart/removeCoupon`,
+        {
+          couponId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      setRemove(false);
+      toast.success("Coupon removed successfully");
+      fetchCart();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to remove coupon");
+    }
+  };
 
   //fetch cart state
   const fetchCart = async () => {
@@ -121,31 +130,33 @@ const removeCoupon = async () => {
         toast.warning(
           "Some items in your cart are no longer available. Refreshing..."
         );
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        return fetchCart();
+        setTimeout(() => {
+          fetchCart();
+        }, 1000);
+
+        
       }
 
       console.log(response.data);
-      
+
       const data = response.data.cart;
       localStorage.setItem("cartId", data._id);
       setCartData(data);
 
       const quantity =
-      data.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+        data.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
       dispatch(setTotalQuantity(quantity));
       localStorage.setItem("cartTotalQuantity", quantity);
 
       if (data?.restaurantId) {
         fetchAvailableCoupons(data.restaurantId);
       }
-      setTotal(data.itemTotal)
+      setTotal(data.itemTotal);
       setDiscount(data.discount || 0);
       setTax(data.tax || 0);
       setCouponCode(data.couponCode || "");
       setError(null);
       setLoading(false);
-
     } catch (err: any) {
       const errorMsg = err.response?.data?.message || err.message;
       console.error("Cart fetch error:", errorMsg);
@@ -167,6 +178,8 @@ const removeCoupon = async () => {
         },
       });
       setCartData(null);
+        dispatch(setTotalQuantity(0));
+      localStorage.setItem("cartTotalQuantity", "");
     } catch (err: any) {
       toast.error(err.message || "Failed to delete cart");
     }
@@ -224,16 +237,6 @@ const removeCoupon = async () => {
     }
   };
 
-  // const applyCoupon = () => {
-  //   if (couponCode.trim().toLowerCase() === "save20") {
-  //     const newDiscount = cartData.itemTotal * 0.2;
-  //     setDiscount(newDiscount);
-  //   } else {
-  //     setDiscount(0);
-  //     toast.info("Invalid or expired coupon");
-  //   }
-  // };
-
   if (loading) return <div className="text-center mt-10">Loading...</div>;
   if (error)
     return <div className="text-center mt-10 text-red-600">Error: {error}</div>;
@@ -274,7 +277,6 @@ const removeCoupon = async () => {
         {items.map((item: any) => (
           <motion.div
             key={item.id}
-            layout
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95 }}
@@ -343,45 +345,42 @@ const removeCoupon = async () => {
       )}
 
       {/* apply coupon */}
-{/* Apply Coupon */}
-<div className="mt-8 flex items-center justify-start gap-4">
-  <input
-    type="text"
-    value={couponCode}
-    onChange={(e) => setCouponCode(e.target.value)}
-    placeholder="Enter coupon code"
-    className="border border-orange-400 px-4 py-2 rounded-md w-60 focus:outline-none focus:ring-2 focus:ring-orange-300"
-  />
-  <button
-    onClick={applyCoupon}
-    className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-md font-semibold"
-  >
-    Apply Coupon
-  </button>
-</div>
-  {cartData?.couponCode && (
-    <div>
-      <p className="text-green-600 text-sm">
-        Coupon <strong>{cartData.couponCode}</strong> applied.
-      </p>
-      <button
-        onClick={removeCoupon}
-        className="text-sm text-red-600 hover:underline"
-      >
-        Remove Coupon
-      </button>
-    </div>
-  )}
+      <div className="mt-8 flex items-center justify-start gap-4">
+        <input
+          type="text"
+          value={couponCode}
+          onChange={(e) => setCouponCode(e.target.value)}
+          placeholder="Enter coupon code"
+          className="border border-orange-400 px-4 py-2 rounded-md w-60 focus:outline-none focus:ring-2 focus:ring-orange-300"
+        />
+        <button
+          onClick={applyCoupon}
+          className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-md font-semibold"
+        >
+          Apply Coupon
+        </button>
+      </div>
+      {remove && (
+        <div>
+          <p className="text-green-600 text-sm">
+            Coupon <strong>{cartData.couponCode}</strong> applied.
+          </p>
+          <button
+            onClick={removeCoupon}
+            className="text-sm text-red-600 hover:underline"
+          >
+            Remove Coupon
+          </button>
+        </div>
+      )}
 
-
-
-{/* order charges details */}
+      {/* order charges details */}
       <div className="mt-10 bg-white p-6 rounded-xl shadow-lg text-right space-y-2">
         <p>Subtotal: ₹{itemTotal.toFixed(2)}</p>
         <p>Tax: ₹{tax.toFixed(2)}</p>
         <p>Platform Fee: ₹{platformFee.toFixed(2)}</p>
         <p>Delivery Charges: ₹{deliveryCharges.toFixed(2)}</p>
-      
+
         <hr className="my-2" />
         <p className="text-2xl font-bold">
           Total: <span className="text-orange-600">₹{total}</span>

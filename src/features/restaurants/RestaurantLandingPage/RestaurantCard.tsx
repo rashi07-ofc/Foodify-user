@@ -28,8 +28,8 @@ const RestaurantCard: React.FC = () => {
   const [restaurant, setRestaurant] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  //fetch restaurant details as per id
 
+  //fetch restaurant details as per id
   useEffect(() => {
     axios
       .get(`http://localhost:3005/restaurant/${restaurantId}`)
@@ -88,13 +88,12 @@ const RestaurantCard: React.FC = () => {
       </div>
 
 
-{/* geolocation to show direction to user */}
+{/* geolocation to show direction to user towards resturantt */}
 
       <div className="flex gap-4 flex-wrap mb-6">
         <motion.button
           variants={buttonVariants}
           whileHover="hover"
-          whileTap="tap"
           className="flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-2 rounded transition text-sm select-none"
           onClick={() => {
             if (!navigator.geolocation) {
@@ -136,7 +135,7 @@ const RestaurantCard: React.FC = () => {
           onClick={() => {
             const el = document.getElementById("restaurant-tabs");
             if (el) {
-              el.scrollIntoView({ behavior: "smooth", block: "start" });
+              el.scrollIntoView();
             }
           }}
         >

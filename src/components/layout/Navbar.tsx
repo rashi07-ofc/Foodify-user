@@ -117,12 +117,20 @@ const Navbar: React.FC = () => {
                 className="text-orange-500 border border-orange-500 px-4 py-2 rounded-full hover:bg-orange-50 transition flex items-center gap-2 relative"
               >
                 <ShoppingCart className="w-5 h-5" />
-                <span className="hidden sm:inline">Cart</span>
+                {/* <span className="hidden sm:inline">Cart</span>
                 {cartItemCount > 0 && (
                   <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                     {cartItemCount}
-                  </span>
-                )}
+                  </span> */}
+                  <span className="hidden sm:inline">Cart</span>
+{(cartItemCount > 0 || localStorage.getItem("cartTotalQuantity")) && (
+  <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+    {cartItemCount > 0
+      ? cartItemCount
+      : parseInt(localStorage.getItem("cartTotalQuantity") || "0")}
+  </span>
+)}
+
               </button>
               <div className="relative" ref={dropdownRef}>
                 <button

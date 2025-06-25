@@ -63,7 +63,6 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
         { itemId: id },
         {
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
           },
         }
