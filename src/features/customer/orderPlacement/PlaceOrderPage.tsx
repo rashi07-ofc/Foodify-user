@@ -6,7 +6,7 @@ import PaymentSection from "./paymentSection/PaymentSection";
 import OrderSummary from "./orderSummary/OrderSummary";
 import type { DeliveryAddress, PaymentMethod } from "../../../types/index";
 import Navbar from "../../../components/layout/Navbar";
-import { toast } from 'react-toastify'; // Import toast from react-toastify
+import { toast } from 'react-toastify';
 
 interface OrderData {
   deliveryAddress: DeliveryAddress;
