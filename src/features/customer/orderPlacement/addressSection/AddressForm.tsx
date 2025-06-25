@@ -1,8 +1,10 @@
+// AddressForm.tsx
 import React, { useState } from "react";
 import axios from "axios";
 import axiosLib from "axios";
 import { getAuthToken } from "../../../auth/authService";
 import type { DeliveryAddress } from "../../../../types";
+import { toast } from 'react-toastify';
 
 interface AddressFormProps {
   address: DeliveryAddress;
@@ -23,10 +25,18 @@ const AddressForm: React.FC<AddressFormProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   const validateForm = () => {
-    if (!address.label) return "Please select an address label.";
+    if (!address.label || (address.label !== "Home" && address.label !== "Office" && address.label !== "Other" && address.label.trim() === "")) {
+      return "Please select or provide a valid address label.";
+    }
     if (!address.address_location_1 || address.address_location_1.trim() === "") return "Street Address Line 1 is required.";
     if (!address.city || address.city.trim() === "") return "City is required.";
-    if (!address.postal_code || isNaN(Number(address.postal_code))) return "Zip Code (Postal Code) is required and must be a number.";
+
+    // Frontend validation for postal code: must be 6 digits and a valid number
+    const postalCodeString = String(address.postal_code); // Convert current state value to string for validation
+    if (postalCodeString.length !== 6 || isNaN(Number(postalCodeString))) {
+      return "Zip Code (Postal Code) must be exactly 6 digits.";
+    }
+
     if (!address.country || address.country.trim() === "") return "Country is required.";
     return null;
   };
@@ -34,17 +44,19 @@ const AddressForm: React.FC<AddressFormProps> = ({
   const handleSave = async () => {
     const validationError = validateForm();
     if (validationError) {
-      alert(validationError);
+      toast.error(validationError);
       return;
     }
 
     setLoading(true);
     setError(null);
 
+    const toastId = toast.info(isEditing ? "Updating address..." : "Saving address...", { autoClose: false, isLoading: true });
+
     try {
       const token = getAuthToken();
       if (!token) {
-        alert("You must be logged in to save an address.");
+        toast.update(toastId, { render: "You must be logged in to save an address.", type: "error", autoClose: 3000, isLoading: false });
         setLoading(false);
         return;
       }
@@ -52,45 +64,52 @@ const AddressForm: React.FC<AddressFormProps> = ({
       const storedLatitude = localStorage.getItem("userLat");
       const storedLongitude = localStorage.getItem("userLon");
 
-      const latitude = storedLatitude ? parseFloat(storedLatitude) : 0;
-      const longitude = storedLongitude ? parseFloat(storedLongitude) : 0;
+      const latitude = storedLatitude ? parseFloat(storedLatitude) : undefined;
+      const longitude = storedLongitude ? parseFloat(storedLongitude) : undefined;
 
-      const payload: Omit<DeliveryAddress, '_id' | 'createdAt' | 'updatedAt' | '__v' | 'user_id'> = {
+      const payload: Omit<DeliveryAddress, 'id' | 'user_id' | 'createdAt' | 'updatedAt' | '__v' | '_id'> = {
         label: address.label || "Other",
-        house_no: address.house_no || "",
+        house_no: address.house_no || undefined,
         address_location_1: address.address_location_1,
-        address_location_2: address.address_location_2 || "",
-        postal_code: Number(address.postal_code),
+        address_location_2: address.address_location_2 || undefined,
+        // *** CRITICAL CHANGE HERE: Ensure postal_code is explicitly a string ***
+        postal_code: Number(address.postal_code), // Convert to string before sending to backend
         city: address.city,
         country: address.country,
-        latitude,
-        longitude,
+        latitude: latitude,
+        longitude: longitude,
       };
 
+      // --- Debugging logs (Check your browser's console!) ---
+      console.log("Payload being sent:", payload);
+      console.log("Type of postal_code in payload:", typeof payload.postal_code);
+      console.log("String length of postal_code in payload:", String(payload.postal_code).length);
+      // --- End Debugging logs ---
+
       if (isEditing) {
-        if (!address._id) {
+        if (!address.id) {
           throw new Error("Cannot update address: Missing address ID.");
         }
-        await axios.put("http://localhost:9000/address", payload, {
+        await axios.put(`http://localhost:9000/address/${address.id}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        alert("Address updated successfully!");
+        toast.update(toastId, { render: "Address updated successfully!", type: "success", autoClose: 3000, isLoading: false });
       } else {
         await axios.post("http://localhost:9000/address", payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        alert("Address added successfully!");
+        toast.update(toastId, { render: "Address added successfully!", type: "success", autoClose: 3000, isLoading: false });
       }
 
-      // onSaveSuccess();
+      onSaveSuccess();
     } catch (err: unknown) {
       console.error("Error saving address:", err);
       const errorMessage =
         axiosLib.isAxiosError(err) && err.response?.data?.message
           ? err.response.data.message
           : "Failed to save address. Please try again.";
+      toast.update(toastId, { render: errorMessage, type: "error", autoClose: 3000, isLoading: false });
       setError(errorMessage);
-      alert(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -111,7 +130,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
         </button>
       </div>
 
-      {error && (
+      {error && !loading && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
           <strong className="font-bold">Error!</strong>
           <span className="block sm:inline"> {error}</span>
@@ -207,7 +226,9 @@ const AddressForm: React.FC<AddressFormProps> = ({
           <input
             id="postal-code"
             type="text"
-            value={address.postal_code ? String(address.postal_code) : ""}
+            // Ensure the input value is always a string for display purposes
+            value={address.postal_code !== undefined && address.postal_code !== null ? String(address.postal_code) : ""}
+            // Pass string directly to onInputChange
             onChange={(e) => onInputChange("postal_code", e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-colors"
             placeholder="Enter zip code"

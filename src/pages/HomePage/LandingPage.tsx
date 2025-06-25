@@ -5,6 +5,7 @@ import FoodGallery from './FoodGallery';
 import About from './About';
 import Services from './Services';
 import Navbar from '../../components/layout/Navbar';
+import ChatWidget from './ChatWidget';
 
 const LandingPage: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ const LandingPage: React.FC = () => {
       <FoodGallery />
       <About />
       <Services />
+      <ChatWidget />
     </>
   );
 };

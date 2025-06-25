@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
+import { marked } from "marked";
 
 type Message = {
   sender: "user" | "bot";
@@ -72,8 +73,23 @@ const ChatWidget: React.FC = () => {
       const data: { reply: string } = await response.json();
 
       setTimeout(() => {
-        setMessages((prev) => [...prev, { sender: "bot", text: data.reply }]);
-      }, 300); // add a small delay for better pacing
+        (async () => {
+          let botText: string;
+
+          try {
+            const markedResult = marked(data.reply || "");
+
+            botText =
+              markedResult instanceof Promise
+                ? await markedResult
+                : markedResult;
+
+            setMessages((prev) => [...prev, { sender: "bot", text: botText }]);
+          } catch (error) {
+            console.error("Error rendering markdown:", error);
+          }
+        })();
+      }, 300);
     } catch (error) {
       console.error("Error sending message:", error);
       setMessages((prev) => [
@@ -105,7 +121,7 @@ const ChatWidget: React.FC = () => {
       {shouldRender && (
         <div
           ref={chatBoxRef}
-          className="fixed bottom-24 right-14 w-80 bg-white border shadow-lg rounded-lg flex flex-col overflow-hidden z-50"
+          className="fixed bottom-24 right-14 w-100 bg-white border shadow-lg rounded-lg flex flex-col overflow-hidden z-50"
         >
           <div className="p-3 bg-orange-600 text-white font-semibold">
             Chatbot
@@ -127,9 +143,8 @@ const ChatWidget: React.FC = () => {
                     className={`inline-block px-3 py-2 rounded-lg ${
                       msg.sender === "user" ? "bg-orange-100" : "bg-gray-100"
                     }`}
-                  >
-                    {msg.text}
-                  </div>
+                    dangerouslySetInnerHTML={{ __html: msg.text }}
+                  ></div>
                 </div>
               );
             })}

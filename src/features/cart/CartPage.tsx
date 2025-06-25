@@ -62,7 +62,11 @@ const CartPage: React.FC = () => {
         setCartData(cartActualData); // Set the cart state to the actual cart object
 
         // Ensure cartActualData.items is an array before calling reduce
-        const quantity = cartActualData.items?.reduce((sum: number, item: any) => sum + item.quantity, 0) || 0;
+        const quantity =
+          cartActualData.items?.reduce(
+            (sum: number, item: any) => sum + item.quantity,
+            0
+          ) || 0;
         setTotalQuantity(quantity);
 
         if (cartActualData?.restaurantId) {
@@ -83,9 +87,11 @@ const CartPage: React.FC = () => {
         setTax(0);
         setCouponCode("");
         setError(null);
-        console.warn("Backend response did not contain a 'cart' object:", backendResponseData);
+        console.warn(
+          "Backend response did not contain a 'cart' object:",
+          backendResponseData
+        );
       }
-
     } catch (err: any) {
       const errorMsg = err.response?.data?.message || err.message;
       console.error("Cart fetch error:", errorMsg);
@@ -153,7 +159,10 @@ const CartPage: React.FC = () => {
       }
       await fetchCart(); // Re-fetch cart to get updated state
     } catch (err: any) {
-      console.error("Failed to update quantity:", err.response?.data?.message || err.message);
+      console.error(
+        "Failed to update quantity:",
+        err.response?.data?.message || err.message
+      );
       alert(err.response?.data?.message || "Failed to update quantity");
     }
   };
@@ -171,8 +180,13 @@ const CartPage: React.FC = () => {
 
       navigate("/place-order");
     } catch (err: any) {
-      console.error("Checkout failed:", err.response?.data?.message || err.message);
-      alert(err.response?.data?.message || "Checkout failed. Please try again.");
+      console.error(
+        "Checkout failed:",
+        err.response?.data?.message || err.message
+      );
+      alert(
+        err.response?.data?.message || "Checkout failed. Please try again."
+      );
     }
   };
 
@@ -193,7 +207,6 @@ const CartPage: React.FC = () => {
       alert("Invalid or expired coupon");
     }
   };
-
 
   // Render logic based on loading, error, and cartData
   if (loading) return <div className="text-center mt-10">Loading...</div>;
@@ -245,7 +258,10 @@ const CartPage: React.FC = () => {
             className="flex flex-col sm:flex-row items-center gap-4 bg-white/70 backdrop-blur-md shadow-2xl rounded-2xl p-5 border border-orange-100 hover:shadow-orange-200"
           >
             <img
-              src={item.image || "https://via.placeholder.com/100"}
+              src={
+                item.image ||
+                "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=781&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              }
               alt={item.name}
               className="w-28 h-28 object-cover rounded-lg border"
             />
@@ -320,10 +336,13 @@ const CartPage: React.FC = () => {
       )}
 
       <div className="mt-10 bg-white p-6 rounded-xl shadow-lg text-right space-y-2">
-        <p>Subtotal: ₹{itemTotal?.toFixed(2) || '0.00'}</p> {/* Optional chaining for safety */}
+        <p>Subtotal: ₹{itemTotal?.toFixed(2) || "0.00"}</p>{" "}
+        {/* Optional chaining for safety */}
         <p>Tax: ₹{tax.toFixed(2)}</p>
-        <p>Platform Fee: ₹{platformFee?.toFixed(2) || '0.00'}</p> {/* Optional chaining for safety */}
-        <p>Delivery Charges: ₹{deliveryCharges?.toFixed(2) || '0.00'}</p> {/* Optional chaining for safety */}
+        <p>Platform Fee: ₹{platformFee?.toFixed(2) || "0.00"}</p>{" "}
+        {/* Optional chaining for safety */}
+        <p>Delivery Charges: ₹{deliveryCharges?.toFixed(2) || "0.00"}</p>{" "}
+        {/* Optional chaining for safety */}
         {discount > 0 && (
           <p className="text-green-600">Discount: -₹{discount.toFixed(2)}</p>
         )}
