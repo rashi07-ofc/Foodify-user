@@ -26,7 +26,6 @@ const MainPage: React.FC = () => {
             </h2>
             <CouponList restaurantId={id} orderAmount={600} />
           </div>
-
           <RestaurantHighlights features={restaurant.features} />
         </Suspense>
       </div>

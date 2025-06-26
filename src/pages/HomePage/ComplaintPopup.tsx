@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { getAuthToken } from "../../features/auth/authService";
 
-
 interface ComplaintPopupProps {
   restaurantId: string;
   orderId: string;
@@ -45,9 +44,8 @@ const ComplaintPopup: React.FC<ComplaintPopupProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-console.log(orderId);
-console.log(complaint);
-
+    console.log(orderId);
+    console.log(complaint);
 
     try {
       await axios.post(
@@ -108,4 +106,3 @@ console.log(complaint);
 };
 
 export default ComplaintPopup;
-

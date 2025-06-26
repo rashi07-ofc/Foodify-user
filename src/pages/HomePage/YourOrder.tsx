@@ -25,7 +25,6 @@ const YourOrder: React.FC = () => {
   
   const getInvoice = async (orderId: string) => {
     try {
-      console.log(orderId);
       
       const res = await axios.get(
         `http://localhost:3006/order/generateInvoice/${orderId}`,
@@ -37,7 +36,9 @@ const YourOrder: React.FC = () => {
         }
       );
 
-      const url = window.URL.createObjectURL(new Blob([res.data]));
+
+      
+      const url = window.URL.createObjectURL(res.data);
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", `invoice-${orderId}.pdf`);

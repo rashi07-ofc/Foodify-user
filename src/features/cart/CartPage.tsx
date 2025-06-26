@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiTrash2, FiShoppingCart, FiPlus, FiMinus } from "react-icons/fi";
 import { getAuthToken } from "../auth/authService";
 import axios from "axios";
-import { Tooltip } from "react-tooltip";
 import { useDispatch } from "react-redux";
 import { setTotalQuantity } from "../../redux/slice/cartSlice";
 import { toast, ToastContainer } from "react-toastify";
@@ -20,8 +19,7 @@ const CartPage: React.FC = () => {
   const [discountPercent, setDiscountPercent] = useState(0);
   const [expiryDate, setExpiryDate] = useState("");
   const [discount, setDiscount] = useState(0);
-  const [remove, setRemove] = useState(false);
-  // const [maxDiscount, setMaxDis] = useState<number | null>(null);
+  const [remove, setRemove] = useState(true);
   const [couponId, setCouponId] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [tax, setTax] = useState(0);

@@ -6,6 +6,7 @@ import SignatureCanvas from "react-signature-canvas";
 import toast, { Toaster } from "react-hot-toast";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import BookingPDF from "./BookingPDF";
+import Qr from "./Qr";
 
 type FormData = {
   dateRange: [Date, Date] | null;
@@ -45,7 +46,6 @@ const BookingHall: React.FC = () => {
     }
     toast.success("Booking confirmed!");
     setPdfData(data);
-
     console.log("Booking Data:", data);
   };
 
@@ -54,13 +54,6 @@ const BookingHall: React.FC = () => {
     setValue("signature", "");
   };
 
-  const handleReset = () => {
-    setTimeout(() => {
-      reset();
-      signaturePadRef.current?.clear();
-      setPdfData(null);
-    }, 4000);
-  };
   const saveSignature = () => {
     if (signaturePadRef.current?.isEmpty()) {
       setValue("signature", "");
@@ -70,8 +63,14 @@ const BookingHall: React.FC = () => {
     }
   };
 
+  const handleReset = () => {
+    reset();
+    signaturePadRef.current?.clear();
+    setPdfData(null);
+  };
+
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md">
+    <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-md">
       <Toaster position="top-center" />
       <h2 className="text-2xl font-bold mb-6 text-orange-600">
         Book Restaurant Hall
@@ -82,20 +81,26 @@ const BookingHall: React.FC = () => {
           <label className="block mb-1 font-medium text-gray-700">
             Select Date or Date Range
           </label>
-          <Controller
-            control={control}
-            name="dateRange"
-            rules={{ required: "Please select date or date range" }}
-            render={({ field }) => (
-              <Calendar
-                onChange={(value) => field.onChange(value)}
-                selectRange
-                value={field.value}
-                minDate={new Date()}
-                className="border rounded"
-              />
-            )}
-          />
+          <div className="flex flex-row items-start gap-30">
+            <Controller
+              control={control}
+              name="dateRange"
+              rules={{ required: "Please select date or date range" }}
+              render={({ field }) => (
+                <Calendar
+                  onChange={(value) => field.onChange(value)}
+                  selectRange
+                  value={field.value}
+                  minDate={new Date()}
+                  className="border rounded"
+                />
+              )}
+            />
+
+            <div className="ml-50 ">
+              <Qr />
+            </div>
+          </div>
           {errors.dateRange && (
             <p className="text-red-600 text-sm mt-1">
               {errors.dateRange.message}
@@ -159,10 +164,9 @@ const BookingHall: React.FC = () => {
             className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-orange-500"
           />
         </div>
+
         <div>
-          <label className="block mb-1 font-medium text-gray-700">
-            Signature
-          </label>
+          <label className="block mb-1 font-medium text-gray-700">Signature</label>
           <SignatureCanvas
             penColor="black"
             canvasProps={{
@@ -187,6 +191,7 @@ const BookingHall: React.FC = () => {
             </p>
           )}
         </div>
+
         <div className="flex justify-center">
           <button
             type="submit"
@@ -198,17 +203,23 @@ const BookingHall: React.FC = () => {
       </form>
 
       {pdfData && (
-        <div className="mt-6 flex justify-center">
+        <div className="mt-6 flex justify-center gap-4">
           <PDFDownloadLink
             document={<BookingPDF data={pdfData} />}
             fileName="booking-confirmation.pdf"
             className="w-64 h-12 flex items-center justify-center bg-green-600 text-white font-semibold rounded hover:bg-green-700 transition"
-            onClick={handleReset}
           >
             {({ loading }) =>
               loading ? "Generating PDF..." : "Download Confirmation Receipt"
             }
           </PDFDownloadLink>
+
+          <button
+            onClick={handleReset}
+            className="w-32 h-12 bg-red-600 text-white font-semibold rounded hover:bg-red-700 transition"
+          >
+            Reset Form
+          </button>
         </div>
       )}
     </div>
