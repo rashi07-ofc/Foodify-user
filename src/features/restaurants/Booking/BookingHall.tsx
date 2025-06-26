@@ -105,14 +105,22 @@ const BookingHall: React.FC = () => {
 
         <div>
           <label className="block mb-1 font-medium text-gray-700">
-            Event Type (Function, Party, etc.)
+            Event Type
           </label>
-          <input
+          <select
             {...register("eventType", { required: "Event type is required" })}
-            type="text"
-            placeholder="e.g. Birthday Party"
             className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-orange-500"
-          />
+            defaultValue=""
+          >
+            <option value="" disabled>
+              -- Select Event Type --
+            </option>
+            <option value="Birthday">Birthday</option>
+            <option value="Anniversary">Anniversary</option>
+            <option value="Wedding">Wedding</option>
+            <option value="Corporate Event">Corporate Event</option>
+            <option value="Other">Other</option>
+          </select>
           {errors.eventType && (
             <p className="text-red-600 text-sm mt-1">
               {errors.eventType.message}
@@ -151,19 +159,6 @@ const BookingHall: React.FC = () => {
             className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-orange-500"
           />
         </div>
-
-        <div>
-          <label className="block mb-1 font-medium text-gray-700">
-            Other Info
-          </label>
-          <input
-            {...register("otherInfo")}
-            type="text"
-            placeholder="Any other information"
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-orange-500"
-          />
-        </div>
-
         <div>
           <label className="block mb-1 font-medium text-gray-700">
             Signature

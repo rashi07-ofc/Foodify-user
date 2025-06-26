@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiTrash2, FiShoppingCart, FiPlus, FiMinus } from "react-icons/fi";
 import { getAuthToken } from "../auth/authService";
 import axios from "axios";
+import { Tooltip } from "react-tooltip";
 import { useDispatch } from "react-redux";
 import { setTotalQuantity } from "../../redux/slice/cartSlice";
 import { toast, ToastContainer } from "react-toastify";
@@ -14,12 +15,13 @@ const CartPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [couponCode, setCouponCode] = useState("");
   const [total, setTotal] = useState(0);
+  const [showCouponPopup, setShowCouponPopup] = useState(false);
   const [code, setCode] = useState("");
   const [discountPercent, setDiscountPercent] = useState(0);
   const [expiryDate, setExpiryDate] = useState("");
   const [discount, setDiscount] = useState(0);
   const [remove, setRemove] = useState(false);
-  const [maxDiscount, setMaxDis] = useState<number | null>(null);
+  // const [maxDiscount, setMaxDis] = useState<number | null>(null);
   const [couponId, setCouponId] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [tax, setTax] = useState(0);
@@ -77,15 +79,17 @@ const CartPage: React.FC = () => {
           },
         }
       );
-      console.log("applY reponse", response.data.newTotal);
+      console.log("applY reponse", response.data);
 
       setTotal(response.data.newTotal);
-      setMaxDis(response.data.maxDiscount);
+      setDiscount(response.data.discountApplied);
       setRemove(true);
-      const msg=response.data.message;
+      const msg = response.data.message;
       // setCouponCode(response.data.Code || "");
 
       toast.success(msg);
+      setShowCouponPopup(true);
+      setTimeout(() => setShowCouponPopup(false), 4000);
       // fetchCart();
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Failed to apply coupon");
@@ -95,7 +99,7 @@ const CartPage: React.FC = () => {
   //remove coupon
   const removeCoupon = async () => {
     try {
-      const res=await axios.post(
+      const res = await axios.post(
         `http://localhost:3002/cart/removeCoupon`,
         {
           couponId,
@@ -106,10 +110,14 @@ const CartPage: React.FC = () => {
           },
         }
       );
-   console.log(res , dfcgvhb);
-   
+      console.log(res, "esdrcfvgbhnjfvgh");
+
       setRemove(false);
+      setDiscount(0);
       toast.success("Coupon removed successfully");
+      console.log("applY reponse", res.data.newTotal);
+
+      setTotal(res.data.newTotal);
       // fetchCart();
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Failed to remove coupon");
@@ -136,8 +144,6 @@ const CartPage: React.FC = () => {
         setTimeout(() => {
           fetchCart();
         }, 1000);
-
-        
       }
 
       console.log(response.data);
@@ -181,7 +187,7 @@ const CartPage: React.FC = () => {
         },
       });
       setCartData(null);
-        dispatch(setTotalQuantity(0));
+      dispatch(setTotalQuantity(0));
       localStorage.setItem("cartTotalQuantity", "");
     } catch (err: any) {
       toast.error(err.message || "Failed to delete cart");
@@ -347,6 +353,26 @@ const CartPage: React.FC = () => {
         </div>
       )}
 
+      {/* coupon popup */}
+      {showCouponPopup && (
+        <motion.div
+          animate={{ y: [0, -10, 0] }}
+          transition={{ repeat: Infinity, duration: 2 }}
+          className="absolute top-10 right-10 text-4xl fixed top-100 left-1/2 transform -translate-x-1/2 w-full max-w-md z-50"
+        >
+          <div className="bg-white shadow-lg rounded-xl border border-green-300 px-6 py-4 animate-slide-up text-center">
+            <p className="text-green-600 font-bold text-lg mb-1">
+              🎉 Coupon Applied!
+            </p>
+            <p className="text-sm text-gray-700">
+              Code <strong>{code}</strong> — {discountPercent}% off
+            </p>
+            <p className="text-xs text-gray-500">
+              Expires: {new Date(expiryDate).toLocaleDateString()}
+            </p>
+          </div>
+        </motion.div>
+      )}
       {/* apply coupon */}
       <div className="mt-8 flex items-center justify-start gap-4">
         <input
@@ -383,6 +409,11 @@ const CartPage: React.FC = () => {
         <p>Tax: ₹{tax.toFixed(2)}</p>
         <p>Platform Fee: ₹{platformFee.toFixed(2)}</p>
         <p>Delivery Charges: ₹{deliveryCharges.toFixed(2)}</p>
+        {discount > 0 && (
+          <p className="text-green-600">
+            Discount Applied: -₹{discount.toFixed(2)}
+          </p>
+        )}
 
         <hr className="my-2" />
         <p className="text-2xl font-bold">

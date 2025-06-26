@@ -27,13 +27,13 @@ import ResetPasswordPage from "../features/auth/ResetPassword";
 import OrderSuccessPage from "../features/customer/orderPlacement/orderSummary/OrderSuccess";
 import OrderFailurePage from "../features/customer/orderPlacement/orderSummary/OrderFailure";
 import YourOrder from "../pages/HomePage/YourOrder";
-// import ErrorPage from "../features/auth/ErrorPage";
+import ErrorPage from "../features/auth/ErrorPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <AppLayout />,
-    // errorElement: <ErrorPage />,
+    errorElement: <ErrorPage />,
     children: [
       { path: "", element: <LandingPage /> },
       { path: "login", element: <Login /> },

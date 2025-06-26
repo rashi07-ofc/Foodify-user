@@ -22,6 +22,35 @@ const YourOrder: React.FC = () => {
     orderId: string;
   } | null>(null);
 
+  
+  const getInvoice = async (orderId: string) => {
+    try {
+      console.log(orderId);
+      
+      const res = await axios.get(
+        `http://localhost:3006/order/generateInvoice/${orderId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          responseType: "blob",
+        }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `invoice-${orderId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Failed to get invoice:", error);
+      alert("Unable to download invoice.");
+    }
+  };
+
+
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -89,6 +118,12 @@ const YourOrder: React.FC = () => {
                 className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
               >
                 Feedback
+              </button>
+               <button
+                onClick={() => getInvoice(order._id)}
+                className="px-4 py-2 mx-4 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+              >
+                Get Invoice
               </button>
 
               {popupData && popupData.orderId === order._id && (
