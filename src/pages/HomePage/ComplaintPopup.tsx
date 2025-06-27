@@ -7,33 +7,6 @@ interface Props {
   orderId: string;
   onClose: () => void;
 }
-<<<<<<< HEAD
-=======
-const ComplaintPopup: React.FC<ComplaintPopupProps> = ({
-  restaurantId,
-  orderId,
-  onClose,
-}) => {
-  const accessToken = getAuthToken();
-
-  const [complaint, setComplaint] = useState("");
-  const [managerId, setManagerId] = useState<string | null>(null);
-  useEffect(() => {
-    const fetchManagerId = async () => {
-      try {
-        console.log(restaurantId);
-        console.log(orderId);
-        console.log("jhgdcfuyehj", accessToken);
-        const response = await axios.get<{ managerId: string }>(
-          `http://localhost:3006/order/getManagerId/${restaurantId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-        console.log(response);
->>>>>>> 6c00015addf865135b23192d77fb5c7b4672434b
 
 const ComplaintPopup: React.FC<Props> = ({ orderId, onClose }) => {
   const [customerName, setCustomerName] = useState("");
@@ -54,7 +27,7 @@ console.log(complaint);
     }
 
     if (customerName.length < 3 || customerName.length > 50) {
-      toast.error("Customer name must be 3–50 characters.");
+      toast.error("Customer name must be 3-50 characters.");
       return;
     }
 
