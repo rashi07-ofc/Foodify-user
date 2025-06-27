@@ -6,11 +6,11 @@ import { Provider } from 'react-redux'
 import { store } from './redux/store.ts'
 import { ParallaxProvider } from 'react-scroll-parallax';
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ParallaxProvider>
     <Provider store={store}>
-    <App />
+      <App />
     </Provider>
     </ParallaxProvider>
   </StrictMode>,
