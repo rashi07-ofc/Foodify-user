@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Document,
-  Page,
-  Text,
-  View,
-  StyleSheet,
-  Image,
-} from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
 
 const styles = StyleSheet.create({
   page: { padding: 30 },
@@ -22,7 +15,7 @@ type BookingPDFProps = {
     dateRange: [Date, Date] | null;
     eventType: string;
     guests: number;
-    description: string
+    description: string;
     otherInfo: string;
     signature: string;
   };

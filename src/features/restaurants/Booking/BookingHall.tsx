@@ -4,7 +4,7 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import SignatureCanvas from "react-signature-canvas";
 import toast, { Toaster } from "react-hot-toast";
-import { PDFDownloadLink } from "@react-pdf/renderer";
+import { PDFDownloadLink, pdf } from "@react-pdf/renderer";
 import BookingPDF from "./BookingPDF";
 import Qr from "./Qr";
 
@@ -38,15 +38,57 @@ const BookingHall: React.FC = () => {
 
   const signaturePadRef = useRef<SignatureCanvas>(null);
   const [pdfData, setPdfData] = useState<FormData | null>(null);
+  const [cloudPdfUrl, setCloudPdfUrl] = useState<string>("");
 
-  const onSubmit = (data: FormData) => {
+  const generatePdfBlob = async (data: FormData) => {
+    const doc = <BookingPDF data={data} />;
+    const asPdf = pdf();
+    asPdf.updateContainer(doc);
+    const blob = await asPdf.toBlob();
+    return blob;
+  };
+
+  const uploadToCloudinary = async (pdfBlob: Blob) => {
+    const url = `https://api.cloudinary.com/v1_1/deyny0llk/raw/upload`;
+    const formData = new FormData();
+    formData.append("file", pdfBlob);
+    formData.append("upload_preset", "unsigned_booking");
+    formData.append("resource_type", "raw");
+
+    const response = await fetch(url, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to upload to Cloudinary");
+    }
+    console.log(response);
+
+    const data = await response.json();
+    console.log(data.secure_url);
+
+    return data.secure_url;
+  };
+
+  const onSubmit = async (data: FormData) => {
     if (!data.signature) {
       toast.error("Please provide your signature");
       return;
     }
-    toast.success("Booking confirmed!");
-    setPdfData(data);
-    console.log("Booking Data:", data);
+    toast.loading("Uploading PDF...");
+    try {
+      const blob = await generatePdfBlob(data);
+      const uploadedUrl = await uploadToCloudinary(blob);
+      setCloudPdfUrl(uploadedUrl);
+      toast.success("Booking confirmed and PDF uploaded!");
+      setPdfData(data);
+    } catch (error) {
+      toast.error("Failed to upload PDF. Please try again.");
+      console.error(error);
+    } finally {
+      toast.dismiss();
+    }
   };
 
   const clearSignature = () => {
@@ -67,21 +109,22 @@ const BookingHall: React.FC = () => {
     reset();
     signaturePadRef.current?.clear();
     setPdfData(null);
+    setCloudPdfUrl("");
   };
 
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <Toaster position="top-center" />
+      <Toaster position="top-right" />
       <h2 className="text-2xl font-bold mb-6 text-orange-600">
         Book Restaurant Hall
       </h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div>
-          <label className="block mb-1 font-medium text-gray-700">
+          <label className="flex justify-center mb-1  font-medium text-gray-700">
             Select Date or Date Range
           </label>
-          <div className="flex flex-row items-start gap-30">
+          <div className="flex justify-center items-start gap-30">
             <Controller
               control={control}
               name="dateRange"
@@ -96,10 +139,6 @@ const BookingHall: React.FC = () => {
                 />
               )}
             />
-
-            <div className="ml-50 ">
-              <Qr />
-            </div>
           </div>
           {errors.dateRange && (
             <p className="text-red-600 text-sm mt-1">
@@ -135,7 +174,7 @@ const BookingHall: React.FC = () => {
 
         <div>
           <label className="block mb-1 font-medium text-gray-700">
-            Number of Guests (Approximate)
+            Number of Guests (Approx)
           </label>
           <input
             {...register("guests", {
@@ -166,7 +205,9 @@ const BookingHall: React.FC = () => {
         </div>
 
         <div>
-          <label className="block mb-1 font-medium text-gray-700">Signature</label>
+          <label className="block mb-1 font-medium text-gray-700">
+            Signature
+          </label>
           <SignatureCanvas
             penColor="black"
             canvasProps={{
@@ -201,7 +242,7 @@ const BookingHall: React.FC = () => {
           </button>
         </div>
       </form>
-
+      <div className="">{cloudPdfUrl ? <Qr url={cloudPdfUrl} /> : <></>}</div>
       {pdfData && (
         <div className="mt-6 flex justify-center gap-4">
           <PDFDownloadLink
