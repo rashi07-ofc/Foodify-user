@@ -1,5 +1,10 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { format } from "date-fns";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { isSameMonth } from "date-fns";
+import "react-datepicker/dist/react-datepicker.css";
 import toast, { Toaster } from "react-hot-toast";
 
 const timeSlots = [
@@ -13,7 +18,8 @@ const timeSlots = [
 const unavailableSlots = ["12:30 PM"];
 
 const BookTable: React.FC = () => {
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState<Date | null>(null);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
   const [members, setMembers] = useState(2);
   const [selectedSlot, setSelectedSlot] = useState("");
   const [loading, setLoading] = useState(false);
@@ -28,7 +34,10 @@ const BookTable: React.FC = () => {
     setTimeout(() => {
       setLoading(false);
       toast.success(
-        `Booking confirmed for ${members} people on ${date} at ${selectedSlot}`
+        `Booking confirmed for ${members} people on ${format(
+          date!,
+          "MMMM d, yyyy"
+        )} at ${selectedSlot}`
       );
     }, 2000);
   };
@@ -53,12 +62,19 @@ const BookTable: React.FC = () => {
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Select Date
           </label>
-          <input
-            type="date"
-            min={today}
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
+          <DatePicker
+            selected={date}
+            onChange={(d) => setDate(d)}
+            onMonthChange={(month) => setCurrentMonth(month)}
+            minDate={new Date()}
+            dateFormat="dd-MM-yyyy"
+            placeholderText="Select a date"
             className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-orange-500"
+            dayClassName={(d) =>
+              isSameMonth(d, currentMonth)
+                ? ""
+                : "hidden overflow-hidden p-0 m-0 h-0"
+            }
           />
         </div>
 

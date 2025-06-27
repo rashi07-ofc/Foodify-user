@@ -6,6 +6,7 @@ import gsap from "gsap";
 import Confetti from "react-confetti";
 import { useWindowSize } from "react-use";
 import { CheckCircle } from "lucide-react";
+import { toast } from 'react-toastify'; // Import toast for user feedback
 
 export default function OrderSuccessPage() {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ export default function OrderSuccessPage() {
     const placeFinalOrder = async () => {
       const token = getAuthToken();
       const orderId = localStorage.getItem("orderId");
+      const cartId = localStorage.getItem("cart_id");
 
       if (!orderId || !token) {
         navigate("/");
@@ -29,23 +31,41 @@ export default function OrderSuccessPage() {
       }
 
       try {
+        // Last API Call 
         await axios.post(
           "http://localhost:3006/order/placeOrder",
           { orderId, modeOfPayment: "online" },
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
+        // Delete the cartId
+        if (cartId) {
+          try {
+            await axios.delete("http://localhost:3002/cart/delete", {
+              headers: { Authorization: `Bearer ${token}` },
+              data: { cart_id: cartId } 
+            });
+            console.log("Cart deleted successfully:", cartId);
+          } catch (cartDeleteError) {
+            console.error("Failed to delete cart:", cartDeleteError);
+            toast.warn("Your order was placed, but we couldn't clear your cart. Please clear it manually if needed.");
+          }
+        }
+
+        // Clear local storage items
         localStorage.removeItem("orderId");
         localStorage.removeItem("cart_id");
 
+        // Stop confetti after a delay
         setTimeout(() => setShowConfetti(false), 5000);
+
       } catch (error) {
         console.error("Final order placement failed:", error);
+        // If order placement itself fails, navigate to failure page
+        toast.error("Failed to place your order. Please try again.");
         navigate("/order-failure");
       }
     };
-
-    placeFinalOrder();
   }, [navigate]);
 
   useEffect(() => {
@@ -70,7 +90,7 @@ export default function OrderSuccessPage() {
         { opacity: 1, y: 0 },
         "-=0.2"
       );
-  }, []);
+  }, []); // Empty dependency array means this runs once on mount
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-white relative">

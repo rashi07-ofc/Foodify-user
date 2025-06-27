@@ -9,7 +9,7 @@ import {
 } from "../features/auth/authService";
 
 const orderApi = axios.create({
-  baseURL: "http://localhost:3006", // Update if needed
+  baseURL: "http://localhost:3006",
 });
 
 // Attach access token before each request

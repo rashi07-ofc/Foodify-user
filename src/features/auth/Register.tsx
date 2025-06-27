@@ -16,7 +16,10 @@ const schema = yup.object().shape({
     .string()
     .matches(/^\+?[\d\s\-\(\)]{10,15}$/, "Invalid phone number")
     .required("Phone number is required"),
-  password: yup.string().min(8, "Min 8 characters").required("Password required"),
+  password: yup
+    .string()
+    .min(8, "Min 8 characters")
+    .required("Password required"),
   confirmPassword: yup
     .string()
     .oneOf([yup.ref("password")], "Passwords must match")
@@ -43,9 +46,16 @@ const Register: React.FC = () => {
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
-    const tl = gsap.timeline({ defaults: { ease: "power2.out", duration: 0.4 } });
+    const tl = gsap.timeline({
+      defaults: { ease: "power2.out", duration: 0.4 },
+    });
     tl.fromTo(headingRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0 })
-      .fromTo(formCardRef.current, { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1 }, "-=0.3")
+      .fromTo(
+        formCardRef.current,
+        { opacity: 0, scale: 0.95 },
+        { opacity: 1, scale: 1 },
+        "-=0.3"
+      )
       .fromTo(
         formRef.current?.querySelectorAll("div, button"),
         { opacity: 0, y: 10 },
@@ -59,7 +69,10 @@ const Register: React.FC = () => {
     setFormError("");
 
     try {
-      const res = await axios.post<{ accessToken: string; refreshToken: string }>(
+      const res = await axios.post<{
+        accessToken: string;
+        refreshToken: string;
+      }>(
         "http://localhost:9000/auth/signup",
         {
           username: data.name,
@@ -77,6 +90,7 @@ const Register: React.FC = () => {
         }
       );
 
+      
       const { accessToken, refreshToken } = res.data.data;
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
@@ -85,20 +99,39 @@ const Register: React.FC = () => {
     } catch (error: any) {
       console.error(error);
       setFormError(
-        error.response?.data?.message || "Registration failed. Please check your details and OTP."
+        error.response?.data?.message ||
+        "Registration failed. Please check your details and OTP."
       );
     } finally {
       setIsLoading(false);
     }
   };
+  const arr = [
+    { id: "name", label: "Full Name", type: "text" },
+    { id: "email", label: "Email", type: "email" },
+    {
+      id: "phone",
+      label: "Phone",
+      type: "tel",
+      placeholder: "+91 9876543210",
+    },
+    { id: "password", label: "Password", type: "password" },
+    { id: "confirmPassword", label: "Confirm Password", type: "password" },
+    { id: "otp", label: "OTP", type: "text" },
+  ];
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md" ref={headingRef}>
-        <h2 className="text-center text-3xl font-extrabold text-gray-900">Create your account</h2>
+        <h2 className="text-center text-3xl font-extrabold text-gray-900">
+          Create your account
+        </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
           Already registered?{" "}
-          <Link to="/login" className="font-medium text-orange-600 hover:text-orange-500">
+          <Link
+            to="/login"
+            className="font-medium text-orange-600 hover:text-orange-500"
+          >
             Login
           </Link>
         </p>
@@ -106,26 +139,30 @@ const Register: React.FC = () => {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md" ref={formCardRef}>
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form ref={formRef} className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-            {formError && <div className="text-sm text-red-500">{formError}</div>}
+          <form
+            ref={formRef}
+            className="space-y-6"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            {formError && (
+              <div className="text-sm text-red-500">{formError}</div>
+            )}
 
-            {[
-              { id: "name", label: "Full Name", type: "text" },
-              { id: "email", label: "Email", type: "email" },
-              { id: "phone", label: "Phone", type: "tel", placeholder: "+91 9876543210" },
-              { id: "password", label: "Password", type: "password" },
-              { id: "confirmPassword", label: "Confirm Password", type: "password" },
-              { id: "otp", label: "OTP", type: "text" },
-            ].map(({ id, label, ...rest }) => (
+            {arr.map(({ id, label, ...rest }) => (
               <div key={id}>
-                <label htmlFor={id} className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor={id}
+                  className="block text-sm font-medium text-gray-700"
+                >
                   {label}
                 </label>
                 <input
                   {...register(id as keyof FormData)}
                   {...rest}
                   className={`mt-1 block w-full px-3 py-2 border ${
-                    errors[id as keyof FormData] ? "border-red-400" : "border-gray-300"
+                    errors[id as keyof FormData]
+                      ? "border-red-400"
+                      : "border-gray-300"
                   } rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm`}
                 />
                 {errors[id as keyof FormData] && (

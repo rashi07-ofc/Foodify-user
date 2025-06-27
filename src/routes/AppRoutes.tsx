@@ -21,20 +21,19 @@ import ResetSuccess from "../pages/forgetPassword/ResetSuccess";
 
 import { ResetFlowProvider } from "../context/ResetFlowContext";
 import AppLayout from "../components/layout/AppLayout";
-import PaymentSuccess from "../features/customer/orderPlacement/paymentSection/PaymentSuccess";
-import PaymentFailure from "../features/customer/orderPlacement/paymentSection/PaymentFailure";
 import ForgotPassword from "../pages/forgetPassword/ForgetPassword";
 import ResetPasswordPage from "../features/auth/ResetPassword";
-import { CartProvider } from "../context/CartContext";
 import OrderSuccessPage from "../features/customer/orderPlacement/orderSummary/OrderSuccess";
 import OrderFailurePage from "../features/customer/orderPlacement/orderSummary/OrderFailure";
-import ComplaintPopup from "../pages/HomePage/ComplaintPopup";
 import YourOrder from "../pages/HomePage/YourOrder";
+import ErrorPage from "../features/auth/ErrorPage";
+import Contact from "../features/restaurants/Booking/Contact";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <AppLayout />,
+    errorElement: <ErrorPage />,
     children: [
       { path: "", element: <LandingPage /> },
       { path: "login", element: <Login /> },
@@ -50,7 +49,10 @@ const router = createBrowserRouter([
       { path: "landing/:id", element: <MainPage /> },
       { path: "cart", element: <CartPage /> },
       { path: "profile", element: <ProfilePage /> },
-      { path: "complaint", element: <ComplaintPopup /> },
+      { path: "contact", element: <Contact/> },
+
+
+      // { path: "complaint", element: <ComplaintPopup /> },
       { path: "your-order", element: <YourOrder /> },
 
       {
@@ -74,10 +76,10 @@ const AppRoutes = () => {
 
   return (
     <ResetFlowProvider>
-      <CartProvider>
+      {/* <CartProvider> */}
         <ToastContainer position="top-center" autoClose={2000} />
         <RouterProvider router={router} />
-      </CartProvider>
+      {/* </CartProvider> */}
     </ResetFlowProvider>
   );
 };

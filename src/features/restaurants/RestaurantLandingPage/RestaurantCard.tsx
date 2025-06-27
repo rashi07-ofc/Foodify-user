@@ -3,6 +3,7 @@ import { MdPhone, MdDirections, MdRateReview } from "react-icons/md";
 import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import FoodLoader from "./FoodLoader";
 
 const buttonVariants = {
   hover: { scale: 1.05, boxShadow: "0 4px 8px rgba(0,0,0,0.15)" },
@@ -22,14 +23,22 @@ const cardVariants = {
 const RestaurantCard: React.FC = () => {
   const { id } = useParams();
   const restaurantId = id;
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
   const [restaurant, setRestaurant] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+
+  //fetch restaurant details as per id
   useEffect(() => {
     axios
       .get(`http://localhost:3005/restaurant/${restaurantId}`)
       .then((res) => {
-        console.log(res);
+        console.log(res.data.location.coordinates[0]);
+        console.log(res.data.location.coordinates[1]);
+
+        setLatitude(res.data.location.coordinates[1]);
+        setLongitude(res.data.location.coordinates[0]);
 
         setRestaurant(res.data);
         setLoading(false);
@@ -40,7 +49,12 @@ const RestaurantCard: React.FC = () => {
       });
   }, []);
 
-  if (loading) return <div className="text-center mt-10">Loading...</div>;
+  if (loading)
+    return (
+      <div className="text-center mt-10">
+        Loading... <FoodLoader />{" "}
+      </div>
+    );
   if (!restaurant)
     return <div className="text-center mt-10">No data found</div>;
 
@@ -73,12 +87,41 @@ const RestaurantCard: React.FC = () => {
         </p>
       </div>
 
+
+{/* geolocation to show direction to user towards resturantt */}
+
       <div className="flex gap-4 flex-wrap mb-6">
         <motion.button
           variants={buttonVariants}
           whileHover="hover"
-          whileTap="tap"
           className="flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-2 rounded transition text-sm select-none"
+          onClick={() => {
+            if (!navigator.geolocation) {
+              alert("Geolocation is not supported by your browser.");
+              return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                const userLat = position.coords.latitude;
+                const userLng = position.coords.longitude;
+                console.log(userLat);
+                console.log(userLng, "ud");
+
+                const destLat = latitude;
+                const destLng = longitude;
+
+                const url = `https://www.google.com/maps/dir/?api=1&origin=${userLat},${userLng}&destination=${destLat},${destLng}&travelmode=driving`;
+                window.open(url, "_blank");
+              },
+              (error) => {
+                console.error("Geolocation error:", error);
+                alert(
+                  "Failed to get your location. Please allow location access."
+                );
+              }
+            );
+          }}
         >
           <MdDirections size={18} />
           Direction
@@ -92,7 +135,7 @@ const RestaurantCard: React.FC = () => {
           onClick={() => {
             const el = document.getElementById("restaurant-tabs");
             if (el) {
-              el.scrollIntoView({ behavior: "smooth", block: "start" });
+              el.scrollIntoView();
             }
           }}
         >

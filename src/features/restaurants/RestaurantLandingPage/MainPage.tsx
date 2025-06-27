@@ -1,12 +1,13 @@
 import React, { Suspense, lazy } from "react";
 import RestaurantCard from "./RestaurantCard";
 import CouponList from "./CouponList";
-const RestaurantTabs = lazy(() => import("./RestaurantTabs"));
-const RestaurantHighlights = lazy(() => import("./RestaurantHighlights"));
 import { restaurant } from "./restaurantData";
 import FoodLoader from "./FoodLoader";
 import Navbar from "../../../components/layout/Navbar";
 import { useParams } from "react-router-dom";
+
+const RestaurantTabs = lazy(() => import("./RestaurantTabs"));
+const RestaurantHighlights = lazy(() => import("./RestaurantHighlights"));
 const MainPage: React.FC = () => {
   const { id } = useParams();
   // console.log(id);
@@ -25,7 +26,6 @@ const MainPage: React.FC = () => {
             </h2>
             <CouponList restaurantId={id} orderAmount={600} />
           </div>
-
           <RestaurantHighlights features={restaurant.features} />
         </Suspense>
       </div>
