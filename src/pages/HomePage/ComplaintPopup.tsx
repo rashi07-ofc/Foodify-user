@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { getAuthToken } from "../../features/auth/authService";
 
 interface Props {
   orderId: string;
@@ -12,6 +13,7 @@ const ComplaintPopup: React.FC<Props> = ({ orderId, onClose }) => {
   const [rating, setRating] = useState<number>(0);
   const [feedback, setFeedback] = useState("");
   const [loading, setLoading] = useState(false);
+  const accessToken=getAuthToken();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,7 +46,11 @@ const ComplaintPopup: React.FC<Props> = ({ orderId, onClose }) => {
 
     try {
       setLoading(true);
-      await axios.post("http://localhost:9000/complain", payload);
+      await axios.post("http://localhost:9000/complain", payload,{
+headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+      });
       toast.success("Feedback submitted!");
       onClose();
     } catch (err) {

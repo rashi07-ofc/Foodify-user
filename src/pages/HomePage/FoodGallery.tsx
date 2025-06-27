@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { Parallax } from 'react-scroll-parallax';
 
 import GallaryImg1 from "../../assets/FoodGallary1.jpg";
 import GallaryImg2 from "../../assets/FoodGallary2.jpg";
@@ -46,7 +47,12 @@ const FoodGallery = () => {
   }, []);
 
   return (
+    <>
+    <Parallax speed={-10}>
+  <h2 className="text-4xl font-bold text-center">🔥 Trending Today</h2>
+</Parallax>
     <section className="py-20 bg-white" id="gallery">
+      
       <div className="text-center mb-12 px-4">
         <p className="text-orange-500 uppercase tracking-widest text-sm">
           Our Gallery
@@ -84,6 +90,7 @@ const FoodGallery = () => {
         ))}
       </div>
     </section>
+    </>
   );
 };
 
