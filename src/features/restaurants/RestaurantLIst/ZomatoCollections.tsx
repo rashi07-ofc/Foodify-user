@@ -130,7 +130,7 @@ const ZomatoCollections: React.FC = () => {
           (restaurant.rating &&
             restaurant.rating >= parseFloat(filters.minRating));
 
-        return nameMatch && cityMatch && ratingMatch;
+        return   cityMatch && ratingMatch;
       });
 
       setFilteredApiRestaurants(filtered);
