@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from "react";
 import RestaurantCard from "./RestaurantCard";
 import CouponList from "./CouponList";
 import { restaurant } from "./restaurantData";
+import { useEffect } from "react";
 import FoodLoader from "./FoodLoader";
 import Navbar from "../../../components/layout/Navbar";
 import { useParams } from "react-router-dom";
@@ -10,6 +11,9 @@ const RestaurantTabs = lazy(() => import("./RestaurantTabs"));
 const RestaurantHighlights = lazy(() => import("./RestaurantHighlights"));
 const MainPage: React.FC = () => {
   const { id } = useParams();
+    useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   // console.log(id);
   return (
     <>

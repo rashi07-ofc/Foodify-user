@@ -28,11 +28,8 @@
     "react": "19.1.0",
     "react-calendar": "^6.0.0",
     "react-confetti": "^6.4.0",
-<<<<<<< HEAD
     "react-datepicker": "^8.4.0",
-=======
     "react-countup": "^6.5.3",
->>>>>>> ff56a28cd273fd6b18bdc1b8976c9b1d0d830185
     "react-dom": "19.1.0",
     "react-fast-marquee": "^1.6.5",
     "react-hook-form": "^7.58.1",
@@ -41,13 +38,10 @@
     "react-qr-code": "^2.0.16",
     "react-redux": "9.2.0",
     "react-router-dom": "7.6.2",
-<<<<<<< HEAD
     "react-signature-canvas": "^1.1.0-alpha.2",
-=======
     "react-scroll-parallax": "^3.4.5",
     "react-simple-typewriter": "^5.0.1",
     "react-slick": "^0.30.3",
->>>>>>> ff56a28cd273fd6b18bdc1b8976c9b1d0d830185
     "react-toastify": "11.0.5",
     "react-tooltip": "^5.29.1",
     "react-use": "^17.6.0",
