@@ -33,20 +33,6 @@ const CouponList: React.FC<{ restaurantId: string; orderAmount: number }> = ({
 
  
 
-//   const handleApplyCoupon = async (couponCode: string) => {
-//     try {
-//       const result = await applyCoupon({
-//         restaurantId,
-//         couponCode,
-//         orderAmount,
-//       });
-//       toast.success(`Coupon applied! You saved ₹${result.discountAmount}`);
-//     } catch (error) {
-//       console.error("Failed to apply coupon:", error);
-//       toast.error("Failed to apply coupon.");
-//     }
-//   };
-
   return (
     <div className="flex flex-col gap-4">
       {coupons?.map((coupon) => (
