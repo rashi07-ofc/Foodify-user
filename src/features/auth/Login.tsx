@@ -1,59 +1,78 @@
-import React, { useState } from "react";
+import { useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import { Login as loginApi } from "../auth/authService";
 import { login as loginRedux } from "../../redux/slice/authSlice";
-import { useDispatch } from "react-redux";
+import gsap from "gsap";
+
+const schema = yup.object({
+  email: yup.string().email("Invalid email").required("Email is required"),
+  password: yup.string().min(8, "Password must be at least 8 characters").required("Password is required"),
+});
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    const tl = gsap.timeline({ defaults: { ease: "power2.out", duration: 0.4 } });
+
+    tl.fromTo(containerRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0 })
+      .fromTo(headingRef.current, { opacity: 0, y: 10 }, { opacity: 1, y: 0 }, "-=0.2")
+      .fromTo(
+        formRef.current?.querySelectorAll("div, button"),
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, stagger: 0.1 },
+        "-=0.2"
+      );
+  }, []);
+
+  const onSubmit = async (data: { email: string; password: string }) => {
     try {
-      const user = await loginApi(email, password); // assuming this returns user data
-      dispatch(loginRedux(user)); // sets isLoggedIn = true
+      const user = await loginApi(data.email, data.password);
+      dispatch(loginRedux(user));
       navigate("/home");
     } catch (err: any) {
       console.error("Login failed:", err);
-      if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message);
-      } else if (err.message) {
-        setError("Login failed: " + err.message);
-      } else {
-        setError("Login failed. Please check your email and password.");
-      }
-    } finally {
-      setLoading(false);
+      const msg = err.response?.data?.message || "Login failed. Please try again.";
+      alert(msg);
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6 space-y-6">
-        <h2 className="text-2xl font-bold text-gray-800 text-center">
+      <div ref={containerRef} className="w-full max-w-md bg-white rounded-lg shadow-lg p-6 space-y-6">
+        <h2 ref={headingRef} className="text-2xl font-bold text-gray-800 text-center">
           Login to your account
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form ref={formRef} onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <label className="block mb-1 text-sm text-gray-600">Email</label>
             <input
               type="email"
               placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
+              {...register("email")}
+              className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400 ${
+                errors.email ? "border-red-500" : "border-gray-300"
+              }`}
             />
+            {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>}
           </div>
 
           <div>
@@ -61,16 +80,13 @@ const Login = () => {
             <input
               type="password"
               placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
+              {...register("password")}
+              className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400 ${
+                errors.password ? "border-red-500" : "border-gray-300"
+              }`}
             />
+            {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password.message}</p>}
           </div>
-
-          {error && (
-            <p className="text-sm text-red-500 text-center mt-2">{error}</p>
-          )}
 
           <div className="flex justify-end text-sm">
             <Link to="/forgot" className="text-orange-500 hover:underline">
@@ -80,12 +96,12 @@ const Login = () => {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={isSubmitting}
             className={`w-full bg-orange-500 text-white py-2 rounded-md font-semibold transition ${
-              loading ? "opacity-50 cursor-not-allowed" : "hover:bg-orange-600"
+              isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-orange-600"
             }`}
           >
-            {loading ? "Logging in..." : "Login"}
+            {isSubmitting ? "Logging in..." : "Login"}
           </button>
         </form>
 
@@ -96,7 +112,7 @@ const Login = () => {
         </div>
 
         <p className="text-center text-sm text-gray-600">
-          Don't have an account?{" "}
+          Don't have an account?{' '}
           <Link to="/otp" className="text-orange-500 hover:underline">
             Sign up
           </Link>

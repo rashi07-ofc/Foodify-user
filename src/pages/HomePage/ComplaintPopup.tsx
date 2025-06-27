@@ -8,12 +8,13 @@ interface ComplaintPopupProps {
   orderId: string;
   onClose: () => void;
 }
-const accessToken = getAuthToken();
 const ComplaintPopup: React.FC<ComplaintPopupProps> = ({
   restaurantId,
   orderId,
   onClose,
 }) => {
+  const accessToken = getAuthToken();
+
   const [complaint, setComplaint] = useState("");
   const [managerId, setManagerId] = useState<string | null>(null);
   useEffect(() => {
@@ -44,6 +45,9 @@ const ComplaintPopup: React.FC<ComplaintPopupProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+console.log(orderId);
+console.log(complaint);
+
 
     try {
       await axios.post(

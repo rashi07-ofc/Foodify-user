@@ -565,6 +565,7 @@ const ZomatoCollections: React.FC = () => {
           <Delivery />
         )}
       </div>
+      <ChatWidget />
 
       {/* <Footer /> */}
       <ChatWidget />

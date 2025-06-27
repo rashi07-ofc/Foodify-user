@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import MenuItemCard from "./MenuItemCard";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { getAuthToken } from "../../auth/authService";
+import FoodLoader from "./FoodLoader";
 interface MenuItem {
   _id: string;
   name: string;
@@ -13,16 +15,18 @@ interface MenuItem {
 }
 
 const MenuList: React.FC = () => {
+  const token=getAuthToken();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
+  
   const { id: restaurantId } = useParams();
   console.log(restaurantId);
   
 
   useEffect(() => {
     const fetchMenu = async () => {
-      const token = localStorage.getItem("accessToken");
-
+    console.log(token);
+    
       if (!restaurantId) return;
       if (!token) {
         console.warn("No access token found");
@@ -60,10 +64,13 @@ const MenuList: React.FC = () => {
     fetchMenu();
   }, [restaurantId]);
 
+
   if (loading) {
-    return <p className="text-center mt-8">Loading menu...</p>;
+    return <p className="text-center mt-8">Loading menu...<FoodLoader/></p>;
   }
 
+
+  //if no items found from backend
   if (menuItems.length === 0) {
     return (
       <p className="text-center mt-8">
