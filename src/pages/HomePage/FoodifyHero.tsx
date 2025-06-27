@@ -1,5 +1,8 @@
 import React from 'react';
 import 'aos/dist/aos.css'; // Ensure AOS styles are imported
+import { Typewriter } from 'react-simple-typewriter';
+import { useState, useEffect } from 'react';
+
 
 import FoodHero from "../../assets/FoodifyHero.png";
 
@@ -27,14 +30,44 @@ const features = [
 ];
 
 const FoodifyHero: React.FC = () => {
+  const [location, setLocation] = useState("your city");
+const [greeting, setGreeting] = useState("");
+
+useEffect(() => {
+  navigator.geolocation.getCurrentPosition(async (position) => {
+    const { latitude, longitude } = position.coords;
+    // Optional: fetch city name using any reverse geocode API (or leave generic)
+    setLocation("your area"); // hardcoded or geocoded
+  });
+
+  const hour = new Date().getHours();
+  if (hour < 12) setGreeting("Good Morning 🌅");
+  else if (hour < 18) setGreeting("Good Afternoon ☀️");
+  else setGreeting("Good Evening 🌇");
+}, []);
+
   return (
     <section id="home" className="relative bg-white pt-24 pb-16 md:pt-32 md:pb-24 lg:pt-40 lg:pb-32"> {/* Added responsive padding and a top offset for fixed navbar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col-reverse md:flex-row items-center justify-between gap-12 md:gap-16 lg:gap-24"> {/* Centralized content, improved gap */}
         {/* Left Side: Text Content */}
         <div className="md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left space-y-6 lg:space-y-8" data-aos="fade-right"> {/* Adjusted alignment for responsiveness */}
-          <p className="text-orange-600 font-bold text-sm sm:text-base tracking-wide uppercase"> {/* Slightly bolder, larger text */}
+          {/* <p className="text-orange-600 font-bold text-sm sm:text-base tracking-wide uppercase"> 
             Your Meal, One Tap Away
-          </p>
+          </p> */}
+
+          <p className="text-orange-600 font-bold text-sm sm:text-base tracking-wide uppercase">
+  <Typewriter
+    words={['Tasty Meals Delivered!', '30-min Express Delivery!', 'No Minimum Order!']}
+    loop
+    cursor
+    typeSpeed={70}
+    deleteSpeed={50}
+    delaySpeed={1500}
+  />
+</p>
+
+<p className="text-sm text-gray-700">{greeting}! We deliver hot meals in {location} 🚚</p>
+
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight"> {/* Larger, bolder heading */}
             Delicious Food <br className="hidden sm:inline" />
             Delivered to You!

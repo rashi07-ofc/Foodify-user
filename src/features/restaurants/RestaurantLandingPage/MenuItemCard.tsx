@@ -23,6 +23,9 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   const accessToken = getAuthToken();
   console.log(accessToken);
 
+
+  //add items in cart or incraese quantity
+
   const handleAdd = async () => {
     console.log("adding api");
     const url = "http://localhost:3002/cart/add";
@@ -36,13 +39,11 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
         },
         {
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
           },
         }
       );
       setQuantity((prev) => prev + 1);
-      console.log("jhsiufg");
       console.log("cartid dekho", response.data._id);
       localStorage.setItem("cartId", response.data._id);
     } catch (error) {
@@ -50,35 +51,14 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
     }
   };
 
-  const increaseQty = async () => {
-    const url = "http://localhost:3002/cart/add";
 
-    try {
-      const response = await axios.post(
-        url,
-        { restaurantId, itemId: id },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-
-      setQuantity((prev) => prev + 1);
-      console.log("Quantity increased");
-      console.log("cartid dekho", response.data);
-    } catch (error) {
-      console.error("Increase quantity API error:", error);
-      console.error("Failed to increase quantity bhjfg");
-    }
-  };
+  //decrease quantity
 
   const decreaseQty = async () => {
     const url = "http://localhost:3002/cart/remove";
 
     try {
-      const response = await axios.post(
+      await axios.post(
         url,
         { itemId: id },
         {
@@ -108,7 +88,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
       {imageUrl && (
         <div className="relative">
           <img
-            src={globalImages[0]}
+            src={globalImages[1]}
             alt={name}
             loading="lazy"
             className="w-full h-48 object-cover"
@@ -142,7 +122,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
               </button>
               <span className="px-4 font-medium text-gray-700">{quantity}</span>
               <button
-                onClick={increaseQty}
+                onClick={handleAdd}
                 className="px-3 py-1 text-green-600 hover:text-green-800"
               >
                 +

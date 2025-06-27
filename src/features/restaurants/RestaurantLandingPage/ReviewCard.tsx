@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { AiFillStar } from "react-icons/ai";
 
 interface ReviewProps {
   name: string;
@@ -27,8 +28,9 @@ const ReviewCard: React.FC<ReviewProps> = ({ name, rating, comment, date }) => {
     >
       <div className="flex justify-between items-center mb-1">
         <h4 className="font-semibold text-gray-800">{name}</h4>
-        <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded">
-          {rating} ★
+        <span className="flex items-center gap-1 bg-orange-500 text-white text-xs px-2 py-1 rounded">
+          {rating}
+          <AiFillStar size={12} />
         </span>
       </div>
       <p className="text-sm text-gray-600 mb-2">{comment}</p>

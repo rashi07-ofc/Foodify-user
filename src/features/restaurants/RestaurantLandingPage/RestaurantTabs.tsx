@@ -1,7 +1,7 @@
 import React, { useState, Suspense } from "react";
 import { dummyReviews } from "../../../data/reviewData";
 import FoodLoader from "./FoodLoader";
-import MenuList from "./MenuList";
+const MenuLIst =React.lazy(()=>import("./MenuList"))
 const ReviewCard = React.lazy(() => import("./ReviewCard"));
 const BookTable = React.lazy(() => import("./BookTable"));
 
@@ -24,7 +24,10 @@ const RestaurantTabs: React.FC = () => {
         );
 
       case "Order Online":
-        return <MenuList />;
+        return (<Suspense fallback={<FoodLoader/>}>
+          <MenuLIst/>
+        </Suspense>
+        );
 
       case "Book a Table":
         return (

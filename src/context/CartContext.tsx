@@ -110,50 +110,50 @@
 //   }
 //   return context;
 // };
-import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
+// import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
-interface CartItem {
-  itemId: string;
-  quantity: number;
-}
+// interface CartItem {
+//   itemId: string;
+//   quantity: number;
+// }
 
-interface CartContextType {
-  items: CartItem[];
-  setItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
-  updateItemQuantity: (itemId: string, quantity: number) => void;
-}
+// interface CartContextType {
+//   items: CartItem[];
+//   setItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
+//   updateItemQuantity: (itemId: string, quantity: number) => void;
+// }
 
-const CartContext = createContext<CartContextType | undefined>(undefined);
+// const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [items, setItems] = useState<CartItem[]>([]);
+// export const CartProvider = ({ children }: { children: ReactNode }) => {
+//   const [items, setItems] = useState<CartItem[]>([]);
 
-  // helper to update or remove items by quantity
-  const updateItemQuantity = (itemId: string, quantity: number) => {
-    setItems((prev) => {
-      if (quantity <= 0) {
-        return prev.filter((item) => item.itemId !== itemId);
-      }
-      const exists = prev.find((item) => item.itemId === itemId);
-      if (exists) {
-        return prev.map((item) =>
-          item.itemId === itemId ? { ...item, quantity } : item
-        );
-      } else {
-        return [...prev, { itemId, quantity }];
-      }
-    });
-  };
+//   // helper to update or remove items by quantity
+//   const updateItemQuantity = (itemId: string, quantity: number) => {
+//     setItems((prev) => {
+//       if (quantity <= 0) {
+//         return prev.filter((item) => item.itemId !== itemId);
+//       }
+//       const exists = prev.find((item) => item.itemId === itemId);
+//       if (exists) {
+//         return prev.map((item) =>
+//           item.itemId === itemId ? { ...item, quantity } : item
+//         );
+//       } else {
+//         return [...prev, { itemId, quantity }];
+//       }
+//     });
+//   };
 
-  return (
-    <CartContext.Provider value={{ items, setItems, updateItemQuantity }}>
-      {children}
-    </CartContext.Provider>
-  );
-};
+//   return (
+//     <CartContext.Provider value={{ items, setItems, updateItemQuantity }}>
+//       {children}
+//     </CartContext.Provider>
+//   );
+// };
 
-export const useCart = () => {
-  const context = useContext(CartContext);
-  if (!context) throw new Error("useCart must be used within CartProvider");
-  return context;
-};
+// export const useCart = () => {
+//   const context = useContext(CartContext);
+//   if (!context) throw new Error("useCart must be used within CartProvider");
+//   return context;
+// };
