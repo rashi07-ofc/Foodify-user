@@ -15,9 +15,9 @@ const Navbar: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   // const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
-  const cartItemCount = useSelector(
-    (state: RootState) => state.cart.items.length
-  );
+  // const cartItemCount = localStorage.getItem("cartTotalQuantity")
+  const cartItemCount = useSelector((state: RootState) => state.cart.totalQuantity);
+
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen((prev) => !prev);
@@ -39,6 +39,7 @@ const Navbar: React.FC = () => {
     handleNavClick("#home");
     navigate("/home");
   };
+
 
   // Close dropdown on outside click
   useEffect(() => {

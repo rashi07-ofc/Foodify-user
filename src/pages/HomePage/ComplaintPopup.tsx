@@ -7,6 +7,33 @@ interface Props {
   orderId: string;
   onClose: () => void;
 }
+<<<<<<< HEAD
+=======
+const ComplaintPopup: React.FC<ComplaintPopupProps> = ({
+  restaurantId,
+  orderId,
+  onClose,
+}) => {
+  const accessToken = getAuthToken();
+
+  const [complaint, setComplaint] = useState("");
+  const [managerId, setManagerId] = useState<string | null>(null);
+  useEffect(() => {
+    const fetchManagerId = async () => {
+      try {
+        console.log(restaurantId);
+        console.log(orderId);
+        console.log("jhgdcfuyehj", accessToken);
+        const response = await axios.get<{ managerId: string }>(
+          `http://localhost:3006/order/getManagerId/${restaurantId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        console.log(response);
+>>>>>>> 6c00015addf865135b23192d77fb5c7b4672434b
 
 const ComplaintPopup: React.FC<Props> = ({ orderId, onClose }) => {
   const [customerName, setCustomerName] = useState("");
@@ -17,6 +44,9 @@ const ComplaintPopup: React.FC<Props> = ({ orderId, onClose }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+console.log(orderId);
+console.log(complaint);
+
 
     if (!orderId || !feedback.trim()) {
       toast.error("Order ID and feedback are required.");

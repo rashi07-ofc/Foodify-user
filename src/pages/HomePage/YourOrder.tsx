@@ -43,6 +43,7 @@ const YourOrder: React.FC = () => {
   }, [accessToken]);
 
   return (
+    
     <div className="max-w-3xl mx-auto px-4 py-8">
       <h2 className="text-2xl font-bold mb-6 text-orange-600">My Orders</h2>
 
@@ -55,25 +56,25 @@ const YourOrder: React.FC = () => {
             className="mb-4 p-4 border-l-4 border-orange-500 bg-orange-50 rounded shadow-sm"
           >
             <div className="mb-2 text-sm text-gray-500">
-              Order ID:{" "}
+              Order ID:
               <span className="font-medium text-gray-700">{order._id}</span>
             </div>
 
             <div className="mb-1">
-              <span className="font-semibold text-gray-700">Status:</span>{" "}
+              <span className="font-semibold text-gray-700">Status:</span>
               <span className="text-orange-600 capitalize">{order.status}</span>
             </div>
 
             <div className="mb-1">
-              <span className="font-semibold text-gray-700">Payment:</span>{" "}
-              {order.paymentMethod.replace(/_/g, " ")}{" "}
+              <span className="font-semibold text-gray-700">Payment:</span>
+              {order.paymentMethod.replace(/_/g, " ")}
               <span className="text-sm text-orange-500">
                 ({order.paymentStatus})
               </span>
             </div>
 
             <div className="mb-1">
-              <span className="font-semibold text-gray-700">Total Amount:</span>{" "}
+              <span className="font-semibold text-gray-700">Total Amount:</span>
               ₹{order.total}
             </div>
 
