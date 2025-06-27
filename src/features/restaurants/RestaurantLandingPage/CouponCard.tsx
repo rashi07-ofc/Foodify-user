@@ -54,12 +54,12 @@ const CouponCard: React.FC<CouponProps> = ({
         Minimum Order: ₹{minOrderAmount}
       </div>
       <div className="text-sm text-gray-500">Valid till: {formattedDate}</div>
-      <button
+      {/* <button
         onClick={handleApplyCoupon}
         className="mt-3 px-4 py-2 rounded bg-orange-500 text-white hover:bg-orange-600 transition w-fit"
       >
         Apply Coupon
-      </button>
+      </button> */}
     </div>
   );
 };

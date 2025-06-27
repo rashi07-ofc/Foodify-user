@@ -13,6 +13,7 @@ export const useGeolocation = () => {
   );
   const [error, setError] = useState<string | null>(null);
 
+  //request location using the browser Geolocation API
   const getLocation = () => {
     if (!navigator.geolocation) {
       setError("Geolocation is not supported by your browser.");
@@ -53,6 +54,8 @@ export const useGeolocation = () => {
   };
 
   useEffect(() => {
+    // Only try to get current position if no location is already stored/set
+    // or if you always want to try to get the most accurate current location
     if (!location) { 
         getLocation();
     }
